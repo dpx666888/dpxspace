@@ -2,6 +2,34 @@ import type { Project } from '../types'
 
 export const projects: Project[] = [
   {
+    id: 'crab-bookkeeping',
+    title: '螃蟹记账',
+    description: '跨平台记账小程序，支持 Android/iOS/H5/微信小程序。涵盖收支记录、分类统计、数据导出导入等核心功能。',
+    tags: ['项目', 'uni-app', 'Vue 3'],
+    techStack: ['uni-app', 'Vue 3', 'xlsx'],
+    githubUrl: 'https://github.com/dpx666888/-app',
+    story: {
+      why: '日常生活中需要管理个人收支，市面上记账软件要么功能臃肿，要么有广告。想做一个简洁、专注、无广告的记账工具，满足自己的日常使用需求。',
+      design: '采用移动端优先设计，底部 Tab 导航（首页/记账/报表/我的）。首页展示月度概览卡片和最近记录；记账页支持收支分类选择（9类支出、4类收入）；报表页提供分类统计图表和数据筛选。',
+      development: '基于 uni-app + Vue 3 框架开发，一套代码编译到 Android、iOS、H5、微信小程序四个平台。实现了用户注册登录、多账号管理、收支记录 CRUD、分类统计图表（进度条+百分比分布）、Excel/CSV/JSON 多格式数据导出与导入。',
+      problems: [
+        { title: '多端适配差异', desc: '不同平台（尤其小程序与 App）在存储、文件系统 API 上存在差异，导致数据持久化逻辑需要平台判断。' },
+        { title: '图表组件选型', desc: '需要在跨平台场景下找到兼容的图表方案，最终使用自定义进度条+百分比分布替代复杂图表库。' },
+      ],
+      solutions: '针对多端差异，使用 uni-app 的条件编译和统一封装层处理平台差异；图表方面采用轻量级的自定义组件，保证所有平台一致渲染。',
+      result: '完成可正常使用的跨平台记账应用，已打包 Android APK（v1.0-v1.13 持续迭代），具备完整的记账、统计、导出功能。',
+      summary: '通过独立开发完整项目，深入理解了 uni-app 跨端开发流程、Vue 3 组合式 API、移动端 UI 设计思路，以及从需求分析到打包发布的全链路开发经验。',
+    },
+    timeline: [
+      { date: '2026-05-09', event: '创建项目，开始需求分析与 UI 设计' },
+      { date: '2026-05', event: '完成用户系统（注册/登录/多账号管理）' },
+      { date: '2026-06', event: '完成收支记录与首页仪表盘' },
+      { date: '2026-06', event: '完成分类统计图表与数据导出导入' },
+      { date: '2026-07', event: '持续迭代，发布 v1.13' },
+    ],
+    aiCollaboration: '在开发过程中使用 AI 辅助解决跨端兼容性问题、优化代码结构，以及生成部分 UI 样式代码。',
+  },
+  {
     id: '100-days-cpp',
     title: '100 Days of C++ Learning',
     description: '一个用来学习 C++ 的仓库，记录百日编程学习历程。',
@@ -48,30 +76,5 @@ export const projects: Project[] = [
       { date: '2026-07-17', event: '创建仓库，记录Git学习笔记' },
     ],
     aiCollaboration: '【待补充】',
-  },
-  {
-    id: 'vue-app',
-    title: 'App',
-    description: '基于 Vue 的应用项目，持续迭代中。',
-    tags: ['项目', 'Vue'],
-    techStack: ['Vue'],
-    githubUrl: 'https://github.com/dpx666888/-app',
-    story: {
-      why: '【待补充：这个应用解决什么问题？为什么要做这个项目？】',
-      design: '【待补充：功能设计和界面设计思路】',
-      development: '【待补充：开发过程，实现了哪些功能？】',
-      problems: [
-        { title: '【待补充：问题1】', desc: '【待补充】' },
-        { title: '【待补充：问题2】', desc: '【待补充】' },
-      ],
-      solutions: '【待补充】',
-      result: '【待补充：项目当前状态，已实现的功能】',
-      summary: '【待补充】',
-    },
-    timeline: [
-      { date: '2026-05-09', event: '创建项目，开始开发' },
-      { date: '【待补充】', event: '【待补充】' },
-    ],
-    aiCollaboration: '【待补充：AI如何辅助这个项目开发？】',
   },
 ]

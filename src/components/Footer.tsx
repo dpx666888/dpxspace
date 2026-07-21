@@ -18,7 +18,7 @@ export default function Footer() {
             <Github size={18} />
           </a>
           <a
-            href="mailto:a13265405786@outlook.com"
+            href="mailto:2060786339@qq.com"
             className="text-text-secondary hover:text-accent transition-colors"
             aria-label="邮箱"
           >

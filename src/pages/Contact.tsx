@@ -30,12 +30,12 @@ export default function Contact() {
                 <div>
                   <p className="text-xs text-text-secondary mb-0.5">邮箱</p>
                   <a
-                    href="mailto:a13265405786@outlook.com"
+                    href="mailto:2060786339@qq.com"
                     className="text-text-primary hover:text-accent transition-colors"
                   >
-                    a13265405786@outlook.com
+                    2060786339@qq.com
                   </a>
-                  <p className="text-xs text-text-secondary mt-1">Outlook 邮箱</p>
+                  <p className="text-xs text-text-secondary mt-1">QQ 邮箱</p>
                 </div>
               </div>
             </div>
@@ -66,7 +66,7 @@ export default function Contact() {
                 </div>
                 <div>
                   <p className="text-xs text-text-secondary mb-0.5">位置</p>
-                  <p className="text-text-primary">【待补充】</p>
+                  <p className="text-text-primary">广东深圳</p>
                 </div>
               </div>
             </div>

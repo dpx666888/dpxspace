@@ -31,7 +31,7 @@ const projects = [
   },
 ]
 
-const skills = ['C++', 'Vue', 'Git', 'React', 'TypeScript', 'Tailwind CSS']
+const skills = ['C++', 'Vue', 'uni-app', 'Git', 'React', 'TypeScript', 'Tailwind CSS']
 
 export default function Home() {
   return (
