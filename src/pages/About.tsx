@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
-import { Code2, Terminal, BookOpen, Zap, Globe } from 'lucide-react'
+import { Code2, Terminal, BookOpen, Zap, Globe, MessageSquare } from 'lucide-react'
+import { aiCollabs } from '../data/aiCollabs'
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -153,9 +154,9 @@ export default function About() {
         </motion.section>
 
         {/* AI协作介绍 */}
-        <motion.section {...fadeInUp}>
+        <motion.section className="mb-20 md:mb-28" {...fadeInUp}>
           <h2 className="text-2xl md:text-3xl font-semibold text-text-primary mb-8">AI 协作</h2>
-          <div className="p-6 md:p-8 bg-bg-secondary border border-border rounded-xl">
+          <div className="p-6 md:p-8 bg-bg-secondary border border-border rounded-xl mb-8">
             <div className="flex items-start gap-4">
               <div className="p-3 bg-accent/10 rounded-xl shrink-0">
                 <Zap size={22} className="text-accent" />
@@ -172,6 +173,42 @@ export default function About() {
                 </p>
               </div>
             </div>
+          </div>
+
+          <h3 className="text-lg font-semibold text-text-primary mb-4">协作记录</h3>
+          <div className="space-y-4">
+            {aiCollabs.map((collab, index) => (
+              <motion.div
+                key={collab.id}
+                className="p-5 bg-bg-secondary border border-border rounded-xl"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: index * 0.1 }}
+              >
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="p-1.5 bg-accent/10 rounded-lg">
+                    <MessageSquare size={14} className="text-accent" />
+                  </div>
+                  <span className="text-xs text-text-secondary">{collab.date}</span>
+                  {collab.project && (
+                    <span className="text-xs text-accent px-2 py-0.5 bg-accent/10 rounded-full">
+                      {collab.project}
+                    </span>
+                  )}
+                </div>
+                <h4 className="font-medium text-text-primary mb-2">{collab.title}</h4>
+                <p className="text-sm text-text-secondary mb-3">{collab.context}</p>
+                <div className="bg-bg-primary border border-border rounded-lg p-3 mb-3">
+                  <p className="text-xs text-text-secondary mb-1">Prompt：</p>
+                  <p className="text-sm text-text-primary">{collab.prompt}</p>
+                </div>
+                <div className="bg-bg-primary border border-border rounded-lg p-3">
+                  <p className="text-xs text-text-secondary mb-1">结果：</p>
+                  <p className="text-sm text-text-primary">{collab.result}</p>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </motion.section>
       </div>
