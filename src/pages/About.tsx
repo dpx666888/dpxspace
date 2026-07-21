@@ -81,13 +81,13 @@ export default function About() {
                 丁鹏翔
               </h2>
               <p className="text-text-secondary leading-relaxed mb-4">
-                【个人定位待补充，如：前端开发者 / 全栈工程师 / 学生开发者】
+                一个学生开发者，利用 AI 和自己的代码，不断建造属于自己的数字世界。
               </p>
               <p className="text-text-secondary leading-relaxed mb-4">
-                【个人简介待补充，描述你的背景、兴趣、学习方向等】
+                我热衷于动手落地各类想法，是偏爱实操的实践发烧友，想到创意就会尽全力亲手实现。日常离不开咖啡，习惯伴着咖啡钻研折腾各类项目。做事执行力强，崇尚亲身实操，不局限于空想，乐于在实践里摸索钻研。
               </p>
               <p className="text-text-secondary leading-relaxed">
-                【长期目标待补充，如：想成为一名优秀的软件工程师 / 对AI方向感兴趣等】
+                我也不知道我想成为一个怎么样的开发者，大概是不断把脑子里有趣的想法实现，不断钻研的吧。
               </p>
             </div>
           </div>

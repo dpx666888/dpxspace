@@ -58,7 +58,7 @@ export default function Home() {
             {...fadeInUp}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            一名热爱技术、持续成长的学生开发者。这是我的个人电子名片，记录我的项目、实验和成长历程。
+            一个学生开发者，利用 AI 和自己的代码，不断建造属于自己的数字世界。
           </motion.p>
           <motion.div
             className="flex items-center gap-4 mt-8"

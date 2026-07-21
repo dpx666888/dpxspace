@@ -30,12 +30,12 @@ export default function Contact() {
                 <div>
                   <p className="text-xs text-text-secondary mb-0.5">邮箱</p>
                   <a
-                    href="mailto:email@example.com"
+                    href="mailto:a13265405786@outlook.com"
                     className="text-text-primary hover:text-accent transition-colors"
                   >
-                    email@example.com
+                    a13265405786@outlook.com
                   </a>
-                  <p className="text-xs text-text-secondary mt-1">待补充真实邮箱</p>
+                  <p className="text-xs text-text-secondary mt-1">Outlook 邮箱</p>
                 </div>
               </div>
             </div>
