@@ -1,13 +1,15 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Loader2, Lock, Mail, AlertCircle } from 'lucide-react'
 import { signIn } from '../../services/auth.service'
 import { isSupabaseConfigured } from '../../services/supabase'
+import { useAuth } from '../hooks/useAuth'
 
 export default function AdminLogin() {
   const navigate = useNavigate()
   const location = useLocation()
+  const { user, loading: authLoading } = useAuth()
   const from = (location.state as { from?: { pathname?: string } })?.from?.pathname || '/admin/dashboard'
 
   const [email, setEmail] = useState('')
@@ -16,6 +18,18 @@ export default function AdminLogin() {
   const [loading, setLoading] = useState(false)
 
   const configured = isSupabaseConfigured()
+
+  useEffect(() => {
+    if (user) navigate('/admin/dashboard', { replace: true })
+  }, [user, navigate])
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-bg-primary flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-accent animate-spin" />
+      </div>
+    )
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

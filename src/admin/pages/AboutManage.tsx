@@ -116,15 +116,15 @@ export default function AboutManage() {
 
         {/* 个人简介 */}
         <Section title="个人简介">
-          {intro.map((text, i) => (
-            <div key={i} className="flex gap-2 items-start">
+          {intro.map((paragraph, index) => (
+            <div key={index} className="flex gap-2 items-start">
               <textarea
-                value={text}
-                onChange={e => { const next = [...intro]; next[i] = e.target.value; setIntro(next) }}
+                value={paragraph}
+                onChange={e => { const next = [...intro]; next[index] = e.target.value; setIntro(next) }}
                 rows={2}
                 className={inputClass}
               />
-              <button type="button" onClick={() => removeArrayItem(intro, i, setIntro)} className="p-2 text-text-secondary hover:text-red-500 shrink-0"><Trash2 size={16} /></button>
+              <button type="button" onClick={() => removeArrayItem(intro, index, setIntro)} className="p-2 text-text-secondary hover:text-red-500 shrink-0"><Trash2 size={16} /></button>
             </div>
           ))}
           <button type="button" onClick={() => setIntro([...intro, ''])} className="inline-flex items-center gap-1 text-sm text-accent hover:text-accent-light"><Plus size={14} /> 添加段落</button>
@@ -133,11 +133,11 @@ export default function AboutManage() {
         {/* 教育经历 */}
         <Section title="教育经历">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {(['school','major','period','courses','achievements','competitions'] as const).map(k => (
-              <div key={k}>
-                <label className={labelClass}>{({school:'学校',major:'专业',period:'时间段',courses:'主修课程',achievements:'学业成绩',competitions:'竞赛荣誉'})[k]}</label>
-                <input {...register(k)} className={inputClass} />
-                {errors[k] && <p className="text-xs text-red-500 mt-1">{errors[k]?.message}</p>}
+            {(['school','major','period','courses','achievements','competitions'] as const).map(field => (
+              <div key={field}>
+                <label className={labelClass}>{({school:'学校',major:'专业',period:'时间段',courses:'主修课程',achievements:'学业成绩',competitions:'竞赛荣誉'})[field]}</label>
+                <input {...register(field)} className={inputClass} />
+                {errors[field] && <p className="text-xs text-red-500 mt-1">{errors[field]?.message}</p>}
               </div>
             ))}
           </div>
@@ -145,25 +145,25 @@ export default function AboutManage() {
 
         {/* 技术方向 */}
         <Section title="技术方向">
-          {techStacks.map((ts, i) => (
-            <div key={i} className="p-4 bg-bg-primary border border-border rounded-lg space-y-3">
+          {techStacks.map((techStack, index) => (
+            <div key={index} className="p-4 bg-bg-primary border border-border rounded-lg space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-text-secondary">#{i + 1}</span>
-                <button type="button" onClick={() => removeArrayItem(techStacks, i, setTechStacks)} className="text-text-secondary hover:text-red-500"><Trash2 size={16} /></button>
+                <span className="text-sm text-text-secondary">#{index + 1}</span>
+                <button type="button" onClick={() => removeArrayItem(techStacks, index, setTechStacks)} className="text-text-secondary hover:text-red-500"><Trash2 size={16} /></button>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className={labelClass}>分类名称</label>
-                  <input value={ts.title} onChange={e => updateArrayItem(techStacks, i, { title: e.target.value }, setTechStacks)} className={inputClass} />
+                  <input value={techStack.title} onChange={e => updateArrayItem(techStacks, index, { title: e.target.value }, setTechStacks)} className={inputClass} />
                 </div>
                 <div>
                   <label className={labelClass}>图标名称 (Lucide)</label>
-                  <input value={ts.icon} onChange={e => updateArrayItem(techStacks, i, { icon: e.target.value }, setTechStacks)} className={inputClass} placeholder="Code2" />
+                  <input value={techStack.icon} onChange={e => updateArrayItem(techStacks, index, { icon: e.target.value }, setTechStacks)} className={inputClass} placeholder="Code2" />
                 </div>
               </div>
               <div>
                 <label className={labelClass}>技能（逗号分隔）</label>
-                <input value={ts.skills.join(', ')} onChange={e => updateArrayItem(techStacks, i, { skills: e.target.value.split(',').map(s => s.trim()).filter(Boolean) }, setTechStacks)} className={inputClass} />
+                <input value={techStack.skills.join(', ')} onChange={e => updateArrayItem(techStacks, index, { skills: e.target.value.split(',').map(skill => skill.trim()).filter(Boolean) }, setTechStacks)} className={inputClass} />
               </div>
             </div>
           ))}
@@ -172,29 +172,29 @@ export default function AboutManage() {
 
         {/* 实践经历 */}
         <Section title="实践经历">
-          {practices.map((p, i) => (
-            <div key={i} className="p-4 bg-bg-primary border border-border rounded-lg space-y-3">
+          {practices.map((practice, index) => (
+            <div key={index} className="p-4 bg-bg-primary border border-border rounded-lg space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-text-secondary">#{i + 1}</span>
-                <button type="button" onClick={() => removeArrayItem(practices, i, setPractices)} className="text-text-secondary hover:text-red-500"><Trash2 size={16} /></button>
+                <span className="text-sm text-text-secondary">#{index + 1}</span>
+                <button type="button" onClick={() => removeArrayItem(practices, index, setPractices)} className="text-text-secondary hover:text-red-500"><Trash2 size={16} /></button>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className={labelClass}>图标 (Lucide)</label>
-                  <input value={p.icon} onChange={e => updateArrayItem(practices, i, { icon: e.target.value }, setPractices)} className={inputClass} placeholder="Wrench" />
+                  <input value={practice.icon} onChange={e => updateArrayItem(practices, index, { icon: e.target.value }, setPractices)} className={inputClass} placeholder="Wrench" />
                 </div>
                 <div>
                   <label className={labelClass}>角色</label>
-                  <input value={p.role} onChange={e => updateArrayItem(practices, i, { role: e.target.value }, setPractices)} className={inputClass} />
+                  <input value={practice.role} onChange={e => updateArrayItem(practices, index, { role: e.target.value }, setPractices)} className={inputClass} />
                 </div>
               </div>
               <div>
                 <label className={labelClass}>标题</label>
-                <input value={p.title} onChange={e => updateArrayItem(practices, i, { title: e.target.value }, setPractices)} className={inputClass} />
+                <input value={practice.title} onChange={e => updateArrayItem(practices, index, { title: e.target.value }, setPractices)} className={inputClass} />
               </div>
               <div>
                 <label className={labelClass}>描述</label>
-                <textarea value={p.desc} onChange={e => updateArrayItem(practices, i, { desc: e.target.value }, setPractices)} rows={2} className={inputClass} />
+                <textarea value={practice.desc} onChange={e => updateArrayItem(practices, index, { desc: e.target.value }, setPractices)} rows={2} className={inputClass} />
               </div>
             </div>
           ))}
@@ -203,11 +203,11 @@ export default function AboutManage() {
 
         {/* 证书 */}
         <Section title="技能与证书">
-          {certificates.map((c, i) => (
-            <div key={i} className="flex gap-2 items-center">
-              <input value={c.name} onChange={e => updateArrayItem(certificates, i, { name: e.target.value }, setCertificates)} className={inputClass} placeholder="证书名称" />
-              <input value={c.icon} onChange={e => updateArrayItem(certificates, i, { icon: e.target.value }, setCertificates)} className={`${inputClass} w-32 shrink-0`} placeholder="图标名" />
-              <button type="button" onClick={() => removeArrayItem(certificates, i, setCertificates)} className="p-2 text-text-secondary hover:text-red-500 shrink-0"><Trash2 size={16} /></button>
+          {certificates.map((cert, index) => (
+            <div key={index} className="flex gap-2 items-center">
+              <input value={cert.name} onChange={e => updateArrayItem(certificates, index, { name: e.target.value }, setCertificates)} className={inputClass} placeholder="证书名称" />
+              <input value={cert.icon} onChange={e => updateArrayItem(certificates, index, { icon: e.target.value }, setCertificates)} className={`${inputClass} w-32 shrink-0`} placeholder="图标名" />
+              <button type="button" onClick={() => removeArrayItem(certificates, index, setCertificates)} className="p-2 text-text-secondary hover:text-red-500 shrink-0"><Trash2 size={16} /></button>
             </div>
           ))}
           <button type="button" onClick={() => setCertificates([...certificates, { name: '', icon: 'Award' }])} className="inline-flex items-center gap-1 text-sm text-accent hover:text-accent-light"><Plus size={14} /> 添加证书</button>
@@ -215,25 +215,25 @@ export default function AboutManage() {
 
         {/* 成长路线 */}
         <Section title="成长路线">
-          {growthRoutes.map((g, i) => (
-            <div key={i} className="p-4 bg-bg-primary border border-border rounded-lg space-y-3">
+          {growthRoutes.map((route, index) => (
+            <div key={index} className="p-4 bg-bg-primary border border-border rounded-lg space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-text-secondary">#{i + 1}</span>
-                <button type="button" onClick={() => removeArrayItem(growthRoutes, i, setGrowthRoutes)} className="text-text-secondary hover:text-red-500"><Trash2 size={16} /></button>
+                <span className="text-sm text-text-secondary">#{index + 1}</span>
+                <button type="button" onClick={() => removeArrayItem(growthRoutes, index, setGrowthRoutes)} className="text-text-secondary hover:text-red-500"><Trash2 size={16} /></button>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className={labelClass}>时间段</label>
-                  <input value={g.period} onChange={e => updateArrayItem(growthRoutes, i, { period: e.target.value }, setGrowthRoutes)} className={inputClass} placeholder="2026.07" />
+                  <input value={route.period} onChange={e => updateArrayItem(growthRoutes, index, { period: e.target.value }, setGrowthRoutes)} className={inputClass} placeholder="2026.07" />
                 </div>
                 <div>
                   <label className={labelClass}>标题</label>
-                  <input value={g.title} onChange={e => updateArrayItem(growthRoutes, i, { title: e.target.value }, setGrowthRoutes)} className={inputClass} />
+                  <input value={route.title} onChange={e => updateArrayItem(growthRoutes, index, { title: e.target.value }, setGrowthRoutes)} className={inputClass} />
                 </div>
               </div>
               <div>
                 <label className={labelClass}>描述</label>
-                <textarea value={g.desc} onChange={e => updateArrayItem(growthRoutes, i, { desc: e.target.value }, setGrowthRoutes)} rows={2} className={inputClass} />
+                <textarea value={route.desc} onChange={e => updateArrayItem(growthRoutes, index, { desc: e.target.value }, setGrowthRoutes)} rows={2} className={inputClass} />
               </div>
             </div>
           ))}
