@@ -1,30 +1,26 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Loader2 } from 'lucide-react'
+import { Loader2, Plus, Trash2 } from 'lucide-react'
 import AdminLayout from '../components/AdminLayout'
 import { useAbout } from '../../hooks/useAbout'
 import { updateAbout } from '../../services/about.service'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import type { AboutInput } from '../../types/database'
+import type { AboutInput, Certificate, Practice, SkillCategory, GrowthRoute } from '../../types/database'
 
 const aboutSchema = z.object({
-  intro: z.string().min(1, '请输入个人简介 JSON'),
   school: z.string().min(1, '请输入学校'),
   major: z.string().min(1, '请输入专业'),
   period: z.string().min(1, '请输入时间段'),
   courses: z.string().min(1, '请输入主修课程'),
   achievements: z.string().min(1, '请输入学业成绩'),
   competitions: z.string().min(1, '请输入竞赛荣誉'),
-  certificates: z.string().min(1, '请输入证书 JSON'),
-  practice: z.string().min(1, '请输入实践经历 JSON'),
-  tech_stack: z.string().min(1, '请输入技术方向 JSON'),
-  growth_route: z.string().min(1, '请输入成长路线 JSON'),
-  ai_collaboration: z.string().min(1, '请输入 AI 协作 JSON'),
+  ai_intro: z.string().min(1, '请输入 AI 协作简介'),
+  ai_examples: z.string().min(1, '请输入 AI 协作示例'),
 })
 
-type AboutForm = z.infer<typeof aboutSchema>
+type AboutFormData = z.infer<typeof aboutSchema>
 
 export default function AboutManage() {
   const { data: about, isLoading } = useAbout()
@@ -34,184 +30,246 @@ export default function AboutManage() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ['about'] }),
   })
 
+  const [intro, setIntro] = useState<string[]>([])
+  const [certificates, setCertificates] = useState<Certificate[]>([])
+  const [practices, setPractices] = useState<Practice[]>([])
+  const [techStacks, setTechStacks] = useState<SkillCategory[]>([])
+  const [growthRoutes, setGrowthRoutes] = useState<GrowthRoute[]>([])
+
   const {
     register,
     handleSubmit,
-    reset,
+    reset: resetForm,
     formState: { errors },
-  } = useForm<AboutForm>({
+  } = useForm<AboutFormData>({
     resolver: zodResolver(aboutSchema),
-    defaultValues: {
-      intro: '[]',
-      school: '',
-      major: '',
-      period: '',
-      courses: '',
-      achievements: '',
-      competitions: '',
-      certificates: '[]',
-      practice: '[]',
-      tech_stack: '[]',
-      growth_route: '[]',
-      ai_collaboration: '{}',
-    },
+    defaultValues: { school: '', major: '', period: '', courses: '', achievements: '', competitions: '', ai_intro: '', ai_examples: '' },
   })
 
   useEffect(() => {
     if (about) {
-      reset({
-        intro: JSON.stringify(about.intro, null, 2),
+      resetForm({
         school: about.education.school,
         major: about.education.major,
         period: about.education.period,
         courses: about.education.courses,
         achievements: about.education.achievements,
         competitions: about.education.competitions,
-        certificates: JSON.stringify(about.certificates, null, 2),
-        practice: JSON.stringify(about.practice, null, 2),
-        tech_stack: JSON.stringify(about.tech_stack, null, 2),
-        growth_route: JSON.stringify(about.growth_route, null, 2),
-        ai_collaboration: JSON.stringify(about.ai_collaboration, null, 2),
+        ai_intro: about.ai_collaboration.intro,
+        ai_examples: about.ai_collaboration.examples,
       })
+      setIntro(about.intro)
+      setCertificates(about.certificates)
+      setPractices(about.practice)
+      setTechStacks(about.tech_stack)
+      setGrowthRoutes(about.growth_route)
     }
-  }, [about, reset])
+  }, [about, resetForm])
 
-  const onSubmit = (values: AboutForm) => {
-    try {
-      const payload: AboutInput = {
-        intro: JSON.parse(values.intro),
-        education: {
-          school: values.school,
-          major: values.major,
-          period: values.period,
-          courses: values.courses,
-          achievements: values.achievements,
-          competitions: values.competitions,
-        },
-        certificates: JSON.parse(values.certificates),
-        practice: JSON.parse(values.practice),
-        tech_stack: JSON.parse(values.tech_stack),
-        growth_route: JSON.parse(values.growth_route),
-        ai_collaboration: JSON.parse(values.ai_collaboration),
-      }
-      mutation.mutate(payload)
-    } catch {
-      alert('JSON 格式错误，请检查 JSON 文本框')
+  const onSubmit = (values: AboutFormData) => {
+    const payload: AboutInput = {
+      intro,
+      education: {
+        school: values.school,
+        major: values.major,
+        period: values.period,
+        courses: values.courses,
+        achievements: values.achievements,
+        competitions: values.competitions,
+      },
+      certificates,
+      practice: practices,
+      tech_stack: techStacks,
+      growth_route: growthRoutes,
+      ai_collaboration: {
+        intro: values.ai_intro,
+        examples: values.ai_examples,
+      },
     }
+    mutation.mutate(payload)
   }
+
+  // helper: array handlers
+  const updateArrayItem = <T,>(arr: T[], i: number, patch: Partial<T>, setter: (v: T[]) => void) => {
+    const next = [...arr]
+    next[i] = { ...next[i], ...patch }
+    setter(next)
+  }
+  const removeArrayItem = <T,>(arr: T[], i: number, setter: (v: T[]) => void) => {
+    setter(arr.filter((_, idx) => idx !== i))
+  }
+
+  const inputClass = 'w-full px-3 py-2 bg-bg-primary border border-border rounded-lg text-text-primary text-sm focus:outline-none focus:border-accent'
+  const labelClass = 'block text-sm text-text-secondary mb-1'
 
   if (isLoading) {
     return (
       <AdminLayout title="关于我管理">
-        <div className="p-12 flex items-center justify-center">
-          <Loader2 className="w-8 h-8 text-accent animate-spin" />
-        </div>
+        <div className="p-12 flex items-center justify-center"><Loader2 className="w-8 h-8 text-accent animate-spin" /></div>
       </AdminLayout>
     )
   }
 
   return (
     <AdminLayout title="关于我管理">
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 max-w-4xl">
-        <section className="bg-bg-secondary border border-border rounded-xl p-6 space-y-6">
-          <h3 className="text-lg font-semibold text-text-primary">个人简介</h3>
-          <div>
-            <label className="block text-sm text-text-secondary mb-1.5">简介（JSON 字符串数组）</label>
-            <textarea
-              {...register('intro')}
-              rows={5}
-              className="w-full px-4 py-2.5 bg-bg-primary border border-border rounded-lg text-text-primary font-mono text-sm focus:outline-none focus:border-accent"
-            />
-            {errors.intro && <p className="text-xs text-red-500 mt-1">{errors.intro.message}</p>}
-          </div>
-        </section>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 max-w-4xl" key={about?.updated_at}>
 
-        <section className="bg-bg-secondary border border-border rounded-xl p-6 space-y-6">
-          <h3 className="text-lg font-semibold text-text-primary">教育经历</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {[
-              { key: 'school', label: '学校' },
-              { key: 'major', label: '专业' },
-              { key: 'period', label: '时间段' },
-              { key: 'courses', label: '主修课程' },
-              { key: 'achievements', label: '学业成绩' },
-              { key: 'competitions', label: '竞赛荣誉' },
-            ].map(({ key, label }) => (
-              <div key={key}>
-                <label className="block text-sm text-text-secondary mb-1.5">{label}</label>
-                <input
-                  {...register(key as keyof AboutForm)}
-                  className="w-full px-4 py-2.5 bg-bg-primary border border-border rounded-lg text-text-primary focus:outline-none focus:border-accent"
-                />
-                {errors[key as keyof AboutForm] && (
-                  <p className="text-xs text-red-500 mt-1">{errors[key as keyof AboutForm]?.message}</p>
-                )}
+        {/* 个人简介 */}
+        <Section title="个人简介">
+          {intro.map((text, i) => (
+            <div key={i} className="flex gap-2 items-start">
+              <textarea
+                value={text}
+                onChange={e => { const next = [...intro]; next[i] = e.target.value; setIntro(next) }}
+                rows={2}
+                className={inputClass}
+              />
+              <button type="button" onClick={() => removeArrayItem(intro, i, setIntro)} className="p-2 text-text-secondary hover:text-red-500 shrink-0"><Trash2 size={16} /></button>
+            </div>
+          ))}
+          <button type="button" onClick={() => setIntro([...intro, ''])} className="inline-flex items-center gap-1 text-sm text-accent hover:text-accent-light"><Plus size={14} /> 添加段落</button>
+        </Section>
+
+        {/* 教育经历 */}
+        <Section title="教育经历">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {(['school','major','period','courses','achievements','competitions'] as const).map(k => (
+              <div key={k}>
+                <label className={labelClass}>{({school:'学校',major:'专业',period:'时间段',courses:'主修课程',achievements:'学业成绩',competitions:'竞赛荣誉'})[k]}</label>
+                <input {...register(k)} className={inputClass} />
+                {errors[k] && <p className="text-xs text-red-500 mt-1">{errors[k]?.message}</p>}
               </div>
             ))}
           </div>
-        </section>
+        </Section>
 
-        <section className="bg-bg-secondary border border-border rounded-xl p-6 space-y-6">
-          <h3 className="text-lg font-semibold text-text-primary">技术方向</h3>
-          <textarea
-            {...register('tech_stack')}
-            rows={8}
-            className="w-full px-4 py-2.5 bg-bg-primary border border-border rounded-lg text-text-primary font-mono text-sm focus:outline-none focus:border-accent"
-          />
-          {errors.tech_stack && <p className="text-xs text-red-500 mt-1">{errors.tech_stack.message}</p>}
-        </section>
+        {/* 技术方向 */}
+        <Section title="技术方向">
+          {techStacks.map((ts, i) => (
+            <div key={i} className="p-4 bg-bg-primary border border-border rounded-lg space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-text-secondary">#{i + 1}</span>
+                <button type="button" onClick={() => removeArrayItem(techStacks, i, setTechStacks)} className="text-text-secondary hover:text-red-500"><Trash2 size={16} /></button>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className={labelClass}>分类名称</label>
+                  <input value={ts.title} onChange={e => updateArrayItem(techStacks, i, { title: e.target.value }, setTechStacks)} className={inputClass} />
+                </div>
+                <div>
+                  <label className={labelClass}>图标名称 (Lucide)</label>
+                  <input value={ts.icon} onChange={e => updateArrayItem(techStacks, i, { icon: e.target.value }, setTechStacks)} className={inputClass} placeholder="Code2" />
+                </div>
+              </div>
+              <div>
+                <label className={labelClass}>技能（逗号分隔）</label>
+                <input value={ts.skills.join(', ')} onChange={e => updateArrayItem(techStacks, i, { skills: e.target.value.split(',').map(s => s.trim()).filter(Boolean) }, setTechStacks)} className={inputClass} />
+              </div>
+            </div>
+          ))}
+          <button type="button" onClick={() => setTechStacks([...techStacks, { title: '', icon: 'Code2', skills: [] }])} className="inline-flex items-center gap-1 text-sm text-accent hover:text-accent-light"><Plus size={14} /> 添加技术方向</button>
+        </Section>
 
-        <section className="bg-bg-secondary border border-border rounded-xl p-6 space-y-6">
-          <h3 className="text-lg font-semibold text-text-primary">实践经历</h3>
-          <textarea
-            {...register('practice')}
-            rows={8}
-            className="w-full px-4 py-2.5 bg-bg-primary border border-border rounded-lg text-text-primary font-mono text-sm focus:outline-none focus:border-accent"
-          />
-          {errors.practice && <p className="text-xs text-red-500 mt-1">{errors.practice.message}</p>}
-        </section>
+        {/* 实践经历 */}
+        <Section title="实践经历">
+          {practices.map((p, i) => (
+            <div key={i} className="p-4 bg-bg-primary border border-border rounded-lg space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-text-secondary">#{i + 1}</span>
+                <button type="button" onClick={() => removeArrayItem(practices, i, setPractices)} className="text-text-secondary hover:text-red-500"><Trash2 size={16} /></button>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className={labelClass}>图标 (Lucide)</label>
+                  <input value={p.icon} onChange={e => updateArrayItem(practices, i, { icon: e.target.value }, setPractices)} className={inputClass} placeholder="Wrench" />
+                </div>
+                <div>
+                  <label className={labelClass}>角色</label>
+                  <input value={p.role} onChange={e => updateArrayItem(practices, i, { role: e.target.value }, setPractices)} className={inputClass} />
+                </div>
+              </div>
+              <div>
+                <label className={labelClass}>标题</label>
+                <input value={p.title} onChange={e => updateArrayItem(practices, i, { title: e.target.value }, setPractices)} className={inputClass} />
+              </div>
+              <div>
+                <label className={labelClass}>描述</label>
+                <textarea value={p.desc} onChange={e => updateArrayItem(practices, i, { desc: e.target.value }, setPractices)} rows={2} className={inputClass} />
+              </div>
+            </div>
+          ))}
+          <button type="button" onClick={() => setPractices([...practices, { icon: 'Wrench', title: '', role: '', desc: '' }])} className="inline-flex items-center gap-1 text-sm text-accent hover:text-accent-light"><Plus size={14} /> 添加实践经历</button>
+        </Section>
 
-        <section className="bg-bg-secondary border border-border rounded-xl p-6 space-y-6">
-          <h3 className="text-lg font-semibold text-text-primary">技能与证书</h3>
-          <textarea
-            {...register('certificates')}
-            rows={6}
-            className="w-full px-4 py-2.5 bg-bg-primary border border-border rounded-lg text-text-primary font-mono text-sm focus:outline-none focus:border-accent"
-          />
-          {errors.certificates && <p className="text-xs text-red-500 mt-1">{errors.certificates.message}</p>}
-        </section>
+        {/* 证书 */}
+        <Section title="技能与证书">
+          {certificates.map((c, i) => (
+            <div key={i} className="flex gap-2 items-center">
+              <input value={c.name} onChange={e => updateArrayItem(certificates, i, { name: e.target.value }, setCertificates)} className={inputClass} placeholder="证书名称" />
+              <input value={c.icon} onChange={e => updateArrayItem(certificates, i, { icon: e.target.value }, setCertificates)} className={`${inputClass} w-32 shrink-0`} placeholder="图标名" />
+              <button type="button" onClick={() => removeArrayItem(certificates, i, setCertificates)} className="p-2 text-text-secondary hover:text-red-500 shrink-0"><Trash2 size={16} /></button>
+            </div>
+          ))}
+          <button type="button" onClick={() => setCertificates([...certificates, { name: '', icon: 'Award' }])} className="inline-flex items-center gap-1 text-sm text-accent hover:text-accent-light"><Plus size={14} /> 添加证书</button>
+        </Section>
 
-        <section className="bg-bg-secondary border border-border rounded-xl p-6 space-y-6">
-          <h3 className="text-lg font-semibold text-text-primary">成长路线</h3>
-          <textarea
-            {...register('growth_route')}
-            rows={8}
-            className="w-full px-4 py-2.5 bg-bg-primary border border-border rounded-lg text-text-primary font-mono text-sm focus:outline-none focus:border-accent"
-          />
-          {errors.growth_route && <p className="text-xs text-red-500 mt-1">{errors.growth_route.message}</p>}
-        </section>
+        {/* 成长路线 */}
+        <Section title="成长路线">
+          {growthRoutes.map((g, i) => (
+            <div key={i} className="p-4 bg-bg-primary border border-border rounded-lg space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-text-secondary">#{i + 1}</span>
+                <button type="button" onClick={() => removeArrayItem(growthRoutes, i, setGrowthRoutes)} className="text-text-secondary hover:text-red-500"><Trash2 size={16} /></button>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className={labelClass}>时间段</label>
+                  <input value={g.period} onChange={e => updateArrayItem(growthRoutes, i, { period: e.target.value }, setGrowthRoutes)} className={inputClass} placeholder="2026.07" />
+                </div>
+                <div>
+                  <label className={labelClass}>标题</label>
+                  <input value={g.title} onChange={e => updateArrayItem(growthRoutes, i, { title: e.target.value }, setGrowthRoutes)} className={inputClass} />
+                </div>
+              </div>
+              <div>
+                <label className={labelClass}>描述</label>
+                <textarea value={g.desc} onChange={e => updateArrayItem(growthRoutes, i, { desc: e.target.value }, setGrowthRoutes)} rows={2} className={inputClass} />
+              </div>
+            </div>
+          ))}
+          <button type="button" onClick={() => setGrowthRoutes([...growthRoutes, { period: '', title: '', desc: '' }])} className="inline-flex items-center gap-1 text-sm text-accent hover:text-accent-light"><Plus size={14} /> 添加成长节点</button>
+        </Section>
 
-        <section className="bg-bg-secondary border border-border rounded-xl p-6 space-y-6">
-          <h3 className="text-lg font-semibold text-text-primary">AI 协作</h3>
-          <textarea
-            {...register('ai_collaboration')}
-            rows={5}
-            className="w-full px-4 py-2.5 bg-bg-primary border border-border rounded-lg text-text-primary font-mono text-sm focus:outline-none focus:border-accent"
-          />
-          {errors.ai_collaboration && <p className="text-xs text-red-500 mt-1">{errors.ai_collaboration.message}</p>}
-        </section>
+        {/* AI 协作 */}
+        <Section title="AI 协作">
+          <div>
+            <label className={labelClass}>简介</label>
+            <textarea {...register('ai_intro')} rows={3} className={inputClass} />
+            {errors.ai_intro && <p className="text-xs text-red-500 mt-1">{errors.ai_intro.message}</p>}
+          </div>
+          <div>
+            <label className={labelClass}>示例说明</label>
+            <textarea {...register('ai_examples')} rows={3} className={inputClass} />
+            {errors.ai_examples && <p className="text-xs text-red-500 mt-1">{errors.ai_examples.message}</p>}
+          </div>
+        </Section>
 
         <div className="flex items-center gap-4 pt-4">
-          <button
-            type="submit"
-            disabled={mutation.isPending}
-            className="px-6 py-2.5 bg-accent text-white rounded-lg font-medium hover:bg-accent-light transition-colors disabled:opacity-50 inline-flex items-center gap-2"
-          >
+          <button type="submit" disabled={mutation.isPending} className="px-6 py-2.5 bg-accent text-white rounded-lg font-medium hover:bg-accent-light transition-colors disabled:opacity-50 inline-flex items-center gap-2">
             {mutation.isPending && <Loader2 className="w-4 h-4 animate-spin" />}
             保存修改
           </button>
         </div>
       </form>
     </AdminLayout>
+  )
+}
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <section className="bg-bg-secondary border border-border rounded-xl p-6 space-y-4">
+      <h3 className="text-lg font-semibold text-text-primary">{title}</h3>
+      {children}
+    </section>
   )
 }
