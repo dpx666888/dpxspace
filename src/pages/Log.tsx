@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { BookOpen, GraduationCap, FolderCheck, FileText } from 'lucide-react'
-import { logs } from '../data/logs'
+import { BookOpen, GraduationCap, FolderCheck, FileText, Loader2 } from 'lucide-react'
+import { useLogs } from '../hooks/useLogs'
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true },
+  viewport: { once: true, margin: '-50px' },
   transition: { duration: 0.5 },
 }
 
@@ -26,11 +26,23 @@ const categoryColors = {
 
 export default function LogPage() {
   const [activeCategory, setActiveCategory] = useState<string>('全部')
+  const { data: logs, isLoading, error } = useLogs(activeCategory)
 
-  const filteredLogs = activeCategory === '全部'
-    ? logs
-    : logs.filter(log => log.category === activeCategory)
+  if (isLoading) {
+    return (
+      <div className="pt-16 px-4 md:px-8 py-16 md:py-24 min-h-[60vh] flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-accent animate-spin" />
+      </div>
+    )
+  }
 
+  if (error || !logs) {
+    return (
+      <div className="pt-16 px-4 md:px-8 py-16 md:py-24 min-h-[60vh] flex items-center justify-center">
+        <p className="text-text-secondary">加载日志失败，请稍后重试。</p>
+      </div>
+    )
+  }
   return (
     <div className="pt-16 px-4 md:px-8 py-16 md:py-24">
       <div className="max-w-6xl mx-auto">
@@ -77,7 +89,7 @@ export default function LogPage() {
             transition={{ duration: 0.2 }}
             className="space-y-4"
           >
-            {filteredLogs.map((log, index) => {
+            {logs.map((log, index) => {
               const Icon = categoryIcons[log.category]
               const colorClass = categoryColors[log.category]
               return (
@@ -121,7 +133,7 @@ export default function LogPage() {
               )
             })}
 
-            {filteredLogs.length === 0 && (
+            {logs.length === 0 && (
               <div className="text-center py-12">
                 <p className="text-text-secondary">该分类下暂无日志</p>
               </div>

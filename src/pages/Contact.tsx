@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
-import { Mail, Github, MapPin, Send } from 'lucide-react'
+import { Mail, Github, MapPin, Send, Loader2 } from 'lucide-react'
+import { useContact } from '../hooks/useContact'
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -9,13 +10,30 @@ const fadeInUp = {
 }
 
 export default function Contact() {
+  const { data: contact, isLoading, error } = useContact()
+
+  if (isLoading) {
+    return (
+      <div className="pt-16 px-4 md:px-8 py-16 md:py-24 min-h-[60vh] flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-accent animate-spin" />
+      </div>
+    )
+  }
+
+  if (error || !contact) {
+    return (
+      <div className="pt-16 px-4 md:px-8 py-16 md:py-24 min-h-[60vh] flex items-center justify-center">
+        <p className="text-text-secondary">加载联系方式失败，请稍后重试。</p>
+      </div>
+    )
+  }
   return (
     <div className="pt-16 px-4 md:px-8 py-16 md:py-24">
       <div className="max-w-6xl mx-auto">
         <motion.div className="mb-12 md:mb-16" {...fadeInUp}>
           <h1 className="text-3xl md:text-4xl font-bold text-text-primary mb-4">联系方式</h1>
           <p className="text-text-secondary max-w-2xl">
-            欢迎交流技术、项目合作或单纯聊聊天。你可以通过以下方式找到我。
+            {contact.bio || '欢迎交流技术、项目合作或单纯聊聊天。'}
           </p>
         </motion.div>
 
@@ -30,10 +48,10 @@ export default function Contact() {
                 <div>
                   <p className="text-xs text-text-secondary mb-0.5">邮箱</p>
                   <a
-                    href="mailto:2060786339@qq.com"
+                    href={`mailto:${contact.email}`}
                     className="text-text-primary hover:text-accent transition-colors"
                   >
-                    2060786339@qq.com
+                    {contact.email}
                   </a>
                   <p className="text-xs text-text-secondary mt-1">QQ 邮箱</p>
                 </div>
@@ -48,12 +66,12 @@ export default function Contact() {
                 <div>
                   <p className="text-xs text-text-secondary mb-0.5">GitHub</p>
                   <a
-                    href="https://github.com/dpx666888"
+                    href={contact.github}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-text-primary hover:text-accent transition-colors"
                   >
-                    github.com/dpx666888
+                    {contact.github.replace('https://github.com/', 'github.com/')}
                   </a>
                 </div>
               </div>
@@ -66,7 +84,7 @@ export default function Contact() {
                 </div>
                 <div>
                   <p className="text-xs text-text-secondary mb-0.5">位置</p>
-                  <p className="text-text-primary">广东深圳</p>
+                  <p className="text-text-primary">{contact.location}</p>
                 </div>
               </div>
             </div>

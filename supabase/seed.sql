@@ -1,0 +1,207 @@
+-- 个人内容管理系统初始数据
+-- 从现有静态数据迁移而来
+
+-- 1. about 表
+insert into about (intro, education, certificates, practice, tech_stack, growth_route, ai_collaboration)
+values (
+  '[
+    "一个学生开发者，利用 AI 和自己的代码，不断建造属于自己的数字世界。",
+    "我热衷于动手落地各类想法，是偏爱实操的实践发烧友，想到创意就会尽全力亲手实现。日常离不开咖啡，习惯伴着咖啡钻研折腾各类项目。做事执行力强，崇尚亲身实操，不局限于空想，乐于在实践里摸索钻研。",
+    "我也不知道我想成为一个怎么样的开发者，大概是不断把脑子里有趣的想法实现，不断钻研的吧。"
+  ]'::jsonb,
+  '{
+    "school": "中山职业技术学院",
+    "major": "物联网应用技术",
+    "period": "2024.09 - 至今",
+    "courses": "C语言、单片机、模电、数电",
+    "achievements": "专业排名前10%，获校级二等奖学金、优秀学生干部骨干",
+    "competitions": "计算机设计大赛粤港澳大湾区决赛二等奖、挑战杯校级三等奖"
+  }'::jsonb,
+  '[
+    { "name": "传感网应用开发职业技能等级证书（中级）", "icon": "Award" },
+    { "name": "C1 驾驶证", "icon": "Award" },
+    { "name": "校级二等奖学金", "icon": "GraduationCap" },
+    { "name": "优秀学生干部骨干", "icon": "GraduationCap" }
+  ]'::jsonb,
+  '[
+    { "icon": "Wrench", "title": "螃蟹记账 — 跨平台记账小程序", "role": "独立开发", "desc": "独立完成个人日常收支管理需求分析、UI 设计与全栈开发。基于 uni-app + Vue 3 框架，实现 Android/iOS/H5/微信小程序多端适配。涵盖用户注册登录与多账号管理、收支记录管理（9类支出、4类收入）、首页仪表盘、分类统计图表、Excel/CSV/JSON 多格式数据导出与导入。" },
+    { "icon": "Cpu", "title": "AixProbe 嵌入式 AI 远程调试器复刻", "role": "独立开发者", "desc": "基于嘉立创开源 AixProbe 方案，采用全志 T113-S3 主控芯片，独立完成元器件选型、PCB 手工焊接与硬件电路全流程调试；排查解决电源短路、串口通信异常、芯片引脚虚焊等典型硬件故障，最终产出可稳定运行的硬件样机。" },
+    { "icon": "Award", "title": "第十八届中国大学生计算机设计大赛", "role": "核心开发", "desc": "参赛作品聚焦物联网应用领域，负责项目核心模块开发与功能调试，作品通过赛区专家评审，荣获粤港澳大湾区赛区决赛二等奖。" }
+  ]'::jsonb,
+  '[
+    { "title": "编程语言", "icon": "Code2", "skills": ["C++", "JavaScript", "TypeScript"] },
+    { "title": "前端框架", "icon": "Globe", "skills": ["Vue", "React", "uni-app"] },
+    { "title": "工具与工程化", "icon": "Terminal", "skills": ["Git", "Vite"] },
+    { "title": "正在学习", "icon": "BookOpen", "skills": ["Tailwind CSS", "Framer Motion"] }
+  ]'::jsonb,
+  '[
+    { "period": "2024.09", "title": "入学 中山职业技术学院", "desc": "物联网应用技术专业，开启专业学习之路。" },
+    { "period": "2024", "title": "校级二等奖学金", "desc": "学业成绩优异，专业排名前10%。" },
+    { "period": "2025", "title": "计算机设计大赛粤港澳大湾区二等奖", "desc": "参赛作品聚焦物联网应用领域，负责核心模块开发。" },
+    { "period": "2025", "title": "挑战杯校级三等奖", "desc": "团队协作完成创新项目。" },
+    { "period": "2026.05", "title": "注册 GitHub 账号", "desc": "开启代码托管与开源之旅。" },
+    { "period": "2026.05", "title": "AixProbe 嵌入式调试器复刻", "desc": "基于全志 T113-S3 芯片的硬件项目实践。" },
+    { "period": "2026.05", "title": "螃蟹记账小程序开发", "desc": "独立开发跨平台记账应用。" },
+    { "period": "2026.07", "title": "搭建个人电子名片网站", "desc": "使用 React + Tailwind CSS 构建个人主页。" }
+  ]'::jsonb,
+  '{
+    "intro": "在学习和开发过程中，我积极使用 AI 工具辅助编程。从代码调试、跨端兼容性问题解决，到项目架构设计和 UI 样式生成，AI 是我的重要协作伙伴。",
+    "examples": "例如：在螃蟹记账开发中，使用 AI 辅助解决 uni-app 多端适配问题；在 AixProbe 硬件项目中，借助 AI 排查电路故障和优化焊接工艺；在搭建这个个人网站时，与 AI 协作完成从设计到实现的全流程。"
+  }'::jsonb
+);
+
+-- 2. projects 表
+insert into projects (title, slug, description, tags, tech_stack, github_url, status, featured, story, ai_collaboration)
+values (
+  '螃蟹记账',
+  'crab-bookkeeping',
+  '跨平台记账小程序，支持 Android/iOS/H5/微信小程序。涵盖收支记录、分类统计、数据导出导入等核心功能。',
+  '["项目", "uni-app", "Vue 3"]'::jsonb,
+  '["uni-app", "Vue 3", "xlsx"]'::jsonb,
+  'https://github.com/dpx666888/-app',
+  'published',
+  true,
+  '{
+    "why": "日常生活中需要管理个人收支，市面上记账软件要么功能臃肿，要么有广告。想做一个简洁、专注、无广告的记账工具，满足自己的日常使用需求。",
+    "design": "采用移动端优先设计，底部 Tab 导航（首页/记账/报表/我的）。首页展示月度概览卡片和最近记录；记账页支持收支分类选择（9类支出、4类收入）；报表页提供分类统计图表和数据筛选。",
+    "development": "基于 uni-app + Vue 3 框架开发，一套代码编译到 Android、iOS、H5、微信小程序四个平台。实现了用户注册登录、多账号管理、收支记录 CRUD、分类统计图表（进度条+百分比分布）、Excel/CSV/JSON 多格式数据导出与导入。",
+    "problems": [
+      { "title": "多端适配差异", "desc": "不同平台（尤其小程序与 App）在存储、文件系统 API 上存在差异，导致数据持久化逻辑需要平台判断。" },
+      { "title": "图表组件选型", "desc": "需要在跨平台场景下找到兼容的图表方案，最终使用自定义进度条+百分比分布替代复杂图表库。" }
+    ],
+    "solutions": "针对多端差异，使用 uni-app 的条件编译和统一封装层处理平台差异；图表方面采用轻量级的自定义组件，保证所有平台一致渲染。",
+    "result": "完成可正常使用的跨平台记账应用，已打包 Android APK（v1.0-v1.13 持续迭代），具备完整的记账、统计、导出功能。",
+    "summary": "通过独立开发完整项目，深入理解了 uni-app 跨端开发流程、Vue 3 组合式 API、移动端 UI 设计思路，以及从需求分析到打包发布的全链路开发经验。"
+  }'::jsonb,
+  '在开发过程中使用 AI 辅助解决跨端兼容性问题、优化代码结构，以及生成部分 UI 样式代码。'
+);
+
+-- 获取螃蟹记账的 id 用于时间线
+with crab_project as (
+  select id from projects where slug = 'crab-bookkeeping'
+)
+insert into project_timeline (project_id, date, version, title, content, sort_order)
+select id, '2026-05-09', 'v0.1', '创建项目', '创建项目，开始需求分析与 UI 设计', 1 from crab_project
+union all
+select id, '2026-05', 'v0.2', '用户系统', '完成用户系统（注册/登录/多账号管理）', 2 from crab_project
+union all
+select id, '2026-06', 'v0.5', '收支记录', '完成收支记录与首页仪表盘', 3 from crab_project
+union all
+select id, '2026-06', 'v0.8', '统计导出', '完成分类统计图表与数据导出导入', 4 from crab_project
+union all
+select id, '2026-07', 'v1.13', '持续迭代', '持续迭代，发布 v1.13', 5 from crab_project;
+
+insert into projects (title, slug, description, tags, tech_stack, github_url, status, featured, story, ai_collaboration)
+values (
+  '100 Days of C++ Learning',
+  '100-days-cpp',
+  '一个用来学习 C++ 的仓库，记录百日编程学习历程。',
+  '["学习", "C++"]'::jsonb,
+  '["C++"]'::jsonb,
+  'https://github.com/dpx666888/100-Days-of-C-Learning',
+  'published',
+  false,
+  '{
+    "why": "【待补充：为什么开始学习C++？是课程要求、个人兴趣还是职业规划？】",
+    "design": "【待补充：学习路径是如何规划的？参考了哪些资料？】",
+    "development": "【待补充：学习过程中做了哪些练习、项目？】",
+    "problems": [
+      { "title": "【待补充：问题1】", "desc": "【待补充：描述遇到的问题】" },
+      { "title": "【待补充：问题2】", "desc": "【待补充：描述遇到的问题】" }
+    ],
+    "solutions": "【待补充：如何克服学习中的困难？】",
+    "result": "【待补充：学习成果，掌握了哪些知识点？】",
+    "summary": "【待补充：这段学习经历带给你什么收获？】"
+  }'::jsonb,
+  '【待补充：AI如何辅助你学习C++？】'
+);
+
+insert into projects (title, slug, description, tags, tech_stack, github_url, status, featured, story, ai_collaboration)
+values (
+  'Git Learning',
+  'git-learning',
+  'Git 版本控制学习笔记，从基础到进阶。',
+  '["学习", "Git"]'::jsonb,
+  '["Git"]'::jsonb,
+  'https://github.com/dpx666888/Git-Learning',
+  'published',
+  false,
+  '{
+    "why": "【待补充：为什么学习Git？是为了团队协作还是个人代码管理？】",
+    "design": "【待补充：学习路径规划】",
+    "development": "【待补充：学习过程和实践】",
+    "problems": [
+      { "title": "【待补充：问题1】", "desc": "【待补充】" }
+    ],
+    "solutions": "【待补充】",
+    "result": "【待补充】",
+    "summary": "【待补充】"
+  }'::jsonb,
+  '【待补充】'
+);
+
+-- 3. labs 表
+insert into labs (title, type, status, description, tech_stack)
+values (
+  'AixProbe 嵌入式 AI 远程调试器复刻',
+  '实验',
+  '已完成',
+  '基于嘉立创开源方案，采用全志 T113-S3 主控芯片，独立完成元器件选型、PCB 手工焊接与硬件电路全流程调试。',
+  '["全志 T113-S3", "PCB 焊接", "硬件调试"]'::jsonb
+);
+
+insert into labs (title, type, status, description, tech_stack)
+values (
+  '螃蟹记账数据导出工具',
+  '工具',
+  '已完成',
+  '为螃蟹记账开发的数据导出模块，支持 Excel/CSV/JSON 多格式导出与导入，基于 xlsx 库实现。',
+  '["uni-app", "xlsx", "Vue 3"]'::jsonb
+);
+
+-- 4. logs 表
+insert into logs (title, date, category, content, tags)
+values (
+  '开始百日 C++ 学习计划',
+  '2026-07-17',
+  '学习',
+  '创建 100-Days-of-C-Learning 仓库，计划系统学习 C++ 编程语言。',
+  '["C++", "学习计划"]'::jsonb
+);
+
+insert into logs (title, date, category, content, tags)
+values (
+  '螃蟹记账 v1.0 发布',
+  '2026-07',
+  '项目复盘',
+  '独立完成跨平台记账小程序的开发与打包发布，支持 Android/iOS/H5/微信小程序。实现了收支记录、分类统计、数据导出等核心功能。',
+  '["uni-app", "Vue 3", "独立开发"]'::jsonb
+);
+
+insert into logs (title, date, category, content, tags)
+values (
+  'AixProbe 嵌入式硬件调试器复刻完成',
+  '2026-06',
+  '项目复盘',
+  '基于嘉立创开源方案，使用全志 T113-S3 主控芯片完成 AixProbe 复刻。经历元器件选型、PCB 手工焊接、电源短路排查、串口通信调试等挑战，最终产出可稳定运行的硬件样机。',
+  '["嵌入式", "硬件", "PCB"]'::jsonb
+);
+
+insert into logs (title, date, category, content, tags)
+values (
+  '计算机设计大赛粤港澳大湾区决赛二等奖',
+  '2026-05',
+  '学习',
+  '参赛作品聚焦物联网应用领域，负责项目核心模块开发与功能调试，作品通过赛区专家评审，荣获粤港澳大湾区赛区决赛二等奖。',
+  '["竞赛", "物联网", "获奖"]'::jsonb
+);
+
+-- 5. contacts 表
+insert into contacts (email, github, location, bio, socials)
+values (
+  '2060786339@qq.com',
+  'https://github.com/dpx666888',
+  '广东深圳',
+  '欢迎交流技术、项目合作或单纯聊聊天。',
+  '[{ "platform": "GitHub", "url": "https://github.com/dpx666888", "icon": "Github" }]'::jsonb
+);

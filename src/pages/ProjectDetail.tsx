@@ -1,20 +1,29 @@
 import { useParams, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Github, Clock, AlertCircle, Lightbulb, Trophy, BookOpen, Sparkles } from 'lucide-react'
-import { projects } from '../data/projects'
+import { ArrowLeft, Github, Clock, AlertCircle, Lightbulb, Trophy, BookOpen, Sparkles, Star, Loader2 } from 'lucide-react'
+import { useProject, useProjectTimeline } from '../hooks/useProjects'
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true },
+  viewport: { once: true, margin: '-50px' },
   transition: { duration: 0.5 },
 }
 
 export default function ProjectDetail() {
-  const { id } = useParams<{ id: string }>()
-  const project = projects.find(p => p.id === id)
+  const { slug } = useParams<{ slug: string }>()
+  const { data: project, isLoading: projectLoading, error: projectError } = useProject(slug)
+  const { data: timelineEvents } = useProjectTimeline(project?.id)
 
-  if (!project) {
+  if (projectLoading) {
+    return (
+      <div className="pt-16 px-4 md:px-8 py-16 md:py-24 min-h-[60vh] flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-accent animate-spin" />
+      </div>
+    )
+  }
+
+  if (projectError || !project) {
     return (
       <div className="pt-16 px-4 md:px-8 py-16 md:py-24">
         <div className="max-w-6xl mx-auto text-center">
@@ -26,6 +35,10 @@ export default function ProjectDetail() {
       </div>
     )
   }
+
+  const events = timelineEvents?.length
+    ? timelineEvents.map(e => ({ date: e.date, event: e.content || e.title || '' }))
+    : (project.timeline ?? [])
 
   return (
     <div className="pt-16 px-4 md:px-8 py-16 md:py-24">
@@ -58,7 +71,7 @@ export default function ProjectDetail() {
           <p className="text-text-secondary text-lg">{project.description}</p>
           <div className="flex flex-wrap items-center gap-4 mt-4">
             <div className="flex flex-wrap gap-2">
-              {project.techStack.map(tech => (
+              {project.tech_stack.map(tech => (
                 <span
                   key={tech}
                   className="text-sm text-accent px-3 py-1 bg-accent/10 rounded-full"
@@ -68,7 +81,7 @@ export default function ProjectDetail() {
               ))}
             </div>
             <a
-              href={project.githubUrl}
+              href={project.github_url ?? undefined}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 text-text-secondary hover:text-accent transition-colors text-sm"
@@ -172,7 +185,7 @@ export default function ProjectDetail() {
           <motion.section {...fadeInUp}>
             <div className="flex items-center gap-3 mb-4">
               <div className="p-2 bg-accent/10 rounded-lg">
-                <BookOpen size={18} className="text-accent" />
+                <Star size={18} className="text-accent" />
               </div>
               <h2 className="text-xl font-semibold text-text-primary">个人收获</h2>
             </div>
@@ -192,7 +205,7 @@ export default function ProjectDetail() {
             <div className="relative pl-8">
               <div className="absolute left-[11px] top-2 bottom-2 w-px bg-border" />
               <div className="space-y-6">
-                {project.timeline.map((event, index) => (
+                {events.map((event, index) => (
                   <div key={index} className="relative">
                     <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-accent border-2 border-bg-primary" />
                     <span className="text-xs text-accent font-medium">{event.date}</span>
@@ -204,7 +217,7 @@ export default function ProjectDetail() {
           </motion.section>
 
           {/* AI协作 */}
-          {project.aiCollaboration && (
+          {project.ai_collaboration && (
             <motion.section {...fadeInUp}>
               <div className="flex items-center gap-3 mb-4">
                 <div className="p-2 bg-accent/10 rounded-lg">
@@ -213,7 +226,7 @@ export default function ProjectDetail() {
                 <h2 className="text-xl font-semibold text-text-primary">AI 协作</h2>
               </div>
               <div className="p-6 bg-bg-secondary border border-border rounded-xl">
-                <p className="text-text-secondary leading-relaxed">{project.aiCollaboration}</p>
+                <p className="text-text-secondary leading-relaxed">{project.ai_collaboration}</p>
               </div>
             </motion.section>
           )}

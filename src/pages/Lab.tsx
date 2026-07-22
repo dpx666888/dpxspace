@@ -1,11 +1,11 @@
 import { motion } from 'framer-motion'
-import { FlaskConical, Wrench, Play, Beaker, ExternalLink } from 'lucide-react'
-import { labItems } from '../data/lab'
+import { FlaskConical, Wrench, Play, Beaker, ExternalLink, Loader2 } from 'lucide-react'
+import { useLabs } from '../hooks/useLabs'
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true },
+  viewport: { once: true, margin: '-50px' },
   transition: { duration: 0.5 },
 }
 
@@ -22,6 +22,23 @@ const typeColors = {
 }
 
 export default function Lab() {
+  const { data: labItems, isLoading, error } = useLabs()
+
+  if (isLoading) {
+    return (
+      <div className="pt-16 px-4 md:px-8 py-16 md:py-24 min-h-[60vh] flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-accent animate-spin" />
+      </div>
+    )
+  }
+
+  if (error || !labItems) {
+    return (
+      <div className="pt-16 px-4 md:px-8 py-16 md:py-24 min-h-[60vh] flex items-center justify-center">
+        <p className="text-text-secondary">加载实验室项目失败，请稍后重试。</p>
+      </div>
+    )
+  }
   return (
     <div className="pt-16 px-4 md:px-8 py-16 md:py-24">
       <div className="max-w-6xl mx-auto">
@@ -80,7 +97,7 @@ export default function Lab() {
                 </p>
 
                 <div className="flex flex-wrap gap-2 mb-4">
-                  {item.techStack.map(tech => (
+                  {item.tech_stack.map(tech => (
                     <span
                       key={tech}
                       className="text-xs text-text-secondary px-2 py-0.5 bg-bg-primary rounded-full border border-border"
@@ -91,9 +108,9 @@ export default function Lab() {
                 </div>
 
                 <div className="flex items-center gap-3">
-                  {item.link && (
+                  {item.demo_url && (
                     <a
-                      href={item.link}
+                      href={item.demo_url}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1 text-sm text-accent hover:text-accent-light transition-colors"
@@ -101,9 +118,9 @@ export default function Lab() {
                       访问 <ExternalLink size={12} />
                     </a>
                   )}
-                  {item.githubUrl && (
+                  {item.github_url && (
                     <a
-                      href={item.githubUrl}
+                      href={item.github_url}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-accent transition-colors"

@@ -1,16 +1,33 @@
 import { motion } from 'framer-motion'
-import { ArrowRight, Folder } from 'lucide-react'
+import { ArrowRight, Folder, Loader2 } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { projects } from '../data/projects'
+import { useProjects } from '../hooks/useProjects'
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true },
+  viewport: { once: true, margin: '-50px' },
   transition: { duration: 0.5 },
 }
 
 export default function Projects() {
+  const { data: projects, isLoading, error } = useProjects()
+
+  if (isLoading) {
+    return (
+      <div className="pt-16 px-4 md:px-8 py-16 md:py-24 min-h-[60vh] flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-accent animate-spin" />
+      </div>
+    )
+  }
+
+  if (error || !projects) {
+    return (
+      <div className="pt-16 px-4 md:px-8 py-16 md:py-24 min-h-[60vh] flex items-center justify-center">
+        <p className="text-text-secondary">加载项目失败，请稍后重试。</p>
+      </div>
+    )
+  }
   return (
     <div className="pt-16 px-4 md:px-8 py-16 md:py-24">
       <div className="max-w-6xl mx-auto">
@@ -26,14 +43,14 @@ export default function Projects() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {projects.map((project, index) => (
             <motion.div
-              key={project.id}
+              key={project.slug}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
             >
               <Link
-                to={`/projects/${project.id}`}
+                to={`/projects/${project.slug}`}
                 className="group block h-full p-6 bg-bg-secondary border border-border rounded-xl hover:border-accent/50 transition-all hover:-translate-y-1"
               >
                 <div className="flex items-center gap-3 mb-4">
@@ -62,7 +79,7 @@ export default function Projects() {
 
                 <div className="flex items-center justify-between mt-auto">
                   <div className="flex flex-wrap gap-2">
-                    {project.techStack.map(tech => (
+                    {project.tech_stack.map(tech => (
                       <span
                         key={tech}
                         className="text-xs text-accent px-2 py-0.5 bg-accent/10 rounded-full"

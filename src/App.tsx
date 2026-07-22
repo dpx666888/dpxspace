@@ -1,4 +1,4 @@
-import { Routes, Route, useLocation } from 'react-router-dom'
+import { Routes, Route, useLocation, Outlet } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import Header from './components/Header'
 import Footer from './components/Footer'
@@ -11,6 +11,18 @@ import ProjectDetail from './pages/ProjectDetail'
 import Contact from './pages/Contact'
 import NotFound from './pages/NotFound'
 import useScrollToTop from './hooks/useScrollToTop'
+import { AuthProvider } from './admin/hooks/useAuth'
+import ProtectedRoute from './admin/components/ProtectedRoute'
+import AdminLogin from './admin/pages/Login'
+import AdminDashboard from './admin/pages/Dashboard'
+import AboutManage from './admin/pages/AboutManage'
+import ProjectsManage from './admin/pages/ProjectsManage'
+import ProjectEdit from './admin/pages/ProjectEdit'
+import LabsManage from './admin/pages/LabsManage'
+import LabEdit from './admin/pages/LabEdit'
+import LogsManage from './admin/pages/LogsManage'
+import LogEdit from './admin/pages/LogEdit'
+import ContactManage from './admin/pages/ContactManage'
 
 const pageTransition = {
   initial: { opacity: 0, y: 16 },
@@ -30,22 +42,13 @@ function AnimatedOutlet() {
         {...pageTransition}
         className="flex-1"
       >
-        <Routes location={location}>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/projects" element={<Projects />} />
-          <Route path="/projects/:id" element={<ProjectDetail />} />
-          <Route path="/lab" element={<Lab />} />
-          <Route path="/log" element={<Log />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <Outlet />
       </motion.div>
     </AnimatePresence>
   )
 }
 
-function App() {
+function MainLayout() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -54,6 +57,131 @@ function App() {
       </main>
       <Footer />
     </div>
+  )
+}
+
+function AdminRoutes() {
+  return (
+    <Routes>
+      <Route path="login" element={<AdminLogin />} />
+      <Route
+        path="dashboard"
+        element={
+          <ProtectedRoute>
+            <AdminDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="about"
+        element={
+          <ProtectedRoute>
+            <AboutManage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="projects"
+        element={
+          <ProtectedRoute>
+            <ProjectsManage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="projects/new"
+        element={
+          <ProtectedRoute>
+            <ProjectEdit />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="projects/:id/edit"
+        element={
+          <ProtectedRoute>
+            <ProjectEdit />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="labs"
+        element={
+          <ProtectedRoute>
+            <LabsManage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="labs/new"
+        element={
+          <ProtectedRoute>
+            <LabEdit />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="labs/:id/edit"
+        element={
+          <ProtectedRoute>
+            <LabEdit />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="logs"
+        element={
+          <ProtectedRoute>
+            <LogsManage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="logs/new"
+        element={
+          <ProtectedRoute>
+            <LogEdit />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="logs/:id/edit"
+        element={
+          <ProtectedRoute>
+            <LogEdit />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="contact"
+        element={
+          <ProtectedRoute>
+            <ContactManage />
+          </ProtectedRoute>
+        }
+      />
+      <Route path="*" element={<AdminLogin />} />
+    </Routes>
+  )
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <Routes>
+        <Route path="/admin/*" element={<AdminRoutes />} />
+        <Route path="/*" element={<MainLayout />}>
+          <Route index element={<Home />} />
+          <Route path="about" element={<About />} />
+          <Route path="projects" element={<Projects />} />
+          <Route path="projects/:slug" element={<ProjectDetail />} />
+          <Route path="lab" element={<Lab />} />
+          <Route path="log" element={<Log />} />
+          <Route path="contact" element={<Contact />} />
+          <Route path="*" element={<NotFound />} />
+        </Route>
+      </Routes>
+    </AuthProvider>
   )
 }
 

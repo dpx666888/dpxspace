@@ -1,109 +1,40 @@
 import { motion } from 'framer-motion'
-import { Code2, Terminal, BookOpen, Zap, Globe, MessageSquare, Award, GraduationCap, Cpu, Wrench } from 'lucide-react'
+import {
+  Code2, Terminal, BookOpen, Zap, Globe, MessageSquare, Award, GraduationCap, Cpu, Wrench, Loader2,
+} from 'lucide-react'
 import { aiCollabs } from '../data/aiCollabs'
+import { profile } from '../data/profile'
+import { useAbout } from '../hooks/useAbout'
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true },
+  viewport: { once: true, margin: '-50px' },
   transition: { duration: 0.5 },
 }
 
-const skillCategories = [
-  {
-    title: '编程语言',
-    icon: Code2,
-    skills: ['C++', 'JavaScript', 'TypeScript'],
-  },
-  {
-    title: '前端框架',
-    icon: Globe,
-    skills: ['Vue', 'React', 'uni-app'],
-  },
-  {
-    title: '工具与工程化',
-    icon: Terminal,
-    skills: ['Git', 'Vite'],
-  },
-  {
-    title: '正在学习',
-    icon: BookOpen,
-    skills: ['Tailwind CSS', 'Framer Motion'],
-  },
-]
-
-const timeline = [
-  {
-    period: '2024.09',
-    title: '入学 中山职业技术学院',
-    desc: '物联网应用技术专业，开启专业学习之路。',
-  },
-  {
-    period: '2024',
-    title: '校级二等奖学金',
-    desc: '学业成绩优异，专业排名前10%。',
-  },
-  {
-    period: '2025',
-    title: '计算机设计大赛粤港澳大湾区二等奖',
-    desc: '参赛作品聚焦物联网应用领域，负责核心模块开发。',
-  },
-  {
-    period: '2025',
-    title: '挑战杯校级三等奖',
-    desc: '团队协作完成创新项目。',
-  },
-  {
-    period: '2026.05',
-    title: '注册 GitHub 账号',
-    desc: '开启代码托管与开源之旅。',
-  },
-  {
-    period: '2026.05',
-    title: 'AixProbe 嵌入式调试器复刻',
-    desc: '基于全志 T113-S3 芯片的硬件项目实践。',
-  },
-  {
-    period: '2026.05',
-    title: '螃蟹记账小程序开发',
-    desc: '独立开发跨平台记账应用。',
-  },
-  {
-    period: '2026.07',
-    title: '搭建个人电子名片网站',
-    desc: '使用 React + Tailwind CSS 构建个人主页。',
-  },
-]
-
-const experiences = [
-  {
-    icon: Wrench,
-    title: '螃蟹记账 — 跨平台记账小程序',
-    role: '独立开发',
-    desc: '独立完成个人日常收支管理需求分析、UI 设计与全栈开发。基于 uni-app + Vue 3 框架，实现 Android/iOS/H5/微信小程序多端适配。涵盖用户注册登录与多账号管理、收支记录管理（9类支出、4类收入）、首页仪表盘、分类统计图表、Excel/CSV/JSON 多格式数据导出与导入。',
-  },
-  {
-    icon: Cpu,
-    title: 'AixProbe 嵌入式 AI 远程调试器复刻',
-    role: '独立开发者',
-    desc: '基于嘉立创开源 AixProbe 方案，采用全志 T113-S3 主控芯片，独立完成元器件选型、PCB 手工焊接与硬件电路全流程调试；排查解决电源短路、串口通信异常、芯片引脚虚焊等典型硬件故障，最终产出可稳定运行的硬件样机。',
-  },
-  {
-    icon: Award,
-    title: '第十八届中国大学生计算机设计大赛',
-    role: '核心开发',
-    desc: '参赛作品聚焦物联网应用领域，负责项目核心模块开发与功能调试，作品通过赛区专家评审，荣获粤港澳大湾区赛区决赛二等奖。',
-  },
-]
-
-const certificates = [
-  { name: '传感网应用开发职业技能等级证书（中级）', icon: Award },
-  { name: 'C1 驾驶证', icon: Award },
-  { name: '校级二等奖学金', icon: GraduationCap },
-  { name: '优秀学生干部骨干', icon: GraduationCap },
-]
+const iconMap: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
+  Code2, Terminal, BookOpen, Globe, Award, GraduationCap, Cpu, Wrench,
+}
 
 export default function About() {
+  const { data: about, isLoading, error } = useAbout()
+
+  if (isLoading) {
+    return (
+      <div className="pt-16 px-4 md:px-8 py-16 md:py-24 min-h-[60vh] flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-accent animate-spin" />
+      </div>
+    )
+  }
+
+  if (error || !about) {
+    return (
+      <div className="pt-16 px-4 md:px-8 py-16 md:py-24 min-h-[60vh] flex items-center justify-center">
+        <p className="text-text-secondary">加载关于我信息失败，请稍后重试。</p>
+      </div>
+    )
+  }
   return (
     <div className="pt-16 px-4 md:px-8 py-16 md:py-24">
       <div className="max-w-6xl mx-auto">
@@ -111,27 +42,24 @@ export default function About() {
         <motion.section className="mb-20 md:mb-28" {...fadeInUp}>
           <h1 className="text-3xl md:text-4xl font-bold text-text-primary mb-8">关于我</h1>
           <div className="flex flex-col md:flex-row gap-8 md:gap-12">
-            {/* 头像占位 */}
+            {/* 头像 */}
             <div className="shrink-0">
-              <div className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-bg-secondary border-2 border-border flex items-center justify-center">
-                <span className="text-4xl md:text-5xl font-bold text-accent">丁</span>
-              </div>
-              <p className="text-xs text-text-secondary mt-3 text-center">头像待补充</p>
+              <img
+                src={profile.avatar}
+                alt={profile.name}
+                className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-bg-secondary border-2 border-border object-cover"
+              />
             </div>
             {/* 介绍文字 */}
             <div className="flex-1">
               <h2 className="text-xl md:text-2xl font-semibold text-text-primary mb-4">
-                丁鹏翔
+                {profile.name}
               </h2>
-              <p className="text-text-secondary leading-relaxed mb-4">
-                一个学生开发者，利用 AI 和自己的代码，不断建造属于自己的数字世界。
-              </p>
-              <p className="text-text-secondary leading-relaxed mb-4">
-                我热衷于动手落地各类想法，是偏爱实操的实践发烧友，想到创意就会尽全力亲手实现。日常离不开咖啡，习惯伴着咖啡钻研折腾各类项目。做事执行力强，崇尚亲身实操，不局限于空想，乐于在实践里摸索钻研。
-              </p>
-              <p className="text-text-secondary leading-relaxed">
-                我也不知道我想成为一个怎么样的开发者，大概是不断把脑子里有趣的想法实现，不断钻研的吧。
-              </p>
+              {about.intro.map((paragraph, i) => (
+                <p key={i} className="text-text-secondary leading-relaxed mb-4 last:mb-0">
+                  {paragraph}
+                </p>
+              ))}
             </div>
           </div>
         </motion.section>
@@ -142,15 +70,15 @@ export default function About() {
           <div className="p-6 bg-bg-secondary border border-border rounded-xl">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
               <div>
-                <h3 className="text-lg font-semibold text-text-primary">中山职业技术学院</h3>
-                <p className="text-text-secondary">物联网应用技术</p>
+                <h3 className="text-lg font-semibold text-text-primary">{about.education.school}</h3>
+                <p className="text-text-secondary">{about.education.major}</p>
               </div>
-              <span className="text-sm text-accent shrink-0">2024.09 - 至今</span>
+              <span className="text-sm text-accent shrink-0">{about.education.period}</span>
             </div>
             <div className="space-y-2">
-              <p className="text-sm text-text-secondary"><span className="text-text-primary">主修课程：</span>C语言、单片机、模电、数电</p>
-              <p className="text-sm text-text-secondary"><span className="text-text-primary">学业成绩：</span>专业排名前10%，获校级二等奖学金、优秀学生干部骨干</p>
-              <p className="text-sm text-text-secondary"><span className="text-text-primary">竞赛荣誉：</span>计算机设计大赛粤港澳大湾区决赛二等奖、挑战杯校级三等奖</p>
+              <p className="text-sm text-text-secondary"><span className="text-text-primary">主修课程：</span>{about.education.courses}</p>
+              <p className="text-sm text-text-secondary"><span className="text-text-primary">学业成绩：</span>{about.education.achievements}</p>
+              <p className="text-sm text-text-secondary"><span className="text-text-primary">竞赛荣誉：</span>{about.education.competitions}</p>
             </div>
           </div>
         </motion.section>
@@ -159,8 +87,8 @@ export default function About() {
         <motion.section className="mb-20 md:mb-28" {...fadeInUp}>
           <h2 className="text-2xl md:text-3xl font-semibold text-text-primary mb-8">技术方向</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {skillCategories.map(cat => {
-              const Icon = cat.icon
+            {about.tech_stack.map(cat => {
+              const Icon = iconMap[cat.icon]
               return (
                 <div
                   key={cat.title}
@@ -192,15 +120,15 @@ export default function About() {
         <motion.section className="mb-20 md:mb-28" {...fadeInUp}>
           <h2 className="text-2xl md:text-3xl font-semibold text-text-primary mb-8">实践经历</h2>
           <div className="space-y-6">
-            {experiences.map((exp, index) => {
-              const Icon = exp.icon
+            {about.practice.map((exp, index) => {
+              const Icon = iconMap[exp.icon]
               return (
                 <motion.div
                   key={index}
                   className="p-6 bg-bg-secondary border border-border rounded-xl"
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
+                  viewport={{ once: true, margin: '-50px' }}
                   transition={{ duration: 0.4, delay: index * 0.1 }}
                 >
                   <div className="flex items-start gap-4">
@@ -225,8 +153,8 @@ export default function About() {
         <motion.section className="mb-20 md:mb-28" {...fadeInUp}>
           <h2 className="text-2xl md:text-3xl font-semibold text-text-primary mb-8">技能与证书</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {certificates.map((cert, index) => {
-              const Icon = cert.icon
+            {about.certificates.map((cert, index) => {
+              const Icon = iconMap[cert.icon]
               return (
                 <div
                   key={index}
@@ -249,13 +177,13 @@ export default function About() {
           <div className="relative pl-8">
             <div className="absolute left-[11px] top-2 bottom-2 w-px bg-border" />
             <div className="space-y-8">
-              {timeline.map((item, index) => (
+              {about.growth_route.map((item, index) => (
                 <motion.div
                   key={index}
                   className="relative"
                   initial={{ opacity: 0, x: -20 }}
                   whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
+                  viewport={{ once: true, margin: '-50px' }}
                   transition={{ duration: 0.4, delay: index * 0.05 }}
                 >
                   <div className="absolute -left-[21px] top-1.5 w-2.5 h-2.5 rounded-full bg-accent border-2 border-bg-primary" />
@@ -298,7 +226,7 @@ export default function About() {
                 className="p-5 bg-bg-secondary border border-border rounded-xl"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+                viewport={{ once: true, margin: '-50px' }}
                 transition={{ duration: 0.4, delay: index * 0.1 }}
               >
                 <div className="flex items-center gap-3 mb-3">
