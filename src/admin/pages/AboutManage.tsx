@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -52,6 +52,7 @@ export default function AboutManage() {
 
   const [dragIndex, setDragIndex] = useState<number | null>(null)
   const [dropIndex, setDropIndex] = useState<number | null>(null)
+  const dragRef = useRef<{ from: number; to: number } | null>(null)
 
   const {
     register,
@@ -302,21 +303,13 @@ export default function AboutManage() {
               <div
                 key={key}
                 draggable
-                onDragStart={() => setDragIndex(index)}
-                onDragOver={(e) => { e.preventDefault(); setDropIndex(index) }}
-                onDragEnd={() => {
-                  if (dragIndex !== null && dropIndex !== null && dragIndex !== dropIndex) {
-                    moveSection(dragIndex, dropIndex)
-                  }
-                  setDragIndex(null)
-                  setDropIndex(null)
-                }}
+                onDragStart={() => { setDragIndex(index); dragRef.current = { from: index, to: index } }}
+                onDragOver={(e) => { e.preventDefault(); setDropIndex(index); if (dragRef.current) dragRef.current.to = index }}
                 onDrop={() => {
-                  if (dragIndex !== null && dropIndex !== null) {
-                    moveSection(dragIndex, dropIndex)
+                  if (dragRef.current && dragRef.current.from !== dragRef.current.to) {
+                    moveSection(dragRef.current.from, dragRef.current.to)
                   }
-                  setDragIndex(null)
-                  setDropIndex(null)
+                  setDragIndex(null); setDropIndex(null); dragRef.current = null
                 }}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-sm cursor-grab active:cursor-grabbing transition-colors select-none ${
                   dragIndex === index

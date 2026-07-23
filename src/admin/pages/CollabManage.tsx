@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { Loader2, Plus, Trash2, GripVertical, Edit3, Save, X } from 'lucide-react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import AdminLayout from '../components/AdminLayout'
@@ -23,6 +23,7 @@ export default function CollabManage() {
   const [editingId, setEditingId] = useState<number | null>(null)
   const [editData, setEditData] = useState<AiCollabInput>(EMPTY)
   const [dragIndex, setDragIndex] = useState<number | null>(null)
+  const dragRef = useRef<{ from: number; to: number } | null>(null)
   const [dropIndex, setDropIndex] = useState<number | null>(null)
 
   const createMutation = useMutation({
@@ -98,11 +99,13 @@ export default function CollabManage() {
           <div
             key={collab.id}
             draggable
-            onDragStart={() => setDragIndex(index)}
-            onDragOver={(e) => { e.preventDefault(); setDropIndex(index) }}
-            onDragEnd={() => {
-              if (dragIndex !== null && dropIndex !== null && dragIndex !== dropIndex) moveItem(dragIndex, dropIndex)
-              setDragIndex(null); setDropIndex(null)
+            onDragStart={() => { setDragIndex(index); dragRef.current = { from: index, to: index } }}
+            onDragOver={(e) => { e.preventDefault(); setDropIndex(index); if (dragRef.current) dragRef.current.to = index }}
+            onDrop={() => {
+              if (dragRef.current && dragRef.current.from !== dragRef.current.to) {
+                moveItem(dragRef.current.from, dragRef.current.to)
+              }
+              setDragIndex(null); setDropIndex(null); dragRef.current = null
             }}
             className={`bg-bg-secondary border border-border rounded-xl p-4 transition-colors ${
               dragIndex === index ? 'opacity-50 border-dashed border-accent' : dropIndex === index ? 'border-accent' : ''

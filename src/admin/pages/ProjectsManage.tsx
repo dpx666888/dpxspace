@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { Plus, Pencil, Trash2, Loader2, GripVertical } from 'lucide-react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -13,6 +13,7 @@ export default function ProjectsManage() {
   const qc = useQueryClient()
   const [dragIndex, setDragIndex] = useState<number | null>(null)
   const [dropIndex, setDropIndex] = useState<number | null>(null)
+  const dragRef = useRef<{ from: number; to: number } | null>(null)
 
   const orderMutation = useMutation({
     mutationFn: reorderProjects,
@@ -57,11 +58,13 @@ export default function ProjectsManage() {
                 <tr
                   key={project.id}
                   draggable
-                  onDragStart={() => setDragIndex(index)}
-                  onDragOver={(e) => { e.preventDefault(); setDropIndex(index) }}
-                  onDragEnd={() => {
-                    if (dragIndex !== null && dropIndex !== null && dragIndex !== dropIndex) move(dragIndex, dropIndex)
-                    setDragIndex(null); setDropIndex(null)
+                  onDragStart={() => { setDragIndex(index); dragRef.current = { from: index, to: index } }}
+                  onDragOver={(e) => { e.preventDefault(); setDropIndex(index); if (dragRef.current) dragRef.current.to = index }}
+                  onDrop={() => {
+                    if (dragRef.current && dragRef.current.from !== dragRef.current.to) {
+                      move(dragRef.current.from, dragRef.current.to)
+                    }
+                    setDragIndex(null); setDropIndex(null); dragRef.current = null
                   }}
                   className={`hover:bg-bg-primary/50 transition-colors cursor-grab active:cursor-grabbing ${
                     dragIndex === index ? 'opacity-50 bg-accent/5' : dropIndex === index ? 'bg-accent/10' : ''
