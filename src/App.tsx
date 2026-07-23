@@ -24,6 +24,7 @@ import LogsManage from './admin/pages/LogsManage'
 import LogEdit from './admin/pages/LogEdit'
 import ContactManage from './admin/pages/ContactManage'
 import SiteConfigManage from './admin/pages/SiteConfigManage'
+import CollabManage from './admin/pages/CollabManage'
 
 const pageTransition = {
   initial: { opacity: 0, y: 16 },
@@ -166,6 +167,14 @@ function AdminRoutes() {
         element={
           <ProtectedRoute>
             <SiteConfigManage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="collabs"
+        element={
+          <ProtectedRoute>
+            <CollabManage />
           </ProtectedRoute>
         }
       />

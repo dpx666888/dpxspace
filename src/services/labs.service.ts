@@ -56,6 +56,14 @@ export async function updateLab(id: number, lab: Partial<LabInput>): Promise<Lab
   return data as Lab
 }
 
+export async function reorderLabs(items: { id: number; sort_order: number }[]): Promise<void> {
+  if (!supabase) throw new Error('Supabase 未配置')
+  const { error } = await supabase
+    .from('labs')
+    .upsert(items as never, { onConflict: 'id' })
+  if (error) throw new Error(`更新实验室排序失败: ${error.message}`)
+}
+
 export async function deleteLab(id: number): Promise<void> {
   if (!supabase) throw new Error('Supabase 未配置，无法删除实验室项目')
 

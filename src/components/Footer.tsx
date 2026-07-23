@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom'
 import { Github, Mail, Settings } from 'lucide-react'
 import { useAuth } from '../admin/hooks/useAuth'
 
@@ -29,14 +28,16 @@ export default function Footer() {
           >
             <Mail size={18} />
           </a>
-          <Link
-            to={adminPath}
+          <a
+            href={adminPath}
+            target="_blank"
+            rel="noopener noreferrer"
             className="text-text-secondary hover:text-accent transition-colors"
             aria-label="后台管理"
             title="后台管理"
           >
             <Settings size={18} />
-          </Link>
+          </a>
         </div>
       </div>
     </footer>

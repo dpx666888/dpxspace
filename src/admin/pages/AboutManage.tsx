@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Loader2, Plus, Trash2 } from 'lucide-react'
+import { Loader2, Plus, Trash2, GripVertical } from 'lucide-react'
 import AdminLayout from '../components/AdminLayout'
 import IconPicker from '../components/IconPicker'
 import { useAbout } from '../../hooks/useAbout'
@@ -23,6 +23,18 @@ const aboutSchema = z.object({
 
 type AboutFormData = z.infer<typeof aboutSchema>
 
+const DEFAULT_SECTION_ORDER = ['about', 'education', 'tech', 'practices', 'certificates', 'growth', 'ai']
+
+const sectionLabels: Record<string, string> = {
+  about: '关于我',
+  education: '教育经历',
+  tech: '技术方向',
+  practices: '实践经历',
+  certificates: '技能与证书',
+  growth: '成长路线',
+  ai: 'AI 协作',
+}
+
 export default function AboutManage() {
   const { data: about, isLoading } = useAbout()
   const qc = useQueryClient()
@@ -36,6 +48,10 @@ export default function AboutManage() {
   const [practices, setPractices] = useState<Practice[]>([])
   const [techStacks, setTechStacks] = useState<SkillCategory[]>([])
   const [growthRoutes, setGrowthRoutes] = useState<GrowthRoute[]>([])
+  const [sectionOrder, setSectionOrder] = useState<string[]>(DEFAULT_SECTION_ORDER)
+
+  const [dragIndex, setDragIndex] = useState<number | null>(null)
+  const [dropIndex, setDropIndex] = useState<number | null>(null)
 
   const {
     register,
@@ -64,6 +80,7 @@ export default function AboutManage() {
       setPractices(about.practice)
       setTechStacks(about.tech_stack)
       setGrowthRoutes(about.growth_route)
+      setSectionOrder(about.section_order?.length ? about.section_order : DEFAULT_SECTION_ORDER)
     }
   }, [about, resetForm])
 
@@ -86,11 +103,18 @@ export default function AboutManage() {
         intro: values.ai_intro,
         examples: values.ai_examples,
       },
+      section_order: sectionOrder,
     }
     mutation.mutate(payload)
   }
 
-  // helper: array handlers
+  const moveSection = (from: number, to: number) => {
+    const next = [...sectionOrder]
+    const [removed] = next.splice(from, 1)
+    next.splice(to, 0, removed)
+    setSectionOrder(next)
+  }
+
   const updateArrayItem = <T,>(arr: T[], i: number, patch: Partial<T>, setter: (v: T[]) => void) => {
     const next = [...arr]
     next[i] = { ...next[i], ...patch }
@@ -111,28 +135,27 @@ export default function AboutManage() {
     )
   }
 
-  return (
-    <AdminLayout title="关于我管理">
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 max-w-4xl" key={about?.updated_at}>
-
-        {/* 个人简介 */}
-        <Section title="个人简介">
-          {intro.map((paragraph, index) => (
-            <div key={index} className="flex gap-2 items-start">
-              <textarea
-                value={paragraph}
-                onChange={e => { const next = [...intro]; next[index] = e.target.value; setIntro(next) }}
-                rows={2}
-                className={inputClass}
-              />
-              <button type="button" onClick={() => removeArrayItem(intro, index, setIntro)} className="p-2 text-text-secondary hover:text-red-500 shrink-0"><Trash2 size={16} /></button>
-            </div>
-          ))}
-          <button type="button" onClick={() => setIntro([...intro, ''])} className="inline-flex items-center gap-1 text-sm text-accent hover:text-accent-light"><Plus size={14} /> 添加段落</button>
-        </Section>
-
-        {/* 教育经历 */}
-        <Section title="教育经历">
+  const renderSection = (key: string) => {
+    switch (key) {
+      case 'about':
+        return (
+          <>
+            {intro.map((paragraph, index) => (
+              <div key={index} className="flex gap-2 items-start">
+                <textarea
+                  value={paragraph}
+                  onChange={e => { const next = [...intro]; next[index] = e.target.value; setIntro(next) }}
+                  rows={2}
+                  className={inputClass}
+                />
+                <button type="button" onClick={() => removeArrayItem(intro, index, setIntro)} className="p-2 text-text-secondary hover:text-red-500 shrink-0"><Trash2 size={16} /></button>
+              </div>
+            ))}
+            <button type="button" onClick={() => setIntro([...intro, ''])} className="inline-flex items-center gap-1 text-sm text-accent hover:text-accent-light"><Plus size={14} /> 添加段落</button>
+          </>
+        )
+      case 'education':
+        return (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {(['school','major','period','courses','achievements','competitions'] as const).map(field => (
               <div key={field}>
@@ -142,120 +165,181 @@ export default function AboutManage() {
               </div>
             ))}
           </div>
-        </Section>
-
-        {/* 技术方向 */}
-        <Section title="技术方向">
-          {techStacks.map((techStack, index) => (
-            <div key={index} className="p-4 bg-bg-primary border border-border rounded-lg space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-text-secondary">#{index + 1}</span>
-                <button type="button" onClick={() => removeArrayItem(techStacks, index, setTechStacks)} className="text-text-secondary hover:text-red-500"><Trash2 size={16} /></button>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className={labelClass}>分类名称</label>
-                  <input value={techStack.title} onChange={e => updateArrayItem(techStacks, index, { title: e.target.value }, setTechStacks)} className={inputClass} />
+        )
+      case 'tech':
+        return (
+          <>
+            {techStacks.map((techStack, index) => (
+              <div key={index} className="p-4 bg-bg-primary border border-border rounded-lg space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-text-secondary">#{index + 1}</span>
+                  <button type="button" onClick={() => removeArrayItem(techStacks, index, setTechStacks)} className="text-text-secondary hover:text-red-500"><Trash2 size={16} /></button>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className={labelClass}>分类名称</label>
+                    <input value={techStack.title} onChange={e => updateArrayItem(techStacks, index, { title: e.target.value }, setTechStacks)} className={inputClass} />
+                  </div>
+                  <div>
+                    <label className={labelClass}>图标</label>
+                    <IconPicker value={techStack.icon} onChange={icon => updateArrayItem(techStacks, index, { icon }, setTechStacks)} />
+                  </div>
                 </div>
                 <div>
-                  <label className={labelClass}>图标</label>
-                  <IconPicker value={techStack.icon} onChange={icon => updateArrayItem(techStacks, index, { icon }, setTechStacks)} />
+                  <label className={labelClass}>技能（逗号分隔）</label>
+                  <input value={techStack.skills.join(', ')} onChange={e => updateArrayItem(techStacks, index, { skills: e.target.value.split(',').map(skill => skill.trim()).filter(Boolean) }, setTechStacks)} className={inputClass} />
                 </div>
               </div>
-              <div>
-                <label className={labelClass}>技能（逗号分隔）</label>
-                <input value={techStack.skills.join(', ')} onChange={e => updateArrayItem(techStacks, index, { skills: e.target.value.split(',').map(skill => skill.trim()).filter(Boolean) }, setTechStacks)} className={inputClass} />
-              </div>
-            </div>
-          ))}
-          <button type="button" onClick={() => setTechStacks([...techStacks, { title: '', icon: 'Code2', skills: [] }])} className="inline-flex items-center gap-1 text-sm text-accent hover:text-accent-light"><Plus size={14} /> 添加技术方向</button>
-        </Section>
-
-        {/* 实践经历 */}
-        <Section title="实践经历">
-          {practices.map((practice, index) => (
-            <div key={index} className="p-4 bg-bg-primary border border-border rounded-lg space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-text-secondary">#{index + 1}</span>
-                <button type="button" onClick={() => removeArrayItem(practices, index, setPractices)} className="text-text-secondary hover:text-red-500"><Trash2 size={16} /></button>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className={labelClass}>图标</label>
-                  <IconPicker value={practice.icon} onChange={icon => updateArrayItem(practices, index, { icon }, setPractices)} />
+            ))}
+            <button type="button" onClick={() => setTechStacks([...techStacks, { title: '', icon: 'Code2', skills: [] }])} className="inline-flex items-center gap-1 text-sm text-accent hover:text-accent-light"><Plus size={14} /> 添加技术方向</button>
+          </>
+        )
+      case 'practices':
+        return (
+          <>
+            {practices.map((practice, index) => (
+              <div key={index} className="p-4 bg-bg-primary border border-border rounded-lg space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-text-secondary">#{index + 1}</span>
+                  <button type="button" onClick={() => removeArrayItem(practices, index, setPractices)} className="text-text-secondary hover:text-red-500"><Trash2 size={16} /></button>
                 </div>
-                <div>
-                  <label className={labelClass}>角色</label>
-                  <input value={practice.role} onChange={e => updateArrayItem(practices, index, { role: e.target.value }, setPractices)} className={inputClass} />
-                </div>
-              </div>
-              <div>
-                <label className={labelClass}>标题</label>
-                <input value={practice.title} onChange={e => updateArrayItem(practices, index, { title: e.target.value }, setPractices)} className={inputClass} />
-              </div>
-              <div>
-                <label className={labelClass}>描述</label>
-                <textarea value={practice.desc} onChange={e => updateArrayItem(practices, index, { desc: e.target.value }, setPractices)} rows={2} className={inputClass} />
-              </div>
-            </div>
-          ))}
-          <button type="button" onClick={() => setPractices([...practices, { icon: 'Wrench', title: '', role: '', desc: '' }])} className="inline-flex items-center gap-1 text-sm text-accent hover:text-accent-light"><Plus size={14} /> 添加实践经历</button>
-        </Section>
-
-        {/* 证书 */}
-        <Section title="技能与证书">
-          {certificates.map((cert, index) => (
-            <div key={index} className="flex gap-2 items-center">
-              <input value={cert.name} onChange={e => updateArrayItem(certificates, index, { name: e.target.value }, setCertificates)} className={inputClass} placeholder="证书名称" />
-              <div className="w-36 shrink-0">
-                <IconPicker value={cert.icon} onChange={icon => updateArrayItem(certificates, index, { icon }, setCertificates)} />
-              </div>
-              <button type="button" onClick={() => removeArrayItem(certificates, index, setCertificates)} className="p-2 text-text-secondary hover:text-red-500 shrink-0"><Trash2 size={16} /></button>
-            </div>
-          ))}
-          <button type="button" onClick={() => setCertificates([...certificates, { name: '', icon: 'Award' }])} className="inline-flex items-center gap-1 text-sm text-accent hover:text-accent-light"><Plus size={14} /> 添加证书</button>
-        </Section>
-
-        {/* 成长路线 */}
-        <Section title="成长路线">
-          {growthRoutes.map((route, index) => (
-            <div key={index} className="p-4 bg-bg-primary border border-border rounded-lg space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-text-secondary">#{index + 1}</span>
-                <button type="button" onClick={() => removeArrayItem(growthRoutes, index, setGrowthRoutes)} className="text-text-secondary hover:text-red-500"><Trash2 size={16} /></button>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className={labelClass}>时间段</label>
-                  <input value={route.period} onChange={e => updateArrayItem(growthRoutes, index, { period: e.target.value }, setGrowthRoutes)} className={inputClass} placeholder="2026.07" />
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className={labelClass}>图标</label>
+                    <IconPicker value={practice.icon} onChange={icon => updateArrayItem(practices, index, { icon }, setPractices)} />
+                  </div>
+                  <div>
+                    <label className={labelClass}>角色</label>
+                    <input value={practice.role} onChange={e => updateArrayItem(practices, index, { role: e.target.value }, setPractices)} className={inputClass} />
+                  </div>
                 </div>
                 <div>
                   <label className={labelClass}>标题</label>
-                  <input value={route.title} onChange={e => updateArrayItem(growthRoutes, index, { title: e.target.value }, setGrowthRoutes)} className={inputClass} />
+                  <input value={practice.title} onChange={e => updateArrayItem(practices, index, { title: e.target.value }, setPractices)} className={inputClass} />
+                </div>
+                <div>
+                  <label className={labelClass}>描述</label>
+                  <textarea value={practice.desc} onChange={e => updateArrayItem(practices, index, { desc: e.target.value }, setPractices)} rows={2} className={inputClass} />
                 </div>
               </div>
-              <div>
-                <label className={labelClass}>描述</label>
-                <textarea value={route.desc} onChange={e => updateArrayItem(growthRoutes, index, { desc: e.target.value }, setGrowthRoutes)} rows={2} className={inputClass} />
+            ))}
+            <button type="button" onClick={() => setPractices([...practices, { icon: 'Wrench', title: '', role: '', desc: '' }])} className="inline-flex items-center gap-1 text-sm text-accent hover:text-accent-light"><Plus size={14} /> 添加实践经历</button>
+          </>
+        )
+      case 'certificates':
+        return (
+          <>
+            {certificates.map((cert, index) => (
+              <div key={index} className="flex gap-2 items-center">
+                <input value={cert.name} onChange={e => updateArrayItem(certificates, index, { name: e.target.value }, setCertificates)} className={inputClass} placeholder="证书名称" />
+                <div className="w-36 shrink-0">
+                  <IconPicker value={cert.icon} onChange={icon => updateArrayItem(certificates, index, { icon }, setCertificates)} />
+                </div>
+                <button type="button" onClick={() => removeArrayItem(certificates, index, setCertificates)} className="p-2 text-text-secondary hover:text-red-500 shrink-0"><Trash2 size={16} /></button>
               </div>
+            ))}
+            <button type="button" onClick={() => setCertificates([...certificates, { name: '', icon: 'Award' }])} className="inline-flex items-center gap-1 text-sm text-accent hover:text-accent-light"><Plus size={14} /> 添加证书</button>
+          </>
+        )
+      case 'growth':
+        return (
+          <>
+            {growthRoutes.map((route, index) => (
+              <div key={index} className="p-4 bg-bg-primary border border-border rounded-lg space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-text-secondary">#{index + 1}</span>
+                  <button type="button" onClick={() => removeArrayItem(growthRoutes, index, setGrowthRoutes)} className="text-text-secondary hover:text-red-500"><Trash2 size={16} /></button>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className={labelClass}>时间段</label>
+                    <input value={route.period} onChange={e => updateArrayItem(growthRoutes, index, { period: e.target.value }, setGrowthRoutes)} className={inputClass} placeholder="2026.07" />
+                  </div>
+                  <div>
+                    <label className={labelClass}>标题</label>
+                    <input value={route.title} onChange={e => updateArrayItem(growthRoutes, index, { title: e.target.value }, setGrowthRoutes)} className={inputClass} />
+                  </div>
+                </div>
+                <div>
+                  <label className={labelClass}>描述</label>
+                  <textarea value={route.desc} onChange={e => updateArrayItem(growthRoutes, index, { desc: e.target.value }, setGrowthRoutes)} rows={2} className={inputClass} />
+                </div>
+              </div>
+            ))}
+            <button type="button" onClick={() => setGrowthRoutes([...growthRoutes, { period: '', title: '', desc: '' }])} className="inline-flex items-center gap-1 text-sm text-accent hover:text-accent-light"><Plus size={14} /> 添加成长节点</button>
+          </>
+        )
+      case 'ai':
+        return (
+          <>
+            <div>
+              <label className={labelClass}>简介</label>
+              <textarea {...register('ai_intro')} rows={3} className={inputClass} />
+              {errors.ai_intro && <p className="text-xs text-red-500 mt-1">{errors.ai_intro.message}</p>}
             </div>
-          ))}
-          <button type="button" onClick={() => setGrowthRoutes([...growthRoutes, { period: '', title: '', desc: '' }])} className="inline-flex items-center gap-1 text-sm text-accent hover:text-accent-light"><Plus size={14} /> 添加成长节点</button>
-        </Section>
+            <div>
+              <label className={labelClass}>示例说明</label>
+              <textarea {...register('ai_examples')} rows={3} className={inputClass} />
+              {errors.ai_examples && <p className="text-xs text-red-500 mt-1">{errors.ai_examples.message}</p>}
+            </div>
+          </>
+        )
+      default:
+        return null
+    }
+  }
 
-        {/* AI 协作 */}
-        <Section title="AI 协作">
-          <div>
-            <label className={labelClass}>简介</label>
-            <textarea {...register('ai_intro')} rows={3} className={inputClass} />
-            {errors.ai_intro && <p className="text-xs text-red-500 mt-1">{errors.ai_intro.message}</p>}
+  return (
+    <AdminLayout title="关于我管理">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 max-w-4xl" key={about?.updated_at}>
+
+        {/* 模块排序 */}
+        <section className="bg-bg-secondary border border-border rounded-xl p-6">
+          <h3 className="text-lg font-semibold text-text-primary mb-3">模块排序</h3>
+          <p className="text-sm text-text-secondary mb-4">拖动调整模块顺序，前台展示将同步变化</p>
+          <div className="flex flex-wrap gap-2">
+            {sectionOrder.map((key, index) => (
+              <div
+                key={key}
+                draggable
+                onDragStart={() => setDragIndex(index)}
+                onDragOver={(e) => { e.preventDefault(); setDropIndex(index) }}
+                onDragEnd={() => {
+                  if (dragIndex !== null && dropIndex !== null && dragIndex !== dropIndex) {
+                    moveSection(dragIndex, dropIndex)
+                  }
+                  setDragIndex(null)
+                  setDropIndex(null)
+                }}
+                onDrop={() => {
+                  if (dragIndex !== null && dropIndex !== null) {
+                    moveSection(dragIndex, dropIndex)
+                  }
+                  setDragIndex(null)
+                  setDropIndex(null)
+                }}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-sm cursor-grab active:cursor-grabbing transition-colors select-none ${
+                  dragIndex === index
+                    ? 'opacity-50 border-dashed border-accent bg-accent/5'
+                    : dropIndex === index
+                      ? 'border-accent bg-accent/10'
+                      : 'border-border bg-bg-primary text-text-primary hover:border-accent/50'
+                }`}
+              >
+                <GripVertical size={14} className="text-text-secondary shrink-0" />
+                <span className="text-text-secondary text-xs">{index + 1}.</span>
+                {sectionLabels[key]}
+              </div>
+            ))}
           </div>
-          <div>
-            <label className={labelClass}>示例说明</label>
-            <textarea {...register('ai_examples')} rows={3} className={inputClass} />
-            {errors.ai_examples && <p className="text-xs text-red-500 mt-1">{errors.ai_examples.message}</p>}
-          </div>
-        </Section>
+        </section>
+
+        {/* 各模块 */}
+        {sectionOrder.map(key => (
+          <Section key={key} title={sectionLabels[key]}>
+            {renderSection(key)}
+          </Section>
+        ))}
 
         <div className="flex items-center gap-4 pt-4">
           <button type="submit" disabled={mutation.isPending} className="px-6 py-2.5 bg-accent text-white rounded-lg font-medium hover:bg-accent-light transition-colors disabled:opacity-50 inline-flex items-center gap-2">

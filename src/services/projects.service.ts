@@ -96,6 +96,14 @@ export async function updateProject(id: number, project: Partial<ProjectInput>):
   return data as Project
 }
 
+export async function reorderProjects(items: { id: number; sort_order: number }[]): Promise<void> {
+  if (!supabase) throw new Error('Supabase 未配置')
+  const { error } = await supabase
+    .from('projects')
+    .upsert(items as never, { onConflict: 'id' })
+  if (error) throw new Error(`更新项目排序失败: ${error.message}`)
+}
+
 export async function deleteProject(id: number): Promise<void> {
   if (!supabase) throw new Error('Supabase 未配置，无法删除项目')
 

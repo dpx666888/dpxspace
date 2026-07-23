@@ -39,11 +39,12 @@ export interface Project {
   story: ProjectStory
   ai_collaboration: string | null
   timeline?: ProjectTimelineItem[]
+  sort_order: number
   created_at: string
   updated_at: string
 }
 
-export type ProjectInput = Omit<Project, 'id' | 'created_at' | 'updated_at'>
+export type ProjectInput = Omit<Project, 'id' | 'created_at' | 'updated_at' | 'sort_order'>
 
 export interface Log {
   id: number
@@ -52,11 +53,12 @@ export interface Log {
   category: '学习' | '项目复盘' | '技术笔记'
   content: string
   tags: string[]
+  sort_order: number
   created_at: string
   updated_at: string
 }
 
-export type LogInput = Omit<Log, 'id' | 'created_at' | 'updated_at'>
+export type LogInput = Omit<Log, 'id' | 'created_at' | 'updated_at' | 'sort_order'>
 
 export interface Lab {
   id: number
@@ -68,11 +70,12 @@ export interface Lab {
   demo_url: string | null
   github_url: string | null
   cover_image: string | null
+  sort_order: number
   created_at: string
   updated_at: string
 }
 
-export type LabInput = Omit<Lab, 'id' | 'created_at' | 'updated_at'>
+export type LabInput = Omit<Lab, 'id' | 'created_at' | 'updated_at' | 'sort_order'>
 
 export interface Education {
   school: string
@@ -119,6 +122,7 @@ export interface AboutData {
     intro: string
     examples: string
   }
+  section_order: string[]
   updated_at: string
 }
 
@@ -142,6 +146,21 @@ export interface ContactData {
 }
 
 export type ContactInput = Partial<Omit<ContactData, 'id' | 'created_at' | 'updated_at'>>
+
+export interface AiCollabData {
+  id: number
+  date: string
+  title: string
+  context: string
+  prompt: string
+  result: string
+  project?: string
+  sort_order: number
+  created_at: string
+  updated_at: string
+}
+
+export type AiCollabInput = Omit<AiCollabData, 'id' | 'created_at' | 'updated_at'>
 
 export interface HomePageConfig {
   greeting: string
@@ -198,6 +217,11 @@ export interface Database {
         Row: SiteConfig
         Insert: Omit<SiteConfig, 'id' | 'updated_at'>
         Update: Partial<Omit<SiteConfig, 'id' | 'updated_at'>>
+      }
+      ai_collabs: {
+        Row: AiCollabData
+        Insert: Omit<AiCollabData, 'id' | 'created_at' | 'updated_at'>
+        Update: Partial<Omit<AiCollabData, 'id' | 'created_at' | 'updated_at'>>
       }
     }
   }

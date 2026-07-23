@@ -75,6 +75,14 @@ export async function updateLog(id: number, log: Partial<LogInput>): Promise<Log
   return data as Log
 }
 
+export async function reorderLogs(items: { id: number; sort_order: number }[]): Promise<void> {
+  if (!supabase) throw new Error('Supabase 未配置')
+  const { error } = await supabase
+    .from('logs')
+    .upsert(items as never, { onConflict: 'id' })
+  if (error) throw new Error(`更新日志排序失败: ${error.message}`)
+}
+
 export async function deleteLog(id: number): Promise<void> {
   if (!supabase) throw new Error('Supabase 未配置，无法删除日志')
 

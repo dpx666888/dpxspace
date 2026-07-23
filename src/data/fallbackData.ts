@@ -5,6 +5,7 @@ import type {
   AboutData,
   ContactData,
   HomePageConfig,
+  AiCollabData,
 } from '../types/database'
 
 export const fallbackProjects: Project[] = [
@@ -33,6 +34,7 @@ export const fallbackProjects: Project[] = [
       summary: '通过独立开发完整项目，深入理解了 uni-app 跨端开发流程、Vue 3 组合式 API、移动端 UI 设计思路，以及从需求分析到打包发布的全链路开发经验。',
     },
     ai_collaboration: '在开发过程中使用 AI 辅助解决跨端兼容性问题、优化代码结构，以及生成部分 UI 样式代码。',
+    sort_order: 1,
     created_at: '2026-05-09T00:00:00.000Z',
     updated_at: '2026-07-01T00:00:00.000Z',
   },
@@ -61,6 +63,7 @@ export const fallbackProjects: Project[] = [
       summary: '【待补充：这段学习经历带给你什么收获？】',
     },
     ai_collaboration: '【待补充：AI如何辅助你学习C++？】',
+    sort_order: 2,
     created_at: '2026-07-17T00:00:00.000Z',
     updated_at: '2026-07-17T00:00:00.000Z',
   },
@@ -88,6 +91,7 @@ export const fallbackProjects: Project[] = [
       summary: '【待补充】',
     },
     ai_collaboration: '【待补充】',
+    sort_order: 3,
     created_at: '2026-07-17T00:00:00.000Z',
     updated_at: '2026-07-17T00:00:00.000Z',
   },
@@ -101,6 +105,7 @@ export const fallbackLogs: Log[] = [
     category: '学习',
     content: '创建 100-Days-of-C-Learning 仓库，计划系统学习 C++ 编程语言。',
     tags: ['C++', '学习计划'],
+    sort_order: 1,
     created_at: '2026-07-17T00:00:00.000Z',
     updated_at: '2026-07-17T00:00:00.000Z',
   },
@@ -111,6 +116,7 @@ export const fallbackLogs: Log[] = [
     category: '项目复盘',
     content: '独立完成跨平台记账小程序的开发与打包发布，支持 Android/iOS/H5/微信小程序。实现了收支记录、分类统计、数据导出等核心功能。',
     tags: ['uni-app', 'Vue 3', '独立开发'],
+    sort_order: 2,
     created_at: '2026-07-01T00:00:00.000Z',
     updated_at: '2026-07-01T00:00:00.000Z',
   },
@@ -121,6 +127,7 @@ export const fallbackLogs: Log[] = [
     category: '项目复盘',
     content: '基于嘉立创开源方案，使用全志 T113-S3 主控芯片完成 AixProbe 复刻。经历元器件选型、PCB 手工焊接、电源短路排查、串口通信调试等挑战，最终产出可稳定运行的硬件样机。',
     tags: ['嵌入式', '硬件', 'PCB'],
+    sort_order: 3,
     created_at: '2026-06-01T00:00:00.000Z',
     updated_at: '2026-06-01T00:00:00.000Z',
   },
@@ -131,6 +138,7 @@ export const fallbackLogs: Log[] = [
     category: '学习',
     content: '参赛作品聚焦物联网应用领域，负责项目核心模块开发与功能调试，作品通过赛区专家评审，荣获粤港澳大湾区赛区决赛二等奖。',
     tags: ['竞赛', '物联网', '获奖'],
+    sort_order: 4,
     created_at: '2026-05-01T00:00:00.000Z',
     updated_at: '2026-05-01T00:00:00.000Z',
   },
@@ -147,6 +155,7 @@ export const fallbackLabs: Lab[] = [
     demo_url: null,
     github_url: null,
     cover_image: null,
+    sort_order: 1,
     created_at: '2026-05-01T00:00:00.000Z',
     updated_at: '2026-05-01T00:00:00.000Z',
   },
@@ -160,6 +169,7 @@ export const fallbackLabs: Lab[] = [
     demo_url: null,
     github_url: null,
     cover_image: null,
+    sort_order: 2,
     created_at: '2026-06-01T00:00:00.000Z',
     updated_at: '2026-06-01T00:00:00.000Z',
   },
@@ -226,6 +236,7 @@ export const fallbackAbout: AboutData = {
     intro: '在学习和开发过程中，我积极使用 AI 工具辅助编程。从代码调试、跨端兼容性问题解决，到项目架构设计和 UI 样式生成，AI 是我的重要协作伙伴。',
     examples: '例如：在螃蟹记账开发中，使用 AI 辅助解决 uni-app 多端适配问题；在 AixProbe 硬件项目中，借助 AI 排查电路故障和优化焊接工艺；在搭建这个个人网站时，与 AI 协作完成从设计到实现的全流程。',
   },
+  section_order: ['about', 'education', 'tech', 'practices', 'certificates', 'growth', 'ai'],
   updated_at: '2026-07-22T00:00:00.000Z',
 }
 
@@ -252,3 +263,17 @@ export const fallbackContact: ContactData = {
   created_at: '2026-07-22T00:00:00.000Z',
   updated_at: '2026-07-22T00:00:00.000Z',
 }
+
+export const fallbackAiCollabs: AiCollabData[] = [
+  {
+    id: 1, date: '2026-07-21', title: '【待补充：AI协作案例标题】',
+    context: '【待补充：在什么场景下使用AI辅助？如学习C++时、搭建网站时】',
+    prompt: '【待补充：你向AI提出的具体问题/Prompt是什么？】',
+    result: '【待补充：AI给出了什么帮助？解决了什么问题？】',
+    project: '个人电子名片网站', sort_order: 1, created_at: '', updated_at: '',
+  },
+  {
+    id: 2, date: '【待补充】', title: '【待补充】', context: '【待补充】',
+    prompt: '【待补充】', result: '【待补充】', project: '', sort_order: 2, created_at: '', updated_at: '',
+  },
+]
