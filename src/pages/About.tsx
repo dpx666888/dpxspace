@@ -158,12 +158,12 @@ export default function About() {
               return (
                 <div
                   key={index}
-                  className="flex items-center gap-3 p-4 bg-bg-secondary border border-border rounded-xl"
+                  className="flex items-start gap-3 p-4 bg-bg-secondary border border-border rounded-xl min-h-[72px]"
                 >
-                  <div className="p-2 bg-accent/10 rounded-lg">
+                  <div className="p-2 bg-accent/10 rounded-lg shrink-0">
                     <Icon size={16} className="text-accent" />
                   </div>
-                  <span className="text-sm text-text-primary">{cert.name}</span>
+                  <span className="text-sm text-text-primary break-words leading-relaxed">{cert.name}</span>
                 </div>
               )
             })}

@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { Loader2, Plus, Trash2 } from 'lucide-react'
 import AdminLayout from '../components/AdminLayout'
+import IconPicker from '../components/IconPicker'
 import { useAbout } from '../../hooks/useAbout'
 import { updateAbout } from '../../services/about.service'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -157,8 +158,8 @@ export default function AboutManage() {
                   <input value={techStack.title} onChange={e => updateArrayItem(techStacks, index, { title: e.target.value }, setTechStacks)} className={inputClass} />
                 </div>
                 <div>
-                  <label className={labelClass}>图标名称 (Lucide)</label>
-                  <input value={techStack.icon} onChange={e => updateArrayItem(techStacks, index, { icon: e.target.value }, setTechStacks)} className={inputClass} placeholder="Code2" />
+                  <label className={labelClass}>图标</label>
+                  <IconPicker value={techStack.icon} onChange={icon => updateArrayItem(techStacks, index, { icon }, setTechStacks)} />
                 </div>
               </div>
               <div>
@@ -180,8 +181,8 @@ export default function AboutManage() {
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className={labelClass}>图标 (Lucide)</label>
-                  <input value={practice.icon} onChange={e => updateArrayItem(practices, index, { icon: e.target.value }, setPractices)} className={inputClass} placeholder="Wrench" />
+                  <label className={labelClass}>图标</label>
+                  <IconPicker value={practice.icon} onChange={icon => updateArrayItem(practices, index, { icon }, setPractices)} />
                 </div>
                 <div>
                   <label className={labelClass}>角色</label>
@@ -206,7 +207,9 @@ export default function AboutManage() {
           {certificates.map((cert, index) => (
             <div key={index} className="flex gap-2 items-center">
               <input value={cert.name} onChange={e => updateArrayItem(certificates, index, { name: e.target.value }, setCertificates)} className={inputClass} placeholder="证书名称" />
-              <input value={cert.icon} onChange={e => updateArrayItem(certificates, index, { icon: e.target.value }, setCertificates)} className={`${inputClass} w-32 shrink-0`} placeholder="图标名" />
+              <div className="w-36 shrink-0">
+                <IconPicker value={cert.icon} onChange={icon => updateArrayItem(certificates, index, { icon }, setCertificates)} />
+              </div>
               <button type="button" onClick={() => removeArrayItem(certificates, index, setCertificates)} className="p-2 text-text-secondary hover:text-red-500 shrink-0"><Trash2 size={16} /></button>
             </div>
           ))}

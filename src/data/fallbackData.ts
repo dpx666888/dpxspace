@@ -4,6 +4,7 @@ import type {
   Lab,
   AboutData,
   ContactData,
+  HomePageConfig,
 } from '../types/database'
 
 export const fallbackProjects: Project[] = [
@@ -226,6 +227,17 @@ export const fallbackAbout: AboutData = {
     examples: '例如：在螃蟹记账开发中，使用 AI 辅助解决 uni-app 多端适配问题；在 AixProbe 硬件项目中，借助 AI 排查电路故障和优化焊接工艺；在搭建这个个人网站时，与 AI 协作完成从设计到实现的全流程。',
   },
   updated_at: '2026-07-22T00:00:00.000Z',
+}
+
+export const fallbackHomeConfig: HomePageConfig = {
+  greeting: '你好，我是',
+  name: '丁鹏翔',
+  bio: '一个学生开发者，利用 AI 和自己的代码，不断建造属于自己的数字世界。',
+  button_text: '查看项目',
+  skills: ['C++', 'Vue', 'uni-app', 'Git', 'React', 'TypeScript', 'Tailwind CSS'],
+  skills_title: '技术方向',
+  projects_title: '精选项目',
+  logs_title: '最新日志',
 }
 
 export const fallbackContact: ContactData = {

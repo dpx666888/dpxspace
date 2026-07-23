@@ -5,6 +5,7 @@ import { z } from 'zod'
 import { Loader2, Plus, Trash2 } from 'lucide-react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import AdminLayout from '../components/AdminLayout'
+import IconPicker from '../components/IconPicker'
 import { useContact } from '../../hooks/useContact'
 import { updateContacts } from '../../services/contact.service'
 import type { ContactInput, SocialLink } from '../../types/database'
@@ -118,12 +119,9 @@ export default function ContactManage() {
                 className={inputClass}
                 placeholder="链接 URL"
               />
-              <input
-                value={social.icon}
-                onChange={e => { const next = [...socials]; next[index] = { ...next[index], icon: e.target.value }; setSocials(next) }}
-                className={`${inputClass} w-28 shrink-0`}
-                placeholder="图标名"
-              />
+              <div className="w-32 shrink-0">
+                <IconPicker value={social.icon} onChange={icon => { const next = [...socials]; next[index] = { ...next[index], icon }; setSocials(next) }} />
+              </div>
               <button type="button" onClick={() => setSocials(socials.filter((_, i) => i !== index))} className="p-2 text-text-secondary hover:text-red-500 shrink-0"><Trash2 size={16} /></button>
             </div>
           ))}

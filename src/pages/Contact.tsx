@@ -1,6 +1,22 @@
 import { motion } from 'framer-motion'
-import { Mail, Github, MapPin, Send, Loader2 } from 'lucide-react'
+import {
+  Mail, Github, MapPin, Send, Loader2, Code2, Terminal, BookOpen, Globe,
+  Award, GraduationCap, Cpu, Wrench, Zap, MessageSquare, Home, User, Folder,
+  FlaskConical, LayoutDashboard, LogOut, Lock, AlertCircle, Plus, Trash2,
+  ArrowRight, ExternalLink, Search, Star, Heart, Camera, Music, Video, Cloud,
+  Database, Shield, Sun, Moon, Settings, FileText, Image, Link, Mic, Eye,
+  ThumbsUp, Coffee, PenTool, Layers, BarChart3, TrendingUp, Rocket, Package, Puzzle,
+} from 'lucide-react'
 import { useContact } from '../hooks/useContact'
+
+const iconMap: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
+  Code2, Terminal, BookOpen, Globe, Award, GraduationCap, Cpu, Wrench,
+  Github, Mail, MapPin, Zap, MessageSquare, Home, User, Folder,
+  FlaskConical, LayoutDashboard, LogOut, Lock, AlertCircle, Plus, Trash2,
+  ArrowRight, ExternalLink, Send, Search, Star, Heart, Camera, Music, Video,
+  Cloud, Database, Shield, Sun, Moon, Settings, FileText, Image, Link, Mic,
+  Eye, ThumbsUp, Coffee, PenTool, Layers, BarChart3, TrendingUp, Rocket, Package, Puzzle,
+}
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -88,6 +104,34 @@ export default function Contact() {
                 </div>
               </div>
             </div>
+
+            {contact.socials && contact.socials.length > 0 && (
+              <>
+                {contact.socials.map((social, index) => {
+                  const Icon = iconMap[social.icon] || Link
+                  return (
+                    <div key={index} className="p-5 bg-bg-secondary border border-border rounded-xl">
+                      <div className="flex items-center gap-4">
+                        <div className="p-2.5 bg-accent/10 rounded-lg">
+                          <Icon size={18} className="text-accent" />
+                        </div>
+                        <div>
+                          <p className="text-xs text-text-secondary mb-0.5">{social.platform}</p>
+                          <a
+                            href={social.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-text-primary hover:text-accent transition-colors break-all"
+                          >
+                            {social.url.replace(/^https?:\/\//, '')}
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
+              </>
+            )}
           </motion.div>
 
           {/* 留言表单 */}

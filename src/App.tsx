@@ -23,6 +23,7 @@ import LabEdit from './admin/pages/LabEdit'
 import LogsManage from './admin/pages/LogsManage'
 import LogEdit from './admin/pages/LogEdit'
 import ContactManage from './admin/pages/ContactManage'
+import SiteConfigManage from './admin/pages/SiteConfigManage'
 
 const pageTransition = {
   initial: { opacity: 0, y: 16 },
@@ -157,6 +158,14 @@ function AdminRoutes() {
         element={
           <ProtectedRoute>
             <ContactManage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="site-config"
+        element={
+          <ProtectedRoute>
+            <SiteConfigManage />
           </ProtectedRoute>
         }
       />

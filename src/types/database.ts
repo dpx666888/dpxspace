@@ -143,6 +143,24 @@ export interface ContactData {
 
 export type ContactInput = Partial<Omit<ContactData, 'id' | 'created_at' | 'updated_at'>>
 
+export interface HomePageConfig {
+  greeting: string
+  name: string
+  bio: string
+  button_text: string
+  skills: string[]
+  skills_title: string
+  projects_title: string
+  logs_title: string
+}
+
+export interface SiteConfig {
+  id: number
+  key: string
+  value: HomePageConfig
+  updated_at: string
+}
+
 export interface Database {
   public: {
     Tables: {
@@ -175,6 +193,11 @@ export interface Database {
         Row: ContactData
         Insert: Omit<ContactData, 'id' | 'created_at' | 'updated_at'>
         Update: Partial<Omit<ContactData, 'id' | 'created_at' | 'updated_at'>>
+      }
+      site_config: {
+        Row: SiteConfig
+        Insert: Omit<SiteConfig, 'id' | 'updated_at'>
+        Update: Partial<Omit<SiteConfig, 'id' | 'updated_at'>>
       }
     }
   }

@@ -1,6 +1,6 @@
 import { NavLink, useNavigate } from 'react-router-dom'
 import {
-  LayoutDashboard, User, Folder, FlaskConical, BookOpen, Mail, LogOut,
+  LayoutDashboard, User, Folder, FlaskConical, BookOpen, Mail, LogOut, Home,
 } from 'lucide-react'
 import { useAuth } from '../hooks/useAuth'
 
@@ -11,6 +11,7 @@ const navItems = [
   { path: '/admin/labs', label: '实验室', icon: FlaskConical },
   { path: '/admin/logs', label: '成长日志', icon: BookOpen },
   { path: '/admin/contact', label: '联系方式', icon: Mail },
+  { path: '/admin/site-config', label: '首页配置', icon: Home },
 ]
 
 export default function AdminSidebar() {

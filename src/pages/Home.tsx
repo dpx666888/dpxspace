@@ -3,13 +3,13 @@ import { ArrowRight, ExternalLink, Code2, BookOpen, Globe, Loader2 } from 'lucid
 import { Link } from 'react-router-dom'
 import { useProjects } from '../hooks/useProjects'
 import { useLogs } from '../hooks/useLogs'
-
-const skills = ['C++', 'Vue', 'uni-app', 'Git', 'React', 'TypeScript', 'Tailwind CSS']
+import { useHomeConfig } from '../hooks/useSiteConfig'
 
 export default function Home() {
   const { data: projects, isLoading: projectsLoading } = useProjects()
   const { data: logs, isLoading: logsLoading } = useLogs()
-  const loading = projectsLoading || logsLoading
+  const { data: config, isLoading: configLoading } = useHomeConfig()
+  const loading = projectsLoading || logsLoading || configLoading
 
   if (loading) {
     return (
@@ -18,6 +18,16 @@ export default function Home() {
       </div>
     )
   }
+
+  const skills = config?.skills ?? []
+  const greeting = config?.greeting ?? '你好，我是'
+  const name = config?.name ?? '丁鹏翔'
+  const bio = config?.bio ?? '一个学生开发者。'
+  const buttonText = config?.button_text ?? '查看项目'
+  const skillsTitle = config?.skills_title ?? '技术方向'
+  const projectsTitle = config?.projects_title ?? '精选项目'
+  const logsTitle = config?.logs_title ?? '最新日志'
+
   return (
     <div className="pt-16">
       {/* Hero */}
@@ -32,14 +42,14 @@ export default function Home() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                你好，我是
+                {greeting}
               </motion.p>
               <motion.h1
                 className="text-5xl md:text-7xl font-bold text-text-primary mb-6"
                 initial="hidden"
                 animate="visible"
               >
-                {'丁鹏翔'.split('').map((char, i) => (
+                {name.split('').map((char, i) => (
                   <motion.span
                     key={i}
                     className="inline-block"
@@ -59,7 +69,7 @@ export default function Home() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.6 }}
               >
-                一个学生开发者，利用 AI 和自己的代码，不断建造属于自己的数字世界。
+                {bio}
               </motion.p>
               <motion.div
                 className="flex items-center gap-4 mt-8"
@@ -71,7 +81,7 @@ export default function Home() {
                   to="/projects"
                   className="inline-flex items-center gap-2 px-5 py-2.5 bg-accent text-white rounded-lg font-medium hover:bg-accent-light transition-colors"
                 >
-                  查看项目
+                  {buttonText}
                   <ArrowRight size={16} />
                 </Link>
                 <a
@@ -158,7 +168,7 @@ export default function Home() {
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            技术方向
+            {skillsTitle}
           </motion.h2>
           <motion.div
             className="flex flex-wrap gap-3"
@@ -190,7 +200,7 @@ export default function Home() {
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
             >
-              精选项目
+              {projectsTitle}
             </motion.h2>
             <motion.div
               initial={{ opacity: 0 }}
@@ -254,7 +264,7 @@ export default function Home() {
               viewport={{ once: true, margin: '-50px' }}
               transition={{ duration: 0.5 }}
             >
-              最新日志
+              {logsTitle}
             </motion.h2>
             <motion.div
               initial={{ opacity: 0 }}
