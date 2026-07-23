@@ -52,19 +52,22 @@ export default function LogsManage() {
                 <th className="px-4 py-3 font-medium text-text-primary text-right">操作</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-border">
+            <tbody
+              className="divide-y divide-border"
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={() => {
+                if (dragRef.current && dragRef.current.from !== dragRef.current.to) {
+                  move(dragRef.current.from, dragRef.current.to)
+                }
+                setDragIndex(null); setDropIndex(null); dragRef.current = null
+              }}
+            >
               {sorted.map((log, index) => (
                 <tr
                   key={log.id}
                   draggable
                   onDragStart={() => { setDragIndex(index); dragRef.current = { from: index, to: index } }}
-                  onDragOver={(e) => { e.preventDefault(); setDropIndex(index); if (dragRef.current) dragRef.current.to = index }}
-                  onDrop={() => {
-                    if (dragRef.current && dragRef.current.from !== dragRef.current.to) {
-                      move(dragRef.current.from, dragRef.current.to)
-                    }
-                    setDragIndex(null); setDropIndex(null); dragRef.current = null
-                  }}
+                  onDragOver={() => { setDropIndex(index); if (dragRef.current) dragRef.current.to = index }}
                   className={`hover:bg-bg-primary/50 transition-colors cursor-grab active:cursor-grabbing ${
                     dragIndex === index ? 'opacity-50 bg-accent/5' : dropIndex === index ? 'bg-accent/10' : ''
                   }`}
