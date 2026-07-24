@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { useProjects } from '../hooks/useProjects'
 import { useLogs } from '../hooks/useLogs'
 import { useHomeConfig } from '../hooks/useSiteConfig'
+import PersonalSpacePreview from '../components/PersonalSpacePreview'
 
 export default function Home() {
   const { data: projects, isLoading: projectsLoading } = useProjects()
@@ -305,6 +306,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Personal Space */}
+      <PersonalSpacePreview />
     </div>
   )
 }

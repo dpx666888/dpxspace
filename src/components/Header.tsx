@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom'
-import { Home, User, Folder, FlaskConical, BookOpen, Mail, Menu, X } from 'lucide-react'
+import { Home, User, Folder, FlaskConical, BookOpen, Mail, Menu, X, LayoutGrid } from 'lucide-react'
 import { useState } from 'react'
 
 const navItems = [
@@ -8,6 +8,7 @@ const navItems = [
   { path: '/projects', label: '项目', icon: Folder },
   { path: '/lab', label: '实验室', icon: FlaskConical },
   { path: '/log', label: '日志', icon: BookOpen },
+  { path: '/space', label: '个人空间', icon: LayoutGrid },
   { path: '/contact', label: '联系', icon: Mail },
 ]
 
