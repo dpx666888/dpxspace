@@ -162,6 +162,53 @@ export interface AiCollabData {
 
 export type AiCollabInput = Omit<AiCollabData, 'id' | 'created_at' | 'updated_at'>
 
+export interface GalleryItem {
+  id: number
+  title: string
+  description: string
+  image_url: string
+  category: string
+  related_type: string
+  related_id: number | null
+  date: string
+  sort_order: number
+  created_at: string
+}
+
+export type GalleryInput = Omit<GalleryItem, 'id' | 'created_at'>
+
+export interface SpaceModule {
+  id: number
+  title: string
+  description: string
+  icon: string
+  route: string
+  active: boolean
+  sort_order: number
+  created_at: string
+}
+
+export type SpaceModuleInput = Omit<SpaceModule, 'id' | 'created_at'>
+
+export interface CoffeeLogData {
+  id: number
+  title: string
+  date: string
+  bean: string
+  origin: string
+  process_method: string
+  equipment: string
+  parameters: Record<string, string>
+  description: string
+  flavor_notes: string
+  image_url: string
+  rating: number
+  sort_order: number
+  created_at: string
+}
+
+export type CoffeeLogInput = Omit<CoffeeLogData, 'id' | 'created_at'>
+
 export interface HomePageConfig {
   greeting: string
   name: string
@@ -222,6 +269,21 @@ export interface Database {
         Row: AiCollabData
         Insert: Omit<AiCollabData, 'id' | 'created_at' | 'updated_at'>
         Update: Partial<Omit<AiCollabData, 'id' | 'created_at' | 'updated_at'>>
+      }
+      gallery: {
+        Row: GalleryItem
+        Insert: Omit<GalleryItem, 'id' | 'created_at'>
+        Update: Partial<Omit<GalleryItem, 'id' | 'created_at'>>
+      }
+      space_modules: {
+        Row: SpaceModule
+        Insert: Omit<SpaceModule, 'id' | 'created_at'>
+        Update: Partial<Omit<SpaceModule, 'id' | 'created_at'>>
+      }
+      coffee_logs: {
+        Row: CoffeeLogData
+        Insert: Omit<CoffeeLogData, 'id' | 'created_at'>
+        Update: Partial<Omit<CoffeeLogData, 'id' | 'created_at'>>
       }
     }
   }

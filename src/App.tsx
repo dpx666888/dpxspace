@@ -9,6 +9,9 @@ import Lab from './pages/Lab'
 import Log from './pages/Log'
 import ProjectDetail from './pages/ProjectDetail'
 import Contact from './pages/Contact'
+import Gallery from './pages/Gallery'
+import Space from './pages/Space'
+import Coffee from './pages/Coffee'
 import NotFound from './pages/NotFound'
 import useScrollToTop from './hooks/useScrollToTop'
 import { AuthProvider } from './admin/hooks/useAuth'
@@ -25,6 +28,9 @@ import LogEdit from './admin/pages/LogEdit'
 import ContactManage from './admin/pages/ContactManage'
 import SiteConfigManage from './admin/pages/SiteConfigManage'
 import CollabManage from './admin/pages/CollabManage'
+import GalleryManage from './admin/pages/GalleryManage'
+import SpaceModulesManage from './admin/pages/SpaceModulesManage'
+import CoffeeManage from './admin/pages/CoffeeManage'
 
 const pageTransition = {
   initial: { opacity: 0, y: 16 },
@@ -178,6 +184,30 @@ function AdminRoutes() {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="gallery"
+        element={
+          <ProtectedRoute>
+            <GalleryManage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="space-modules"
+        element={
+          <ProtectedRoute>
+            <SpaceModulesManage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="coffee"
+        element={
+          <ProtectedRoute>
+            <CoffeeManage />
+          </ProtectedRoute>
+        }
+      />
       <Route path="*" element={<AdminLogin />} />
     </Routes>
   )
@@ -196,6 +226,9 @@ function App() {
           <Route path="lab" element={<Lab />} />
           <Route path="log" element={<Log />} />
           <Route path="contact" element={<Contact />} />
+          <Route path="gallery" element={<Gallery />} />
+          <Route path="space" element={<Space />} />
+          <Route path="space/coffee" element={<Coffee />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
