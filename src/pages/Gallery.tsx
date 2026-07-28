@@ -4,7 +4,7 @@ import { Loader2, Image } from 'lucide-react'
 import { useGallery } from '../hooks/useGallery'
 import type { GalleryItem } from '../types/database'
 
-const CATEGORIES = ['全部', '项目过程', 'UI设计', 'AI协作', '生活记录']
+const CATEGORIES = ['全部', '项目过程', '开发记录', 'AI实践', '咖啡记录', '设备记录', '生活记录']
 
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },

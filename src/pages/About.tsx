@@ -1,11 +1,10 @@
 import { motion } from 'framer-motion'
 import {
-  Code2, Terminal, BookOpen, Zap, Globe, MessageSquare, Award, GraduationCap, Cpu, Wrench, Loader2,
+  Code2, Terminal, BookOpen, Globe, Award, GraduationCap, Cpu, Wrench, Loader2,
 } from 'lucide-react'
 import { profile } from '../data/profile'
 import { useAbout } from '../hooks/useAbout'
-import { useAiCollabs } from '../hooks/useAiCollabs'
-import type { AboutData, AiCollabData } from '../types/database'
+import type { AboutData } from '../types/database'
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -28,9 +27,9 @@ const sectionLabels: Record<string, string> = {
   ai: 'AI 协作',
 }
 
-const DEFAULT_ORDER = ['about', 'education', 'tech', 'practices', 'certificates', 'growth', 'ai']
+const DEFAULT_ORDER = ['about', 'education', 'tech', 'practices', 'certificates', 'growth']
 
-function renderSection(key: string, about: AboutData, collabs: AiCollabData[] | undefined) {
+function renderSection(key: string, about: AboutData) {
   switch (key) {
     case 'about':
       return (
@@ -188,56 +187,6 @@ function renderSection(key: string, about: AboutData, collabs: AiCollabData[] | 
           </div>
         </motion.section>
       )
-    case 'ai':
-      return (
-        <motion.section {...fadeInUp}>
-          <div className="p-6 md:p-8 bg-bg-secondary border border-border rounded-xl mb-8">
-            <div className="flex items-start gap-4">
-              <div className="p-3 bg-accent/10 rounded-xl shrink-0">
-                <Zap size={22} className="text-accent" />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-text-primary mb-2">人与 AI 共同开发</h3>
-                <p className="text-text-secondary leading-relaxed mb-3">{about.ai_collaboration.intro}</p>
-                <p className="text-text-secondary leading-relaxed">{about.ai_collaboration.examples}</p>
-              </div>
-            </div>
-          </div>
-          <h3 className="text-lg font-semibold text-text-primary mb-4">协作记录</h3>
-          <div className="space-y-4">
-            {collabs?.map((collab, index) => (
-              <motion.div
-                key={collab.id}
-                className="p-5 bg-bg-secondary border border-border rounded-xl"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-50px' }}
-                transition={{ duration: 0.4, delay: index * 0.1 }}
-              >
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="p-1.5 bg-accent/10 rounded-lg">
-                    <MessageSquare size={14} className="text-accent" />
-                  </div>
-                  <span className="text-xs text-text-secondary">{collab.date}</span>
-                  {collab.project && (
-                    <span className="text-xs text-accent px-2 py-0.5 bg-accent/10 rounded-full">{collab.project}</span>
-                  )}
-                </div>
-                <h4 className="font-medium text-text-primary mb-2">{collab.title}</h4>
-                <p className="text-sm text-text-secondary mb-3">{collab.context}</p>
-                <div className="bg-bg-primary border border-border rounded-lg p-3 mb-3">
-                  <p className="text-xs text-text-secondary mb-1">Prompt：</p>
-                  <p className="text-sm text-text-primary">{collab.prompt}</p>
-                </div>
-                <div className="bg-bg-primary border border-border rounded-lg p-3">
-                  <p className="text-xs text-text-secondary mb-1">结果：</p>
-                  <p className="text-sm text-text-primary">{collab.result}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.section>
-      )
     default:
       return null
   }
@@ -245,7 +194,6 @@ function renderSection(key: string, about: AboutData, collabs: AiCollabData[] | 
 
 export default function About() {
   const { data: about, isLoading, error } = useAbout()
-  const { data: aiCollabs } = useAiCollabs()
 
   if (isLoading) {
     return (
@@ -275,7 +223,7 @@ export default function About() {
         {order.map(key => (
           <div key={key}>
             <h2 className="text-2xl md:text-3xl font-semibold text-text-primary mb-8">{sectionLabels[key]}</h2>
-            {renderSection(key, about, aiCollabs)}
+            {renderSection(key, about)}
           </div>
         ))}
       </div>

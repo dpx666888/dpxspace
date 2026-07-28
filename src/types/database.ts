@@ -155,6 +155,7 @@ export interface AiCollabData {
   prompt: string
   result: string
   project?: string
+  project_id?: number | null
   sort_order: number
   created_at: string
   updated_at: string
@@ -167,6 +168,7 @@ export interface GalleryItem {
   title: string
   description: string
   image_url: string
+  storage_path: string
   category: string
   related_type: string
   related_id: number | null
@@ -202,6 +204,7 @@ export interface CoffeeLogData {
   description: string
   flavor_notes: string
   image_url: string
+  storage_path: string
   rating: number
   sort_order: number
   created_at: string

@@ -6,8 +6,8 @@ import { useGallery } from '../../hooks/useGallery'
 import { createGalleryItem, updateGalleryItem, deleteGalleryItem, reorderGallery, uploadImage, deleteImage } from '../../services/gallery.service'
 import type { GalleryInput, GalleryItem } from '../../types/database'
 
-const CATEGORIES = ['项目过程', 'UI设计', 'AI协作', '生活记录']
-const EMPTY: GalleryInput = { title: '', description: '', image_url: '', category: '生活记录', related_type: '', related_id: null, date: '', sort_order: 0 }
+const CATEGORIES = ['项目过程', '开发记录', 'AI实践', '咖啡记录', '设备记录', '生活记录']
+const EMPTY: GalleryInput = { title: '', description: '', image_url: '', storage_path: '', category: '开发记录', related_type: '', related_id: null, date: '', sort_order: 0 }
 
 export default function GalleryManage() {
   const { data: items, isLoading } = useGallery()
@@ -30,8 +30,8 @@ export default function GalleryManage() {
     onSuccess: () => { qc.invalidateQueries({ queryKey: ['gallery'] }); setEditingId(null) },
   })
   const deleteMutation = useMutation({
-    mutationFn: async (item: { id: number; image_url: string }) => {
-      if (item.image_url) await deleteImage(item.image_url).catch(() => {})
+    mutationFn: async (item: { id: number; storage_path: string }) => {
+      if (item.storage_path) await deleteImage(item.storage_path).catch(() => {})
       await deleteGalleryItem(item.id)
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ['gallery'] }),
@@ -46,15 +46,15 @@ export default function GalleryManage() {
     if (!file) return
     setUploading(true)
     try {
-      const url = await uploadImage(file)
-      setEditData({ ...editData, image_url: url })
+      const result = await uploadImage(file, 'archive')
+      setEditData({ ...editData, image_url: result.url, storage_path: result.path })
     } catch (err) { alert('上传失败') }
     setUploading(false)
   }
 
   const startEdit = (item: GalleryItem) => {
     setEditingId(item.id)
-    setEditData({ title: item.title, description: item.description, image_url: item.image_url, category: item.category, related_type: item.related_type, related_id: item.related_id, date: item.date, sort_order: item.sort_order })
+    setEditData({ title: item.title, description: item.description, image_url: item.image_url, storage_path: item.storage_path, category: item.category, related_type: item.related_type, related_id: item.related_id, date: item.date, sort_order: item.sort_order })
   }
 
   const cancelEdit = () => { setEditingId(null); setEditData(EMPTY) }
@@ -161,7 +161,7 @@ export default function GalleryManage() {
                 </div>
                 <div className="flex items-center gap-1 shrink-0">
                   <button onClick={() => startEdit(item)} className="p-1.5 text-text-secondary hover:text-accent"><Edit3 size={14} /></button>
-                  <button onClick={() => { if (confirm('确定删除？')) deleteMutation.mutate({ id: item.id, image_url: item.image_url }) }} className="p-1.5 text-text-secondary hover:text-red-500"><Trash2 size={14} /></button>
+                  <button onClick={() => { if (confirm('确定删除？')) deleteMutation.mutate({ id: item.id, storage_path: item.storage_path }) }} className="p-1.5 text-text-secondary hover:text-red-500"><Trash2 size={14} /></button>
                 </div>
               </div>
             )}

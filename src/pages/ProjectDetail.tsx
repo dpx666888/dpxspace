@@ -2,6 +2,7 @@ import { useParams, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowLeft, Github, Clock, AlertCircle, Lightbulb, Trophy, BookOpen, Sparkles, Star, Loader2 } from 'lucide-react'
 import { useProject, useProjectTimeline } from '../hooks/useProjects'
+import { useAiCollabs } from '../hooks/useAiCollabs'
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -14,6 +15,8 @@ export default function ProjectDetail() {
   const { slug } = useParams<{ slug: string }>()
   const { data: project, isLoading: projectLoading, error: projectError } = useProject(slug)
   const { data: timelineEvents } = useProjectTimeline(project?.id)
+  const { data: aiCollabs } = useAiCollabs()
+  const projectAi = aiCollabs?.filter(c => project?.id && c.project_id === project.id) ?? []
 
   if (projectLoading) {
     return (
@@ -217,7 +220,7 @@ export default function ProjectDetail() {
           </motion.section>
 
           {/* AI协作 */}
-          {project.ai_collaboration && (
+          {(project.ai_collaboration || projectAi.length > 0) && (
             <motion.section {...fadeInUp}>
               <div className="flex items-center gap-3 mb-4">
                 <div className="p-2 bg-accent/10 rounded-lg">
@@ -225,9 +228,29 @@ export default function ProjectDetail() {
                 </div>
                 <h2 className="text-xl font-semibold text-text-primary">AI 协作</h2>
               </div>
-              <div className="p-6 bg-bg-secondary border border-border rounded-xl">
-                <p className="text-text-secondary leading-relaxed">{project.ai_collaboration}</p>
-              </div>
+              {project.ai_collaboration && (
+                <div className="p-6 bg-bg-secondary border border-border rounded-xl mb-6">
+                  <p className="text-text-secondary leading-relaxed">{project.ai_collaboration}</p>
+                </div>
+              )}
+              {projectAi.length > 0 && (
+                <div className="space-y-4">
+                  <h3 className="text-sm font-medium text-text-secondary">协作记录</h3>
+                  {projectAi.map((collab) => (
+                    <div key={collab.id} className="p-4 bg-bg-secondary border border-border rounded-xl">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-xs text-text-secondary">{collab.date}</span>
+                        <span className="text-xs font-medium text-accent">{collab.title}</span>
+                      </div>
+                      <p className="text-sm text-text-secondary mb-2">{collab.context}</p>
+                      <div className="bg-bg-primary border border-border rounded-lg p-3">
+                        <p className="text-xs text-text-secondary mb-1">Prompt & 结果</p>
+                        <p className="text-sm text-text-primary">{collab.result}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </motion.section>
           )}
         </div>

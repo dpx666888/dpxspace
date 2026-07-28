@@ -17,13 +17,11 @@ const aboutSchema = z.object({
   courses: z.string().min(1, '请输入主修课程'),
   achievements: z.string().min(1, '请输入学业成绩'),
   competitions: z.string().min(1, '请输入竞赛荣誉'),
-  ai_intro: z.string().min(1, '请输入 AI 协作简介'),
-  ai_examples: z.string().min(1, '请输入 AI 协作示例'),
 })
 
 type AboutFormData = z.infer<typeof aboutSchema>
 
-const DEFAULT_SECTION_ORDER = ['about', 'education', 'tech', 'practices', 'certificates', 'growth', 'ai']
+const DEFAULT_SECTION_ORDER = ['about', 'education', 'tech', 'practices', 'certificates', 'growth']
 
 const sectionLabels: Record<string, string> = {
   about: '关于我',
@@ -32,7 +30,6 @@ const sectionLabels: Record<string, string> = {
   practices: '实践经历',
   certificates: '技能与证书',
   growth: '成长路线',
-  ai: 'AI 协作',
 }
 
 export default function AboutManage() {
@@ -61,7 +58,7 @@ export default function AboutManage() {
     formState: { errors },
   } = useForm<AboutFormData>({
     resolver: zodResolver(aboutSchema),
-    defaultValues: { school: '', major: '', period: '', courses: '', achievements: '', competitions: '', ai_intro: '', ai_examples: '' },
+    defaultValues: { school: '', major: '', period: '', courses: '', achievements: '', competitions: '' },
   })
 
   useEffect(() => {
@@ -73,8 +70,6 @@ export default function AboutManage() {
         courses: about.education.courses,
         achievements: about.education.achievements,
         competitions: about.education.competitions,
-        ai_intro: about.ai_collaboration.intro,
-        ai_examples: about.ai_collaboration.examples,
       })
       setIntro(about.intro)
       setCertificates(about.certificates)
@@ -100,10 +95,6 @@ export default function AboutManage() {
       practice: practices,
       tech_stack: techStacks,
       growth_route: growthRoutes,
-      ai_collaboration: {
-        intro: values.ai_intro,
-        examples: values.ai_examples,
-      },
       section_order: sectionOrder,
     }
     mutation.mutate(payload)
@@ -268,21 +259,6 @@ export default function AboutManage() {
               </div>
             ))}
             <button type="button" onClick={() => setGrowthRoutes([...growthRoutes, { period: '', title: '', desc: '' }])} className="inline-flex items-center gap-1 text-sm text-accent hover:text-accent-light"><Plus size={14} /> 添加成长节点</button>
-          </>
-        )
-      case 'ai':
-        return (
-          <>
-            <div>
-              <label className={labelClass}>简介</label>
-              <textarea {...register('ai_intro')} rows={3} className={inputClass} />
-              {errors.ai_intro && <p className="text-xs text-red-500 mt-1">{errors.ai_intro.message}</p>}
-            </div>
-            <div>
-              <label className={labelClass}>示例说明</label>
-              <textarea {...register('ai_examples')} rows={3} className={inputClass} />
-              {errors.ai_examples && <p className="text-xs text-red-500 mt-1">{errors.ai_examples.message}</p>}
-            </div>
           </>
         )
       default:

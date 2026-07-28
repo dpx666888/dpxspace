@@ -4,21 +4,14 @@ import type { GalleryItem, GalleryInput } from '../types/database'
 const BUCKET = 'gallery'
 
 export async function getGallery(): Promise<GalleryItem[]> {
-  if (!isSupabaseConfigured()) {
-    console.warn('[gallery.service] Supabase 未配置')
-    return []
-  }
+  if (!isSupabaseConfigured()) return []
 
   const { data, error } = await supabase!
     .from('gallery')
     .select('*')
     .order('sort_order')
 
-  if (error) {
-    console.error('[gallery.service] 获取图片失败:', error.message)
-    return []
-  }
-
+  if (error) return []
   return (data || []) as GalleryItem[]
 }
 
@@ -59,19 +52,19 @@ export async function reorderGallery(items: { id: number; sort_order: number }[]
   if (error) throw new Error(`更新排序失败: ${error.message}`)
 }
 
-export async function uploadImage(file: File): Promise<string> {
+export async function uploadImage(file: File, subFolder: string = 'archive'): Promise<{ url: string; path: string }> {
   if (!supabase) throw new Error('Supabase 未配置')
-  const filename = `${Date.now()}-${file.name}`
-  const { error } = await supabase.storage.from(BUCKET).upload(filename, file)
+  const cleanName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_')
+  const filename = `${subFolder}/${Date.now()}-${cleanName}`
+  const { error } = await supabase.storage.from(BUCKET).upload(filename, file, { upsert: false })
   if (error) throw new Error(`上传图片失败: ${error.message}`)
   const { data } = supabase.storage.from(BUCKET).getPublicUrl(filename)
-  return data.publicUrl
+  return { url: data.publicUrl, path: filename }
 }
 
-export async function deleteImage(url: string): Promise<void> {
+export async function deleteImage(storagePath: string): Promise<void> {
   if (!supabase) throw new Error('Supabase 未配置')
-  const parts = url.split('/')
-  const filename = parts[parts.length - 1]
-  const { error } = await supabase.storage.from(BUCKET).remove([filename])
-  if (error) throw new Error(`删除图片失败: ${error.message}`)
+  if (!storagePath) return
+  const { error } = await supabase.storage.from(BUCKET).remove([storagePath])
+  if (error) console.warn('[gallery.service] 删除图片失败:', error.message)
 }

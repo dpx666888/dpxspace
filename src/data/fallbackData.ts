@@ -236,7 +236,7 @@ export const fallbackAbout: AboutData = {
     intro: '在学习和开发过程中，我积极使用 AI 工具辅助编程。从代码调试、跨端兼容性问题解决，到项目架构设计和 UI 样式生成，AI 是我的重要协作伙伴。',
     examples: '例如：在螃蟹记账开发中，使用 AI 辅助解决 uni-app 多端适配问题；在 AixProbe 硬件项目中，借助 AI 排查电路故障和优化焊接工艺；在搭建这个个人网站时，与 AI 协作完成从设计到实现的全流程。',
   },
-  section_order: ['about', 'education', 'tech', 'practices', 'certificates', 'growth', 'ai'],
+  section_order: ['about', 'education', 'tech', 'practices', 'certificates', 'growth'],
   updated_at: '2026-07-22T00:00:00.000Z',
 }
 

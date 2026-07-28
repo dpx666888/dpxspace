@@ -9,7 +9,7 @@ import type { CoffeeLogInput, CoffeeLogData } from '../../types/database'
 
 const EMPTY: CoffeeLogInput = {
   title: '', date: '', bean: '', origin: '', process_method: '', equipment: '',
-  parameters: {}, description: '', flavor_notes: '', image_url: '', rating: 3, sort_order: 0,
+  parameters: {}, description: '', flavor_notes: '', image_url: '', storage_path: '', rating: 3, sort_order: 0,
 }
 
 const ratingStars = (n: number) => '★'.repeat(n) + '☆'.repeat(5 - n)
@@ -33,8 +33,8 @@ export default function CoffeeManage() {
     onSuccess: () => { qc.invalidateQueries({ queryKey: ['coffeeLogs'] }); setEditingId(null) },
   })
   const deleteMutation = useMutation({
-    mutationFn: async (item: { id: number; image_url: string }) => {
-      if (item.image_url) await deleteImage(item.image_url).catch(() => {})
+    mutationFn: async (item: { id: number; storage_path: string }) => {
+      if (item.storage_path) await deleteImage(item.storage_path).catch(() => {})
       await deleteCoffeeLog(item.id)
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ['coffeeLogs'] }),
@@ -45,7 +45,7 @@ export default function CoffeeManage() {
     const file = e.target.files?.[0]
     if (!file) return
     setUploading(true)
-    try { const url = await uploadImage(file); setEditData({ ...editData, image_url: url }) } catch { alert('上传失败') }
+    try { const result = await uploadImage(file, 'coffee'); setEditData({ ...editData, image_url: result.url, storage_path: result.path }) } catch { alert('上传失败') }
     setUploading(false)
   }
 
@@ -55,7 +55,7 @@ export default function CoffeeManage() {
       title: item.title, date: item.date, bean: item.bean, origin: item.origin,
       process_method: item.process_method, equipment: item.equipment,
       parameters: item.parameters, description: item.description,
-      flavor_notes: item.flavor_notes, image_url: item.image_url,
+      flavor_notes: item.flavor_notes, image_url: item.image_url, storage_path: item.storage_path,
       rating: item.rating, sort_order: item.sort_order,
     })
     setParamText(Object.entries(item.parameters || {}).map(([k, v]) => `${k}: ${v}`).join('\n'))
@@ -169,7 +169,7 @@ export default function CoffeeManage() {
                 </div>
                 <div className="flex items-center gap-1 shrink-0">
                   <button onClick={() => startEdit(item)} className="p-1.5 text-text-secondary hover:text-accent"><Edit3 size={14} /></button>
-                  <button onClick={() => { if (confirm('确定删除？')) deleteMutation.mutate({ id: item.id, image_url: item.image_url }) }} className="p-1.5 text-text-secondary hover:text-red-500"><Trash2 size={14} /></button>
+                  <button onClick={() => { if (confirm('确定删除？')) deleteMutation.mutate({ id: item.id, storage_path: item.storage_path }) }} className="p-1.5 text-text-secondary hover:text-red-500"><Trash2 size={14} /></button>
                 </div>
               </div>
             )}

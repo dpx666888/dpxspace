@@ -6,7 +6,8 @@ import { useAiCollabs } from '../../hooks/useAiCollabs'
 import { createAiCollab, updateAiCollab, deleteAiCollab, updateAiCollabsOrder } from '../../services/aiCollab.service'
 import type { AiCollabData, AiCollabInput } from '../../types/database'
 
-const EMPTY: AiCollabInput = {
+const EMPTY: AiCollabInput & { project_id?: number | null } = {
+  project_id: null,
   date: '',
   title: '',
   context: '',
@@ -52,6 +53,7 @@ export default function CollabManage() {
       prompt: collab.prompt,
       result: collab.result,
       project: collab.project ?? '',
+      project_id: collab.project_id ?? null,
       sort_order: collab.sort_order,
     })
   }
@@ -120,7 +122,11 @@ export default function CollabManage() {
                   </div>
                   <div>
                     <label className="block text-xs text-text-secondary mb-1">关联项目</label>
-                    <input value={editData.project ?? ''} onChange={e => setEditData({ ...editData, project: e.target.value })} className={inputClass} />
+                    <input value={editData.project ?? ''} onChange={e => setEditData({ ...editData, project: e.target.value })} className={inputClass} placeholder="项目名称" />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-text-secondary mb-1">项目ID</label>
+                    <input type="number" value={editData.project_id ?? ''} onChange={e => setEditData({ ...editData, project_id: e.target.value ? parseInt(e.target.value) : null })} className={inputClass} placeholder="数字ID" />
                   </div>
                 </div>
                 <div>
@@ -176,7 +182,11 @@ export default function CollabManage() {
               </div>
               <div>
                 <label className="block text-xs text-text-secondary mb-1">关联项目</label>
-                <input value={editData.project ?? ''} onChange={e => setEditData({ ...editData, project: e.target.value })} className={inputClass} />
+                <input value={editData.project ?? ''} onChange={e => setEditData({ ...editData, project: e.target.value })} className={inputClass} placeholder="项目名称" />
+              </div>
+              <div>
+                <label className="block text-xs text-text-secondary mb-1">项目ID</label>
+                <input type="number" value={editData.project_id ?? ''} onChange={e => setEditData({ ...editData, project_id: e.target.value ? parseInt(e.target.value) : null })} className={inputClass} placeholder="数字ID" />
               </div>
             </div>
             <div>
