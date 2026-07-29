@@ -1,10 +1,11 @@
+import { logger } from '../utils/logger'
 import { supabase, isSupabaseConfigured } from './supabase'
 import { fallbackProjects } from '../data/fallbackData'
 import type { Project, ProjectInput, TimelineEvent } from '../types/database'
 
 export async function getProjects(): Promise<Project[]> {
   if (!isSupabaseConfigured()) {
-    console.warn('[projects.service] Supabase 未配置，使用本地静态数据')
+    logger.warn('[projects.service] Supabase 未配置，使用本地静态数据')
     return fallbackProjects
   }
 
@@ -15,7 +16,7 @@ export async function getProjects(): Promise<Project[]> {
     .order('created_at', { ascending: false })
 
   if (error) {
-    console.error('[projects.service] 获取项目失败:', error.message)
+    logger.error('[projects.service] 获取项目失败:', error.message)
     throw new Error(`获取项目失败: ${error.message}`)
   }
 
@@ -35,7 +36,7 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
 
   if (error) {
     if (error.code === 'PGRST116') return null
-    console.error('[projects.service] 获取项目详情失败:', error.message)
+    logger.error('[projects.service] 获取项目详情失败:', error.message)
     throw new Error(`获取项目详情失败: ${error.message}`)
   }
 
@@ -54,7 +55,7 @@ export async function getProjectTimeline(_projectId: number): Promise<TimelineEv
     .order('sort_order', { ascending: true })
 
   if (error) {
-    console.error('[projects.service] 获取项目时间线失败:', error.message)
+    logger.error('[projects.service] 获取项目时间线失败:', error.message)
     throw new Error(`获取项目时间线失败: ${error.message}`)
   }
 
@@ -71,7 +72,7 @@ export async function createProject(project: ProjectInput): Promise<Project> {
     .single()
 
   if (error) {
-    console.error('[projects.service] 创建项目失败:', error.message)
+    logger.error('[projects.service] 创建项目失败:', error.message)
     throw new Error(`创建项目失败: ${error.message}`)
   }
 
@@ -89,7 +90,7 @@ export async function updateProject(id: number, project: Partial<ProjectInput>):
     .single()
 
   if (error) {
-    console.error('[projects.service] 更新项目失败:', error.message)
+    logger.error('[projects.service] 更新项目失败:', error.message)
     throw new Error(`更新项目失败: ${error.message}`)
   }
 
@@ -107,13 +108,27 @@ export async function reorderProjects(items: { id: number; sort_order: number }[
 export async function deleteProject(id: number): Promise<void> {
   if (!supabase) throw new Error('Supabase 未配置，无法删除项目')
 
+  // 级联清理关联的AI协作记录
+  const { error: aiError } = await supabase
+    .from('ai_collabs')
+    .delete()
+    .eq('project_id', id)
+  if (aiError) logger.warn('[projects.service] 清理AI协作记录失败:', aiError.message)
+
+  // 级联清理关联的时间线记录
+  const { error: tlError } = await supabase
+    .from('project_timeline')
+    .delete()
+    .eq('project_id', id)
+  if (tlError) logger.warn('[projects.service] 清理时间线记录失败:', tlError.message)
+
   const { error } = await supabase
     .from('projects')
     .delete()
     .eq('id', id)
 
   if (error) {
-    console.error('[projects.service] 删除项目失败:', error.message)
+    logger.error('[projects.service] 删除项目失败:', error.message)
     throw new Error(`删除项目失败: ${error.message}`)
   }
 }

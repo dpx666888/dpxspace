@@ -25,6 +25,7 @@ export default function CoffeeManage() {
   const [dropIndex, setDropIndex] = useState<number | null>(null)
   const dragRef = useRef<{ from: number; to: number } | null>(null)
   const [uploading, setUploading] = useState(false)
+  const [uploadError, setUploadError] = useState<string | null>(null)
   const fileRef = useRef<HTMLInputElement>(null)
 
   const createMutation = useMutation({ mutationFn: createCoffeeLog, onSuccess: () => qc.invalidateQueries({ queryKey: ['coffeeLogs'] }) })
@@ -34,10 +35,15 @@ export default function CoffeeManage() {
   })
   const deleteMutation = useMutation({
     mutationFn: async (item: { id: number; storage_path: string }) => {
-      if (item.storage_path) await deleteImage(item.storage_path).catch(() => {})
+      if (item.storage_path) {
+        await deleteImage(item.storage_path).catch((err) => {
+          console.warn('Storage图片删除失败，文件可能残留:', item.storage_path, err)
+        })
+      }
       await deleteCoffeeLog(item.id)
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ['coffeeLogs'] }),
+    onError: (err) => alert(err instanceof Error ? err.message : '删除失败'),
   })
   const orderMutation = useMutation({ mutationFn: reorderCoffeeLogs, onSuccess: () => qc.invalidateQueries({ queryKey: ['coffeeLogs'] }) })
 
@@ -45,7 +51,7 @@ export default function CoffeeManage() {
     const file = e.target.files?.[0]
     if (!file) return
     setUploading(true)
-    try { const result = await uploadImage(file, 'coffee'); setEditData({ ...editData, image_url: result.url, storage_path: result.path }) } catch { alert('上传失败') }
+    try { setUploadError(null); const result = await uploadImage(file, 'coffee'); setEditData({ ...editData, image_url: result.url, storage_path: result.path }) } catch (err) { setUploadError(err instanceof Error ? err.message : '上传失败') }
     setUploading(false)
   }
 
@@ -135,9 +141,10 @@ export default function CoffeeManage() {
                       <label className="block text-xs text-text-secondary mb-1">评分 {editData.rating}/5</label>
                       <input type="range" min="1" max="5" value={editData.rating} onChange={e => setEditData({ ...editData, rating: parseInt(e.target.value) })} className="w-full accent-accent" />
                     </div>
-                    <button type="button" onClick={() => fileRef.current?.click()} disabled={uploading} className="px-3 py-1.5 border border-border rounded-lg text-text-secondary hover:text-accent text-sm flex items-center gap-1">
+                    <button type="button" onClick={() => { setUploadError(null); fileRef.current?.click() }} disabled={uploading} className="px-3 py-1.5 border border-border rounded-lg text-text-secondary hover:text-accent text-sm flex items-center gap-1">
                       <Upload size={14} /> {uploading ? '...' : '上传图片'}
                     </button>
+                    {uploadError && <p className="text-xs text-red-400 mt-1">{uploadError}</p>}
                     <input ref={fileRef} type="file" accept="image/*" onChange={handleUpload} className="hidden" />
                   </div>
                 </div>
@@ -205,9 +212,10 @@ export default function CoffeeManage() {
                   <label className="block text-xs text-text-secondary mb-1">评分 {editData.rating}/5</label>
                   <input type="range" min="1" max="5" value={editData.rating} onChange={e => setEditData({ ...editData, rating: parseInt(e.target.value) })} className="w-full accent-accent" />
                 </div>
-                <button type="button" onClick={() => fileRef.current?.click()} disabled={uploading} className="px-3 py-1.5 border border-border rounded-lg text-text-secondary hover:text-accent text-sm flex items-center gap-1">
+                <button type="button" onClick={() => { setUploadError(null); fileRef.current?.click() }} disabled={uploading} className="px-3 py-1.5 border border-border rounded-lg text-text-secondary hover:text-accent text-sm flex items-center gap-1">
                   <Upload size={14} /> {uploading ? '...' : '上传图片'}
                 </button>
+                {uploadError && <p className="text-xs text-red-400 mt-1">{uploadError}</p>}
               </div>
             </div>
             <div>

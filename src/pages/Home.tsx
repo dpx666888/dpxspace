@@ -4,13 +4,15 @@ import { Link } from 'react-router-dom'
 import { useProjects } from '../hooks/useProjects'
 import { useLogs } from '../hooks/useLogs'
 import { useHomeConfig } from '../hooks/useSiteConfig'
+import { useSpaceModules } from '../hooks/useSpaceModules'
 import PersonalSpacePreview from '../components/PersonalSpacePreview'
 
 export default function Home() {
   const { data: projects, isLoading: projectsLoading } = useProjects()
   const { data: logs, isLoading: logsLoading } = useLogs()
   const { data: config, isLoading: configLoading } = useHomeConfig()
-  const loading = projectsLoading || logsLoading || configLoading
+  const { isLoading: spaceLoading } = useSpaceModules()
+  const loading = projectsLoading || logsLoading || configLoading || spaceLoading
 
   if (loading) {
     return (
@@ -217,40 +219,44 @@ export default function Home() {
               </Link>
             </motion.div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {projects?.slice(0, 3).map((project, index) => {
-              const Icon = project.tech_stack.includes('C++') ? Code2 : Globe
-              const lang = project.tech_stack[0] || project.tags[0] || '项目'
-              return (
-                <motion.a
-                  key={project.slug}
-                  href={project.github_url ?? undefined}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group block p-6 bg-bg-secondary border border-border rounded-xl hover:border-accent/50 transition-all hover:-translate-y-1"
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                >
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="p-2 bg-accent/10 rounded-lg">
-                      <Icon size={18} className="text-accent" />
+          {projects && projects.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {projects.slice(0, 3).map((project, index) => {
+                const Icon = project.tech_stack.includes('C++') ? Code2 : Globe
+                const lang = project.tech_stack[0] || project.tags[0] || '项目'
+                return (
+                  <motion.a
+                    key={project.slug}
+                    href={project.github_url ?? undefined}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group block p-6 bg-bg-secondary border border-border rounded-xl hover:border-accent/50 transition-all hover:-translate-y-1"
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                  >
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="p-2 bg-accent/10 rounded-lg">
+                        <Icon size={18} className="text-accent" />
+                      </div>
+                      <span className="text-xs text-text-secondary px-2 py-0.5 bg-bg-primary rounded-full border border-border">
+                        {lang}
+                      </span>
                     </div>
-                    <span className="text-xs text-text-secondary px-2 py-0.5 bg-bg-primary rounded-full border border-border">
-                      {lang}
-                    </span>
-                  </div>
-                  <h3 className="text-lg font-semibold text-text-primary mb-2 group-hover:text-accent transition-colors">
-                    {project.title}
-                  </h3>
-                  <p className="text-sm text-text-secondary leading-relaxed">
-                    {project.description}
-                  </p>
-                </motion.a>
-              )
-            })}
-          </div>
+                    <h3 className="text-lg font-semibold text-text-primary mb-2 group-hover:text-accent transition-colors">
+                      {project.title}
+                    </h3>
+                    <p className="text-sm text-text-secondary leading-relaxed">
+                      {project.description}
+                    </p>
+                  </motion.a>
+                )
+              })}
+            </div>
+          ) : (
+            <p className="text-text-secondary text-sm py-8 text-center">暂无项目，去后台添加第一个项目</p>
+          )}
         </div>
       </section>
 
@@ -281,29 +287,33 @@ export default function Home() {
               </Link>
             </motion.div>
           </div>
-          <div className="space-y-4">
-            {logs?.slice(0, 3).map((log, index) => (
-              <motion.div
-                key={log.id}
-                className="p-5 bg-bg-secondary border border-border rounded-xl hover:border-accent/30 transition-colors"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-50px' }}
-                transition={{ duration: 0.4, delay: index * 0.08 }}
-              >
-                <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-6">
-                  <div className="flex items-center gap-3 md:w-40 shrink-0">
-                    <BookOpen size={14} className="text-accent" />
-                    <span className="text-xs text-text-secondary">{log.date}</span>
+          {logs && logs.length > 0 ? (
+            <div className="space-y-4">
+              {logs.slice(0, 3).map((log, index) => (
+                <motion.div
+                  key={log.id}
+                  className="p-5 bg-bg-secondary border border-border rounded-xl hover:border-accent/30 transition-colors"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: '-50px' }}
+                  transition={{ duration: 0.4, delay: index * 0.08 }}
+                >
+                  <div className="flex flex-col md:flex-row md:items-center gap-3 md:gap-6">
+                    <div className="flex items-center gap-3 md:w-40 shrink-0">
+                      <BookOpen size={14} className="text-accent" />
+                      <span className="text-xs text-text-secondary">{log.date}</span>
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-medium text-text-primary mb-1">{log.title}</h3>
+                      <p className="text-sm text-text-secondary leading-relaxed">{log.content}</p>
+                    </div>
                   </div>
-                  <div className="flex-1">
-                    <h3 className="font-medium text-text-primary mb-1">{log.title}</h3>
-                    <p className="text-sm text-text-secondary leading-relaxed">{log.content}</p>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+                </motion.div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-text-secondary text-sm py-8 text-center">暂无日志，去后台写第一篇日志</p>
+          )}
         </div>
       </section>
 

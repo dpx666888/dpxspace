@@ -14,8 +14,7 @@ const fadeInUp = {
   transition: { duration: 0.4 },
 }
 
-function CoffeeDetail({ item }: { item: CoffeeLogData }) {
-  const [open, setOpen] = useState(false)
+function CoffeeDetail({ item, isOpen, onToggle }: { item: CoffeeLogData; isOpen: boolean; onToggle: () => void }) {
   const params = item.parameters || {}
 
   return (
@@ -46,13 +45,13 @@ function CoffeeDetail({ item }: { item: CoffeeLogData }) {
         )}
 
         <button
-          onClick={() => setOpen(!open)}
+          onClick={onToggle}
           className="inline-flex items-center gap-1 text-sm text-accent hover:text-accent-light"
         >
-          {open ? <><ChevronUp size={14} /> 收起详情</> : <><ChevronDown size={14} /> 查看详情</>}
+          {isOpen ? <><ChevronUp size={14} /> 收起详情</> : <><ChevronDown size={14} /> 查看详情</>}
         </button>
 
-        {open && (
+        {isOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
@@ -87,6 +86,7 @@ function CoffeeDetail({ item }: { item: CoffeeLogData }) {
 
 export default function Coffee() {
   const { data: items, isLoading } = useCoffeeLogs()
+  const [expandedId, setExpandedId] = useState<number | null>(null)
 
   if (isLoading) {
     return (
@@ -136,7 +136,7 @@ export default function Coffee() {
                 {...fadeInUp}
                 transition={{ duration: 0.4, delay: index * 0.08 }}
               >
-                <CoffeeDetail item={item} />
+                <CoffeeDetail item={item} isOpen={expandedId === item.id} onToggle={() => setExpandedId(expandedId === item.id ? null : item.id)} />
               </motion.div>
             ))}
           </div>

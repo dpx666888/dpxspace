@@ -1,10 +1,11 @@
+import { logger } from '../utils/logger'
 import { supabase, isSupabaseConfigured } from './supabase'
 import { fallbackContact } from '../data/fallbackData'
 import type { ContactData, ContactInput } from '../types/database'
 
 export async function getContacts(): Promise<ContactData> {
   if (!isSupabaseConfigured()) {
-    console.warn('[contact.service] Supabase 未配置，使用本地静态数据')
+    logger.warn('[contact.service] Supabase 未配置，使用本地静态数据')
     return fallbackContact
   }
 
@@ -14,7 +15,7 @@ export async function getContacts(): Promise<ContactData> {
     .single()
 
   if (error) {
-    console.error('[contact.service] 获取联系方式失败:', error.message)
+    logger.error('[contact.service] 获取联系方式失败:', error.message)
     throw new Error(`获取联系方式失败: ${error.message}`)
   }
 
@@ -32,7 +33,7 @@ export async function updateContacts(contact: ContactInput): Promise<ContactData
     .single()
 
   if (error) {
-    console.error('[contact.service] 更新联系方式失败:', error.message)
+    logger.error('[contact.service] 更新联系方式失败:', error.message)
     throw new Error(`更新联系方式失败: ${error.message}`)
   }
 

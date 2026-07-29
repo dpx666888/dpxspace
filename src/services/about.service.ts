@@ -1,10 +1,11 @@
+import { logger } from '../utils/logger'
 import { supabase, isSupabaseConfigured } from './supabase'
 import { fallbackAbout } from '../data/fallbackData'
 import type { AboutData, AboutInput } from '../types/database'
 
 export async function getAbout(): Promise<AboutData> {
   if (!isSupabaseConfigured()) {
-    console.warn('[about.service] Supabase 未配置，使用本地静态数据')
+    logger.warn('[about.service] Supabase 未配置，使用本地静态数据')
     return fallbackAbout
   }
 
@@ -14,7 +15,7 @@ export async function getAbout(): Promise<AboutData> {
     .single()
 
   if (error) {
-    console.error('[about.service] 获取关于我失败:', error.message)
+    logger.error('[about.service] 获取关于我失败:', error.message)
     throw new Error(`获取关于我失败: ${error.message}`)
   }
 
@@ -32,7 +33,7 @@ export async function updateAbout(about: AboutInput): Promise<AboutData> {
     .single()
 
   if (error) {
-    console.error('[about.service] 更新关于我失败:', error.message)
+    logger.error('[about.service] 更新关于我失败:', error.message)
     throw new Error(`更新关于我失败: ${error.message}`)
   }
 

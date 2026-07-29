@@ -17,6 +17,7 @@ const homeConfigSchema = z.object({
   skills_title: z.string().min(1, '请输入技能标题'),
   projects_title: z.string().min(1, '请输入项目标题'),
   logs_title: z.string().min(1, '请输入日志标题'),
+  avatar_url: z.string().optional(),
 })
 
 type HomeConfigFormData = z.infer<typeof homeConfigSchema>
@@ -38,7 +39,7 @@ export default function SiteConfigManage() {
     formState: { errors },
   } = useForm<HomeConfigFormData>({
     resolver: zodResolver(homeConfigSchema),
-    defaultValues: { greeting: '', name: '', bio: '', button_text: '', skills_title: '', projects_title: '', logs_title: '' },
+    defaultValues: { greeting: '', name: '', bio: '', button_text: '', skills_title: '', projects_title: '', logs_title: '', avatar_url: '' },
   })
 
   useEffect(() => {
@@ -51,6 +52,7 @@ export default function SiteConfigManage() {
         skills_title: config.skills_title,
         projects_title: config.projects_title,
         logs_title: config.logs_title,
+        avatar_url: config.avatar_url ?? '',
       })
       setSkillsText(config.skills?.join(', ') ?? '')
     }
@@ -71,6 +73,7 @@ export default function SiteConfigManage() {
       skills_title: values.skills_title,
       projects_title: values.projects_title,
       logs_title: values.logs_title,
+      avatar_url: values.avatar_url ?? '',
     }
     mutation.mutate(payload)
   }
@@ -102,6 +105,10 @@ export default function SiteConfigManage() {
               <input {...register('name')} className={inputClass} />
               {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name.message}</p>}
             </div>
+          </div>
+          <div>
+            <label className={labelClass}>头像URL</label>
+            <input {...register('avatar_url')} className={inputClass} placeholder="https://..." />
           </div>
           <div>
             <label className={labelClass}>简介</label>

@@ -1,10 +1,11 @@
+import { logger } from '../utils/logger'
 import { supabase, isSupabaseConfigured } from './supabase'
 import { fallbackHomeConfig } from '../data/fallbackData'
 import type { HomePageConfig } from '../types/database'
 
 export async function getHomeConfig(): Promise<HomePageConfig> {
   if (!isSupabaseConfigured()) {
-    console.warn('[siteConfig.service] Supabase 未配置，使用本地静态数据')
+    logger.warn('[siteConfig.service] Supabase 未配置，使用本地静态数据')
     return fallbackHomeConfig
   }
 
@@ -15,7 +16,7 @@ export async function getHomeConfig(): Promise<HomePageConfig> {
     .single()
 
   if (error) {
-    console.error('[siteConfig.service] 获取首页配置失败:', error.message)
+    logger.error('[siteConfig.service] 获取首页配置失败:', error.message)
     return fallbackHomeConfig
   }
 
@@ -32,7 +33,7 @@ export async function updateHomeConfig(config: HomePageConfig): Promise<HomePage
     .single()
 
   if (error) {
-    console.error('[siteConfig.service] 更新首页配置失败:', error.message)
+    logger.error('[siteConfig.service] 更新首页配置失败:', error.message)
     throw new Error(`更新首页配置失败: ${error.message}`)
   }
 

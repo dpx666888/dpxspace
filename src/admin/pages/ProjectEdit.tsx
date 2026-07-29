@@ -134,11 +134,20 @@ export default function ProjectEdit() {
     }
   }
 
-  if (listLoading || (!isNew && !project && projects)) {
+  if (listLoading) {
     return (
       <AdminLayout title={isNew ? '新建项目' : '编辑项目'}>
-        <div className="p-12 flex items-center justify-center">
-          <Loader2 className="w-8 h-8 text-accent animate-spin" />
+        <div className="p-12 flex items-center justify-center"><Loader2 className="w-8 h-8 text-accent animate-spin" /></div>
+      </AdminLayout>
+    )
+  }
+
+  if (!isNew && !project) {
+    return (
+      <AdminLayout title="编辑项目">
+        <div className="p-12 text-center">
+          <p className="text-text-secondary mb-4">未找到该项目记录</p>
+          <Link to="/admin/projects" className="text-accent hover:text-accent-light text-sm">返回列表</Link>
         </div>
       </AdminLayout>
     )

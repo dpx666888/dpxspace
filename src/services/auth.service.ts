@@ -1,3 +1,4 @@
+import { logger } from '../utils/logger'
 import { supabase } from './supabase'
 import type { User, Session } from '@supabase/supabase-js'
 
@@ -15,7 +16,7 @@ export async function signIn(email: string, password: string): Promise<AuthResul
   })
 
   if (error) {
-    console.error('[auth.service] 登录失败:', error.message)
+    logger.error('[auth.service] 登录失败:', error.message)
     throw new Error(`登录失败: ${error.message}`)
   }
 
@@ -26,7 +27,7 @@ export async function signOut(): Promise<void> {
   if (!supabase) throw new Error('Supabase 未配置')
   const { error } = await supabase.auth.signOut()
   if (error) {
-    console.error('[auth.service] 退出失败:', error.message)
+    logger.error('[auth.service] 退出失败:', error.message)
     throw new Error(`退出失败: ${error.message}`)
   }
 }

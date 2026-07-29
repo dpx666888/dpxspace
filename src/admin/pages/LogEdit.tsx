@@ -75,11 +75,20 @@ export default function LogEdit() {
     }
   }
 
-  if (listLoading || (!isNew && !log && logs)) {
+  if (listLoading) {
     return (
       <AdminLayout title={isNew ? '新建日志' : '编辑日志'}>
-        <div className="p-12 flex items-center justify-center">
-          <Loader2 className="w-8 h-8 text-accent animate-spin" />
+        <div className="p-12 flex items-center justify-center"><Loader2 className="w-8 h-8 text-accent animate-spin" /></div>
+      </AdminLayout>
+    )
+  }
+
+  if (!isNew && !log) {
+    return (
+      <AdminLayout title="编辑日志">
+        <div className="p-12 text-center">
+          <p className="text-text-secondary mb-4">未找到该日志记录</p>
+          <Link to="/admin/logs" className="text-accent hover:text-accent-light text-sm">返回列表</Link>
         </div>
       </AdminLayout>
     )

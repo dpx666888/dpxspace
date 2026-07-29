@@ -19,6 +19,7 @@ export default function GalleryManage() {
   const [dropIndex, setDropIndex] = useState<number | null>(null)
   const dragRef = useRef<{ from: number; to: number } | null>(null)
   const [uploading, setUploading] = useState(false)
+  const [uploadError, setUploadError] = useState<string | null>(null)
   const fileRef = useRef<HTMLInputElement>(null)
 
   const createMutation = useMutation({
@@ -31,10 +32,15 @@ export default function GalleryManage() {
   })
   const deleteMutation = useMutation({
     mutationFn: async (item: { id: number; storage_path: string }) => {
-      if (item.storage_path) await deleteImage(item.storage_path).catch(() => {})
+      if (item.storage_path) {
+        await deleteImage(item.storage_path).catch((err) => {
+          console.warn('Storage图片删除失败，文件可能残留:', item.storage_path, err)
+        })
+      }
       await deleteGalleryItem(item.id)
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ['gallery'] }),
+    onError: (err) => alert(err instanceof Error ? err.message : '删除失败'),
   })
   const orderMutation = useMutation({
     mutationFn: reorderGallery,
@@ -46,9 +52,12 @@ export default function GalleryManage() {
     if (!file) return
     setUploading(true)
     try {
+      setUploadError(null)
       const result = await uploadImage(file, 'archive')
       setEditData({ ...editData, image_url: result.url, storage_path: result.path })
-    } catch (err) { alert('上传失败') }
+    } catch (err) {
+      setUploadError(err instanceof Error ? err.message : '上传失败')
+    }
     setUploading(false)
   }
 
@@ -131,9 +140,10 @@ export default function GalleryManage() {
                     <input value={editData.date} onChange={e => setEditData({ ...editData, date: e.target.value })} className={inputClass} />
                   </div>
                   <div className="flex items-end gap-2">
-                    <button type="button" onClick={() => fileRef.current?.click()} disabled={uploading} className="px-3 py-2 border border-border rounded-lg text-text-secondary hover:text-accent text-sm flex items-center gap-1">
+                    <button type="button" onClick={() => { setUploadError(null); fileRef.current?.click() }} disabled={uploading} className="px-3 py-2 border border-border rounded-lg text-text-secondary hover:text-accent text-sm flex items-center gap-1">
                       <Upload size={14} /> {uploading ? '...' : '上传'}
                     </button>
+                    {uploadError && <p className="text-xs text-red-400 mt-1">{uploadError}</p>}
                     <input ref={fileRef} type="file" accept="image/*" onChange={handleUpload} className="hidden" />
                   </div>
                 </div>
@@ -195,9 +205,10 @@ export default function GalleryManage() {
                 <input value={editData.date} onChange={e => setEditData({ ...editData, date: e.target.value })} className={inputClass} />
               </div>
               <div className="flex items-end gap-2">
-                <button type="button" onClick={() => fileRef.current?.click()} disabled={uploading} className="px-3 py-2 border border-border rounded-lg text-text-secondary hover:text-accent text-sm flex items-center gap-1">
+                <button type="button" onClick={() => { setUploadError(null); fileRef.current?.click() }} disabled={uploading} className="px-3 py-2 border border-border rounded-lg text-text-secondary hover:text-accent text-sm flex items-center gap-1">
                   <Upload size={14} /> {uploading ? '...' : '上传'}
                 </button>
+                {uploadError && <p className="text-xs text-red-400 mt-1">{uploadError}</p>}
               </div>
             </div>
             <div className="flex items-center gap-2">

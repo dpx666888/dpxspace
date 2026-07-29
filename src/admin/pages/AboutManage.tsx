@@ -76,7 +76,8 @@ export default function AboutManage() {
       setPractices(about.practice)
       setTechStacks(about.tech_stack)
       setGrowthRoutes(about.growth_route)
-      setSectionOrder(about.section_order?.length ? about.section_order : DEFAULT_SECTION_ORDER)
+      const loaded = about.section_order?.length ? about.section_order : DEFAULT_SECTION_ORDER
+      setSectionOrder(loaded.filter(key => key in sectionLabels))
     }
   }, [about, resetForm])
 
@@ -95,7 +96,7 @@ export default function AboutManage() {
       practice: practices,
       tech_stack: techStacks,
       growth_route: growthRoutes,
-      section_order: sectionOrder,
+      section_order: sectionOrder.filter(key => key in sectionLabels),
     }
     mutation.mutate(payload)
   }

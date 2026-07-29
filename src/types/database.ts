@@ -221,6 +221,7 @@ export interface HomePageConfig {
   skills_title: string
   projects_title: string
   logs_title: string
+  avatar_url: string
 }
 
 export interface SiteConfig {

@@ -1,10 +1,11 @@
+import { logger } from '../utils/logger'
 import { supabase, isSupabaseConfigured } from './supabase'
 import { fallbackAiCollabs } from '../data/fallbackData'
 import type { AiCollabData, AiCollabInput } from '../types/database'
 
 export async function getAiCollabs(): Promise<AiCollabData[]> {
   if (!isSupabaseConfigured()) {
-    console.warn('[aiCollab.service] Supabase 未配置，使用本地静态数据')
+    logger.warn('[aiCollab.service] Supabase 未配置，使用本地静态数据')
     return fallbackAiCollabs
   }
 
@@ -14,7 +15,7 @@ export async function getAiCollabs(): Promise<AiCollabData[]> {
     .order('sort_order')
 
   if (error) {
-    console.error('[aiCollab.service] 获取协作记录失败:', error.message)
+    logger.error('[aiCollab.service] 获取协作记录失败:', error.message)
     return fallbackAiCollabs
   }
 

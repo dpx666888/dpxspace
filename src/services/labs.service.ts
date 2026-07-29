@@ -1,10 +1,11 @@
+import { logger } from '../utils/logger'
 import { supabase, isSupabaseConfigured } from './supabase'
 import { fallbackLabs } from '../data/fallbackData'
 import type { Lab, LabInput } from '../types/database'
 
 export async function getLabs(): Promise<Lab[]> {
   if (!isSupabaseConfigured()) {
-    console.warn('[labs.service] Supabase 未配置，使用本地静态数据')
+    logger.warn('[labs.service] Supabase 未配置，使用本地静态数据')
     return fallbackLabs
   }
 
@@ -14,7 +15,7 @@ export async function getLabs(): Promise<Lab[]> {
     .order('created_at', { ascending: false })
 
   if (error) {
-    console.error('[labs.service] 获取实验室项目失败:', error.message)
+    logger.error('[labs.service] 获取实验室项目失败:', error.message)
     throw new Error(`获取实验室项目失败: ${error.message}`)
   }
 
@@ -31,7 +32,7 @@ export async function createLab(lab: LabInput): Promise<Lab> {
     .single()
 
   if (error) {
-    console.error('[labs.service] 创建实验室项目失败:', error.message)
+    logger.error('[labs.service] 创建实验室项目失败:', error.message)
     throw new Error(`创建实验室项目失败: ${error.message}`)
   }
 
@@ -49,7 +50,7 @@ export async function updateLab(id: number, lab: Partial<LabInput>): Promise<Lab
     .single()
 
   if (error) {
-    console.error('[labs.service] 更新实验室项目失败:', error.message)
+    logger.error('[labs.service] 更新实验室项目失败:', error.message)
     throw new Error(`更新实验室项目失败: ${error.message}`)
   }
 
@@ -73,7 +74,7 @@ export async function deleteLab(id: number): Promise<void> {
     .eq('id', id)
 
   if (error) {
-    console.error('[labs.service] 删除实验室项目失败:', error.message)
+    logger.error('[labs.service] 删除实验室项目失败:', error.message)
     throw new Error(`删除实验室项目失败: ${error.message}`)
   }
 }

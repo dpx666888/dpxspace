@@ -1,10 +1,11 @@
+import { logger } from '../utils/logger'
 import { supabase, isSupabaseConfigured } from './supabase'
 import { fallbackLogs } from '../data/fallbackData'
 import type { Log, LogInput } from '../types/database'
 
 export async function getLogs(): Promise<Log[]> {
   if (!isSupabaseConfigured()) {
-    console.warn('[logs.service] Supabase 未配置，使用本地静态数据')
+    logger.warn('[logs.service] Supabase 未配置，使用本地静态数据')
     return fallbackLogs
   }
 
@@ -14,7 +15,7 @@ export async function getLogs(): Promise<Log[]> {
     .order('date', { ascending: false })
 
   if (error) {
-    console.error('[logs.service] 获取日志失败:', error.message)
+    logger.error('[logs.service] 获取日志失败:', error.message)
     throw new Error(`获取日志失败: ${error.message}`)
   }
 
@@ -33,7 +34,7 @@ export async function getLogsByCategory(category: string): Promise<Log[]> {
     .order('date', { ascending: false })
 
   if (error) {
-    console.error('[logs.service] 按分类获取日志失败:', error.message)
+    logger.error('[logs.service] 按分类获取日志失败:', error.message)
     throw new Error(`按分类获取日志失败: ${error.message}`)
   }
 
@@ -50,7 +51,7 @@ export async function createLog(log: LogInput): Promise<Log> {
     .single()
 
   if (error) {
-    console.error('[logs.service] 创建日志失败:', error.message)
+    logger.error('[logs.service] 创建日志失败:', error.message)
     throw new Error(`创建日志失败: ${error.message}`)
   }
 
@@ -68,7 +69,7 @@ export async function updateLog(id: number, log: Partial<LogInput>): Promise<Log
     .single()
 
   if (error) {
-    console.error('[logs.service] 更新日志失败:', error.message)
+    logger.error('[logs.service] 更新日志失败:', error.message)
     throw new Error(`更新日志失败: ${error.message}`)
   }
 
@@ -92,7 +93,7 @@ export async function deleteLog(id: number): Promise<void> {
     .eq('id', id)
 
   if (error) {
-    console.error('[logs.service] 删除日志失败:', error.message)
+    logger.error('[logs.service] 删除日志失败:', error.message)
     throw new Error(`删除日志失败: ${error.message}`)
   }
 }

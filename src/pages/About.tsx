@@ -1,9 +1,9 @@
 import { motion } from 'framer-motion'
 import {
-  Code2, Terminal, BookOpen, Globe, Award, GraduationCap, Cpu, Wrench, Loader2,
+  Code2, Terminal, BookOpen, Globe, Award, GraduationCap, Cpu, Wrench, Loader2, User,
 } from 'lucide-react'
-import { profile } from '../data/profile'
 import { useAbout } from '../hooks/useAbout'
+import { useHomeConfig } from '../hooks/useSiteConfig'
 import type { AboutData } from '../types/database'
 
 const fadeInUp = {
@@ -29,22 +29,24 @@ const sectionLabels: Record<string, string> = {
 
 const DEFAULT_ORDER = ['about', 'education', 'tech', 'practices', 'certificates', 'growth']
 
-function renderSection(key: string, about: AboutData) {
+function renderSection(key: string, about: AboutData, avatarUrl: string, displayName: string) {
   switch (key) {
     case 'about':
       return (
         <motion.section className="mb-20 md:mb-28" {...fadeInUp}>
           <div className="flex flex-col md:flex-row gap-8 md:gap-12">
             <div className="shrink-0">
-              <img
-                src={profile.avatar}
-                alt={profile.name}
-                className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-bg-secondary border-2 border-border object-cover"
-              />
+              {avatarUrl ? (
+                <img src={avatarUrl} alt={displayName} className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-bg-secondary border-2 border-border object-cover" />
+              ) : (
+                <div className="w-32 h-32 md:w-40 md:h-40 rounded-full bg-bg-secondary border-2 border-border flex items-center justify-center text-text-secondary/30">
+                  <User size={40} />
+                </div>
+              )}
             </div>
             <div className="flex-1">
               <h2 className="text-xl md:text-2xl font-semibold text-text-primary mb-4">
-                {profile.name}
+                {displayName}
               </h2>
               {about.intro.map((paragraph, i) => (
                 <p key={i} className="text-text-secondary leading-relaxed mb-4 last:mb-0">
@@ -194,6 +196,9 @@ function renderSection(key: string, about: AboutData) {
 
 export default function About() {
   const { data: about, isLoading, error } = useAbout()
+  const { data: config } = useHomeConfig()
+  const avatarUrl = config?.avatar_url || ''
+  const displayName = config?.name || ''
 
   if (isLoading) {
     return (
@@ -211,7 +216,8 @@ export default function About() {
     )
   }
 
-  const order = about.section_order?.length ? about.section_order : DEFAULT_ORDER
+  const rawOrder = about.section_order?.length ? about.section_order : DEFAULT_ORDER
+  const order = rawOrder.filter(key => key in sectionLabels)
 
   return (
     <div className="pt-16 px-4 md:px-8 py-16 md:py-24">
@@ -223,7 +229,7 @@ export default function About() {
         {order.map(key => (
           <div key={key}>
             <h2 className="text-2xl md:text-3xl font-semibold text-text-primary mb-8">{sectionLabels[key]}</h2>
-            {renderSection(key, about)}
+            {renderSection(key, about, avatarUrl, displayName)}
           </div>
         ))}
       </div>
