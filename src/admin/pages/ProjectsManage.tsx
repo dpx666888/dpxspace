@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Plus, Pencil, Trash2, Loader2, GripVertical } from 'lucide-react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import AdminLayout from '../components/AdminLayout'
@@ -14,6 +14,7 @@ export default function ProjectsManage() {
   const [dragIndex, setDragIndex] = useState<number | null>(null)
   const [dropIndex, setDropIndex] = useState<number | null>(null)
   const dragRef = useRef<{ from: number; to: number } | null>(null)
+  const navigate = useNavigate()
 
   const orderMutation = useMutation({
     mutationFn: reorderProjects,
@@ -51,7 +52,7 @@ export default function ProjectsManage() {
           <div
             key={project.id}
             draggable
-            onDragStart={() => { setDragIndex(index); dragRef.current = { from: index, to: index } }}
+            onDragStart={(e) => { e.dataTransfer.setData('text/plain', ''); setDragIndex(index); dragRef.current = { from: index, to: index } }}
             onDragOver={(e) => { e.preventDefault(); setDropIndex(index); if (dragRef.current) dragRef.current.to = index }}
             onDrop={() => {
               if (dragRef.current && dragRef.current.from !== dragRef.current.to) {
@@ -77,7 +78,7 @@ export default function ProjectsManage() {
                 {project.featured && <span className="text-xs px-1.5 py-0.5 rounded-full bg-accent/10 text-accent shrink-0">精选</span>}
               </div>
               <div className="flex items-center gap-1 shrink-0">
-                <Link to={`/admin/projects/${project.id}/edit`} className="p-2 text-text-secondary hover:text-accent transition-colors" title="编辑"><Pencil size={16} /></Link>
+                <button onClick={() => navigate(`/admin/projects/${project.id}/edit`)} className="p-2 text-text-secondary hover:text-accent transition-colors" title="编辑"><Pencil size={16} /></button>
                 <button
                   onClick={() => { if (confirm(`确定删除项目「${project.title}」吗？`)) deleteProject.mutate(project.id) }}
                   disabled={deleteProject.isPending}

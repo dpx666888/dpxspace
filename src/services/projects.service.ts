@@ -12,7 +12,6 @@ export async function getProjects(): Promise<Project[]> {
   const { data, error } = await supabase!
     .from('projects')
     .select('*')
-    .eq('status', 'published')
     .order('created_at', { ascending: false })
 
   if (error) {

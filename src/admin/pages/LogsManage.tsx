@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Plus, Pencil, Trash2, Loader2, GripVertical } from 'lucide-react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import AdminLayout from '../components/AdminLayout'
@@ -14,6 +14,7 @@ export default function LogsManage() {
   const [dragIndex, setDragIndex] = useState<number | null>(null)
   const [dropIndex, setDropIndex] = useState<number | null>(null)
   const dragRef = useRef<{ from: number; to: number } | null>(null)
+  const navigate = useNavigate()
 
   const orderMutation = useMutation({
     mutationFn: reorderLogs,
@@ -51,7 +52,7 @@ export default function LogsManage() {
           <div
             key={log.id}
             draggable
-            onDragStart={() => { setDragIndex(index); dragRef.current = { from: index, to: index } }}
+            onDragStart={(e) => { e.dataTransfer.setData('text/plain', ''); setDragIndex(index); dragRef.current = { from: index, to: index } }}
             onDragOver={(e) => { e.preventDefault(); setDropIndex(index); if (dragRef.current) dragRef.current.to = index }}
             onDrop={() => {
               if (dragRef.current && dragRef.current.from !== dragRef.current.to) {
@@ -74,7 +75,7 @@ export default function LogsManage() {
                 <span className="text-xs px-1.5 py-0.5 rounded-full bg-bg-primary text-text-secondary shrink-0">{log.category}</span>
               </div>
               <div className="flex items-center gap-1 shrink-0">
-                <Link to={`/admin/logs/${log.id}/edit`} className="p-2 text-text-secondary hover:text-accent transition-colors" title="编辑"><Pencil size={16} /></Link>
+                <button onClick={() => navigate(`/admin/logs/${log.id}/edit`)} className="p-2 text-text-secondary hover:text-accent transition-colors" title="编辑"><Pencil size={16} /></button>
                 <button
                   onClick={() => { if (confirm(`确定删除日志「${log.title}」吗？`)) deleteLog.mutate(log.id) }}
                   disabled={deleteLog.isPending}
