@@ -29,6 +29,14 @@ export default function ProjectsManage() {
     orderMutation.mutate(list.map((item, idx) => ({ id: item.id, sort_order: idx + 1 })))
   }
 
+  if (isLoading) {
+    return (
+      <AdminLayout title="项目管理">
+        <div className="p-12 flex items-center justify-center"><Loader2 className="w-8 h-8 text-accent animate-spin" /></div>
+      </AdminLayout>
+    )
+  }
+
   return (
     <AdminLayout title="项目管理">
       <div className="flex items-center justify-between mb-6">
@@ -38,64 +46,48 @@ export default function ProjectsManage() {
         </Link>
       </div>
 
-      {isLoading ? (
-        <div className="p-12 flex items-center justify-center"><Loader2 className="w-8 h-8 text-accent animate-spin" /></div>
-      ) : (
-        <div className="bg-bg-secondary border border-border rounded-xl overflow-hidden">
-          <table className="w-full text-left text-sm">
-            <thead className="bg-bg-primary border-b border-border">
-              <tr>
-                <th className="px-3 py-3 font-medium text-text-primary w-10">#</th>
-                <th className="px-4 py-3 font-medium text-text-primary">标题</th>
-                <th className="px-4 py-3 font-medium text-text-primary">slug</th>
-                <th className="px-4 py-3 font-medium text-text-primary">状态</th>
-                <th className="px-4 py-3 font-medium text-text-primary">精选</th>
-                <th className="px-4 py-3 font-medium text-text-primary text-right">操作</th>
-              </tr>
-            </thead>
-            <tbody
-              className="divide-y divide-border"
-              onDragOver={(e) => e.preventDefault()}
-              onDrop={() => {
-                if (dragRef.current && dragRef.current.from !== dragRef.current.to) {
-                  move(dragRef.current.from, dragRef.current.to)
-                }
-                setDragIndex(null); setDropIndex(null); dragRef.current = null
-              }}
-            >
-              {sorted.map((project, index) => (
-                <tr
-                  key={project.id}
-                  draggable
-                  onDragStart={() => { setDragIndex(index); dragRef.current = { from: index, to: index } }}
-                  onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); setDropIndex(index); if (dragRef.current) dragRef.current.to = index }}
-                  className={`hover:bg-bg-primary/50 transition-colors cursor-grab active:cursor-grabbing ${
-                    dragIndex === index ? 'opacity-50 bg-accent/5' : dropIndex === index ? 'bg-accent/10' : ''
-                  }`}
-                >
-                  <td className="px-3 py-3 text-text-secondary">
-                    <GripVertical size={14} className="inline" />
-                  </td>
-                  <td className="px-4 py-3 text-text-primary">{project.title}</td>
-                  <td className="px-4 py-3 text-text-secondary">{project.slug}</td>
-                  <td className="px-4 py-3 text-text-secondary">{project.status}</td>
-                  <td className="px-4 py-3 text-text-secondary">{project.featured ? '是' : '否'}</td>
-                  <td className="px-4 py-3 text-right">
-                    <div className="inline-flex items-center gap-2">
-                      <Link to={`/admin/projects/${project.id}/edit`} className="p-2 text-text-secondary hover:text-accent transition-colors" title="编辑"><Pencil size={16} /></Link>
-                      <button
-                        onClick={() => { if (confirm(`确定删除项目「${project.title}」吗？`)) deleteProject.mutate(project.id) }}
-                        disabled={deleteProject.isPending}
-                        className="p-2 text-text-secondary hover:text-red-500 transition-colors disabled:opacity-50" title="删除"
-                      ><Trash2 size={16} /></button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+      <div className="space-y-3">
+        {sorted.map((project, index) => (
+          <div
+            key={project.id}
+            draggable
+            onDragStart={() => { setDragIndex(index); dragRef.current = { from: index, to: index } }}
+            onDragOver={(e) => { e.preventDefault(); setDropIndex(index); if (dragRef.current) dragRef.current.to = index }}
+            onDrop={() => {
+              if (dragRef.current && dragRef.current.from !== dragRef.current.to) {
+                move(dragRef.current.from, dragRef.current.to)
+              }
+              setDragIndex(null); setDropIndex(null); dragRef.current = null
+            }}
+            className={`bg-bg-secondary border border-border rounded-xl p-4 transition-colors ${
+              dragIndex === index ? 'opacity-50 border-dashed border-accent' : dropIndex === index ? 'border-accent' : ''
+            }`}
+          >
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 shrink-0">
+                <GripVertical size={14} className="text-text-secondary cursor-grab" />
+                <span className="text-xs text-text-secondary w-4">{index + 1}</span>
+              </div>
+              <div className="flex-1 min-w-0 flex items-center gap-3">
+                <span className="font-medium text-text-primary text-sm">{project.title}</span>
+                <span className="text-xs text-text-secondary font-mono">{project.slug}</span>
+                <span className={`text-xs px-1.5 py-0.5 rounded-full shrink-0 ${project.status === 'published' ? 'bg-green-500/10 text-green-500' : 'bg-yellow-500/10 text-yellow-500'}`}>
+                  {project.status === 'published' ? '已发布' : '草稿'}
+                </span>
+                {project.featured && <span className="text-xs px-1.5 py-0.5 rounded-full bg-accent/10 text-accent shrink-0">精选</span>}
+              </div>
+              <div className="flex items-center gap-1 shrink-0">
+                <Link to={`/admin/projects/${project.id}/edit`} className="p-2 text-text-secondary hover:text-accent transition-colors" title="编辑"><Pencil size={16} /></Link>
+                <button
+                  onClick={() => { if (confirm(`确定删除项目「${project.title}」吗？`)) deleteProject.mutate(project.id) }}
+                  disabled={deleteProject.isPending}
+                  className="p-2 text-text-secondary hover:text-red-500 transition-colors disabled:opacity-50" title="删除"
+                ><Trash2 size={16} /></button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
     </AdminLayout>
   )
 }
