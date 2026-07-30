@@ -33,7 +33,7 @@ export default function LogsManage() {
     <AdminLayout title="成长日志管理">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-semibold text-text-primary">日志列表</h2>
-        <Link to="/admin/logs/new" className="inline-flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent-light transition-colors">
+        <Link to="/admin/logs/new/edit" className="inline-flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent-light transition-colors">
           <Plus size={16} /> 新建日志
         </Link>
       </div>
@@ -67,7 +67,7 @@ export default function LogsManage() {
                   key={log.id}
                   draggable
                   onDragStart={() => { setDragIndex(index); dragRef.current = { from: index, to: index } }}
-                  onDragOver={() => { setDropIndex(index); if (dragRef.current) dragRef.current.to = index }}
+                  onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); setDropIndex(index); if (dragRef.current) dragRef.current.to = index }}
                   className={`hover:bg-bg-primary/50 transition-colors cursor-grab active:cursor-grabbing ${
                     dragIndex === index ? 'opacity-50 bg-accent/5' : dropIndex === index ? 'bg-accent/10' : ''
                   }`}

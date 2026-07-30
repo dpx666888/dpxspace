@@ -249,7 +249,7 @@ export const fallbackHomeConfig: HomePageConfig = {
   skills_title: '技术方向',
   projects_title: '精选项目',
   logs_title: '最新日志',
-  avatar_url: '',
+  avatar_url: '/avatar.jpg',
 }
 
 export const fallbackContact: ContactData = {

@@ -20,7 +20,8 @@ export async function getHomeConfig(): Promise<HomePageConfig> {
     return fallbackHomeConfig
   }
 
-  return ((data as { value: HomePageConfig } | null)?.value ?? fallbackHomeConfig) as HomePageConfig
+  const dbValue = (data as { value: Partial<HomePageConfig> } | null)?.value
+  return { ...fallbackHomeConfig, ...(dbValue ?? {}) } as HomePageConfig
 }
 
 export async function updateHomeConfig(config: HomePageConfig): Promise<HomePageConfig> {
@@ -37,5 +38,6 @@ export async function updateHomeConfig(config: HomePageConfig): Promise<HomePage
     throw new Error(`更新首页配置失败: ${error.message}`)
   }
 
-  return ((data as { value: HomePageConfig } | null)?.value ?? config) as HomePageConfig
+  const dbValue = (data as { value: Partial<HomePageConfig> } | null)?.value
+  return { ...config, ...(dbValue ?? {}) } as HomePageConfig
 }
