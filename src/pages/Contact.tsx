@@ -110,9 +110,9 @@ export default function Contact() {
                 {contact.socials.map((social, index) => {
                   const Icon = iconMap[social.icon] || Link
                   return (
-                    <div key={index} className="p-5 bg-bg-secondary border border-border rounded-xl">
-                      <div className="flex items-center gap-4">
-                        <div className="p-2.5 bg-accent/10 rounded-lg">
+                    <div key={index} className="p-5 bg-bg-secondary border border-border rounded-xl overflow-hidden">
+                      <div className="flex items-center gap-4 min-w-0">
+                        <div className="p-2.5 bg-accent/10 rounded-lg shrink-0">
                           <Icon size={18} className="text-accent" />
                         </div>
                         <div>

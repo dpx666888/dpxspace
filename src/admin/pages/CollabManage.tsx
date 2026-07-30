@@ -3,6 +3,7 @@ import { Loader2, Plus, Trash2, GripVertical, Edit3, Save, X } from 'lucide-reac
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import AdminLayout from '../components/AdminLayout'
 import { useAiCollabs } from '../../hooks/useAiCollabs'
+import { useProjects } from '../../hooks/useProjects'
 import { createAiCollab, updateAiCollab, deleteAiCollab, updateAiCollabsOrder } from '../../services/aiCollab.service'
 import type { AiCollabData, AiCollabInput } from '../../types/database'
 
@@ -19,6 +20,7 @@ const EMPTY: AiCollabInput & { project_id?: number | null } = {
 
 export default function CollabManage() {
   const { data: collabs, isLoading } = useAiCollabs()
+  const { data: projects } = useProjects()
   const qc = useQueryClient()
 
   const [editingId, setEditingId] = useState<number | null>(null)
@@ -122,11 +124,20 @@ export default function CollabManage() {
                   </div>
                   <div>
                     <label className="block text-xs text-text-secondary mb-1">关联项目</label>
-                    <input value={editData.project ?? ''} onChange={e => setEditData({ ...editData, project: e.target.value })} className={inputClass} placeholder="项目名称" />
-                  </div>
-                  <div>
-                    <label className="block text-xs text-text-secondary mb-1">项目ID</label>
-                    <input type="number" value={editData.project_id ?? ''} onChange={e => setEditData({ ...editData, project_id: e.target.value ? parseInt(e.target.value) : null })} className={inputClass} placeholder="数字ID" />
+                    <select
+                      value={editData.project_id ?? ''}
+                      onChange={e => {
+                        const pid = e.target.value ? parseInt(e.target.value) : null
+                        const pname = pid ? projects?.find(p => p.id === pid)?.title ?? '' : ''
+                        setEditData({ ...editData, project_id: pid, project: pname })
+                      }}
+                      className={inputClass}
+                    >
+                      <option value="">无关联项目</option>
+                      {projects?.map(p => (
+                        <option key={p.id} value={p.id}>{p.title}</option>
+                      ))}
+                    </select>
                   </div>
                 </div>
                 <div>
@@ -182,11 +193,20 @@ export default function CollabManage() {
               </div>
               <div>
                 <label className="block text-xs text-text-secondary mb-1">关联项目</label>
-                <input value={editData.project ?? ''} onChange={e => setEditData({ ...editData, project: e.target.value })} className={inputClass} placeholder="项目名称" />
-              </div>
-              <div>
-                <label className="block text-xs text-text-secondary mb-1">项目ID</label>
-                <input type="number" value={editData.project_id ?? ''} onChange={e => setEditData({ ...editData, project_id: e.target.value ? parseInt(e.target.value) : null })} className={inputClass} placeholder="数字ID" />
+                <select
+                  value={editData.project_id ?? ''}
+                  onChange={e => {
+                    const pid = e.target.value ? parseInt(e.target.value) : null
+                    const pname = pid ? projects?.find(p => p.id === pid)?.title ?? '' : ''
+                    setEditData({ ...editData, project_id: pid, project: pname })
+                  }}
+                  className={inputClass}
+                >
+                  <option value="">无关联项目</option>
+                  {projects?.map(p => (
+                    <option key={p.id} value={p.id}>{p.title}</option>
+                  ))}
+                </select>
               </div>
             </div>
             <div>
