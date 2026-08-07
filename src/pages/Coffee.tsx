@@ -20,8 +20,8 @@ function CoffeeDetail({ item, isOpen, onToggle }: { item: CoffeeLogData; isOpen:
   return (
     <div className="bg-bg-secondary border border-border rounded-xl overflow-hidden">
       {item.image_url && (
-        <div className="aspect-video bg-bg-primary overflow-hidden">
-          <img src={item.image_url} alt={item.title} className="w-full h-full object-cover" />
+        <div className="bg-bg-primary overflow-hidden">
+          <img src={item.image_url} alt={item.title} className="w-full h-auto object-contain" />
         </div>
       )}
       <div className="p-5">
