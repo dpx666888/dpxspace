@@ -1,22 +1,8 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { Loader2 } from 'lucide-react'
-import {
-  Coffee, Image, BookOpen, Cpu, Code2, Terminal, Globe,
-  Award, GraduationCap, Wrench, Zap, MessageSquare, Home, User, Folder,
-  FlaskConical, Mail, Star, Heart, Camera, Music, Video, Cloud,
-  Database, Shield, Sun, Moon, Settings, FileText, Mic, Eye,
-  ThumbsUp, PenTool, Layers, BarChart3, TrendingUp, Rocket, Package, Puzzle,
-} from 'lucide-react'
 import { useSpaceModules } from '../hooks/useSpaceModules'
-
-const iconMap: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
-  Coffee, Image, BookOpen, Cpu, Code2, Terminal, Globe, Award, GraduationCap,
-  Wrench, Zap, MessageSquare, Home, User, Folder, FlaskConical, Mail, Star,
-  Heart, Camera, Music, Video, Cloud, Database, Shield, Sun, Moon, Settings,
-  FileText, Mic, Eye, ThumbsUp, PenTool, Layers, BarChart3, TrendingUp,
-  Rocket, Package, Puzzle,
-}
+import { getIcon } from '../lib/icons'
 
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
@@ -48,7 +34,7 @@ export default function Space() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {active.map((mod, index) => {
-            const Icon = iconMap[mod.icon] || Coffee
+            const Icon = getIcon(mod.icon)
 
             const CardContent = (
               <div className="p-6 flex flex-col items-center text-center justify-center min-h-[200px]">

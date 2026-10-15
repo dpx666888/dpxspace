@@ -1,11 +1,8 @@
 import { motion } from 'framer-motion'
-import { ArrowRight, Loader2, Coffee, Image, BookOpen, Cpu, Star, Heart, Camera, Music, Mic } from 'lucide-react'
+import { ArrowRight, Loader2 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useSpaceModules } from '../hooks/useSpaceModules'
-
-const iconMap: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
-  Coffee, Image, BookOpen, Cpu, Star, Heart, Camera, Music, Mic,
-}
+import { getIcon } from '../lib/icons'
 
 export default function PersonalSpacePreview() {
   const { data: modules, isLoading } = useSpaceModules()
@@ -55,7 +52,7 @@ export default function PersonalSpacePreview() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {active.map((mod, index) => {
-            const Icon = iconMap[mod.icon] || Coffee
+            const Icon = getIcon(mod.icon)
             return (
               <motion.div
                 key={mod.id}
