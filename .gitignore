@@ -4,6 +4,7 @@ node_modules/
 # 构建输出
 dist/
 build/
+*.tsbuildinfo
 
 # 环境变量
 .env
