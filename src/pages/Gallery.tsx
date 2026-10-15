@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Loader2, Image } from 'lucide-react'
 import { useGallery } from '../hooks/useGallery'
+import PageMeta from '../components/PageMeta'
 import type { GalleryItem } from '../types/database'
 
 const CATEGORIES = ['全部', '项目过程', '开发记录', 'AI实践', '咖啡记录', '设备记录', '生活记录']
@@ -21,6 +22,7 @@ export default function Gallery() {
   if (isLoading) {
     return (
       <div className="pt-16 px-4 md:px-8 py-16 md:py-24 min-h-[60vh] flex items-center justify-center">
+        <PageMeta title="视觉档案 | 丁鹏翔" description="记录开发过程中的视觉片段和灵感碎片。" />
         <Loader2 className="w-8 h-8 text-accent animate-spin" />
       </div>
     )
@@ -28,6 +30,7 @@ export default function Gallery() {
 
   return (
     <div className="pt-16 px-4 md:px-8 py-16 md:py-24">
+      <PageMeta title="视觉档案 | 丁鹏翔" description="记录开发过程中的视觉片段和灵感碎片。" />
       <div className="max-w-6xl mx-auto">
         <motion.div {...fadeInUp}>
           <h1 className="text-3xl md:text-4xl font-bold text-text-primary mb-4">视觉档案</h1>

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Loader2 } from 'lucide-react'
 import { useSpaceModules } from '../hooks/useSpaceModules'
 import { getIcon } from '../lib/icons'
+import PageMeta from '../components/PageMeta'
 
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
@@ -17,6 +18,7 @@ export default function Space() {
   if (isLoading) {
     return (
       <div className="pt-16 px-4 md:px-8 py-16 md:py-24 min-h-[60vh] flex items-center justify-center">
+        <PageMeta title="个人空间 | 丁鹏翔" description="代码之外的我——丁鹏翔的个人空间模块入口。" />
         <Loader2 className="w-8 h-8 text-accent animate-spin" />
       </div>
     )
@@ -26,6 +28,7 @@ export default function Space() {
 
   return (
     <div className="pt-16 px-4 md:px-8 py-16 md:py-24">
+      <PageMeta title="个人空间 | 丁鹏翔" description="代码之外的我——丁鹏翔的个人空间模块入口。" />
       <div className="max-w-4xl mx-auto">
         <motion.div className="text-center mb-16" {...fadeInUp}>
           <h1 className="text-3xl md:text-5xl font-bold text-text-primary mb-4">Personal Space</h1>

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { BookOpen, GraduationCap, FolderCheck, FileText, Loader2 } from 'lucide-react'
 import { useLogs } from '../hooks/useLogs'
+import PageMeta from '../components/PageMeta'
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -31,6 +32,7 @@ export default function LogPage() {
   if (isLoading) {
     return (
       <div className="pt-16 px-4 md:px-8 py-16 md:py-24 min-h-[60vh] flex items-center justify-center">
+        <PageMeta title="成长日志 | 丁鹏翔" description="丁鹏翔的学习过程、项目复盘与技术笔记。" />
         <Loader2 className="w-8 h-8 text-accent animate-spin" />
       </div>
     )
@@ -39,12 +41,14 @@ export default function LogPage() {
   if (error || !logs) {
     return (
       <div className="pt-16 px-4 md:px-8 py-16 md:py-24 min-h-[60vh] flex items-center justify-center">
+        <PageMeta title="成长日志 | 丁鹏翔" />
         <p className="text-text-secondary">加载日志失败，请稍后重试。</p>
       </div>
     )
   }
   return (
     <div className="pt-16 px-4 md:px-8 py-16 md:py-24">
+      <PageMeta title="成长日志 | 丁鹏翔" description="丁鹏翔的学习过程、项目复盘与技术笔记。" />
       <div className="max-w-6xl mx-auto">
         {/* 标题区 */}
         <motion.div className="mb-12 md:mb-16" {...fadeInUp}>

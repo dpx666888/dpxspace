@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { ArrowLeft, Github, Clock, AlertCircle, Lightbulb, Trophy, BookOpen, Sparkles, Star, Loader2 } from 'lucide-react'
 import { useProject, useProjectTimeline } from '../hooks/useProjects'
 import { useAiCollabs } from '../hooks/useAiCollabs'
+import PageMeta from '../components/PageMeta'
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -21,6 +22,7 @@ export default function ProjectDetail() {
   if (projectLoading) {
     return (
       <div className="pt-16 px-4 md:px-8 py-16 md:py-24 min-h-[60vh] flex items-center justify-center">
+        <PageMeta title="项目 | 丁鹏翔" />
         <Loader2 className="w-8 h-8 text-accent animate-spin" />
       </div>
     )
@@ -29,6 +31,7 @@ export default function ProjectDetail() {
   if (projectError || !project) {
     return (
       <div className="pt-16 px-4 md:px-8 py-16 md:py-24">
+        <PageMeta title="项目未找到 | 丁鹏翔" />
         <div className="max-w-6xl mx-auto text-center">
           <h1 className="text-2xl font-bold text-text-primary mb-4">项目未找到</h1>
           <Link to="/projects" className="text-accent hover:underline">
@@ -45,6 +48,7 @@ export default function ProjectDetail() {
 
   return (
     <div className="pt-16 px-4 md:px-8 py-16 md:py-24">
+      <PageMeta title={`${project.title} | 丁鹏翔`} description={project.description} />
       <div className="max-w-4xl mx-auto">
         {/* 返回按钮 */}
         <motion.div {...fadeInUp}>

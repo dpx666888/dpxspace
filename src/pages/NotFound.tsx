@@ -1,10 +1,12 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Home, AlertCircle } from 'lucide-react'
+import PageMeta from '../components/PageMeta'
 
 export default function NotFound() {
   return (
     <div className="pt-16 px-4 md:px-8 min-h-[calc(100vh-4rem)] flex items-center justify-center">
+      <PageMeta title="404 - 页面不存在 | 丁鹏翔" />
       <motion.div
         className="text-center"
         initial={{ opacity: 0, y: 20 }}

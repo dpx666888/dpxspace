@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { Loader2, Coffee as CoffeeIcon, MapPin, PenTool, Droplets, ChevronDown, ChevronUp } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useCoffeeLogs } from '../hooks/useCoffeeLogs'
+import PageMeta from '../components/PageMeta'
 import type { CoffeeLogData } from '../types/database'
 
 const ratingStars = (n: number) => '★'.repeat(n) + '☆'.repeat(5 - n)
@@ -91,6 +92,7 @@ export default function Coffee() {
   if (isLoading) {
     return (
       <div className="pt-16 px-4 md:px-8 py-16 md:py-24 min-h-[60vh] flex items-center justify-center">
+        <PageMeta title="Coffee Lab | 丁鹏翔" description="丁鹏翔的咖啡探索记录。" />
         <Loader2 className="w-8 h-8 text-accent animate-spin" />
       </div>
     )
@@ -102,6 +104,7 @@ export default function Coffee() {
 
   return (
     <div className="pt-16 px-4 md:px-8 py-16 md:py-24">
+      <PageMeta title="Coffee Lab | 丁鹏翔" description="丁鹏翔的咖啡探索记录。" />
       <div className="max-w-3xl mx-auto">
         <motion.div className="mb-12" {...fadeInUp}>
           <div className="flex items-center gap-2 mb-4">

@@ -4,6 +4,7 @@ import {
 } from 'lucide-react'
 import { useAbout } from '../hooks/useAbout'
 import { useHomeConfig } from '../hooks/useSiteConfig'
+import PageMeta from '../components/PageMeta'
 import type { AboutData } from '../types/database'
 
 const fadeInUp = {
@@ -203,6 +204,7 @@ export default function About() {
   if (isLoading) {
     return (
       <div className="pt-16 px-4 md:px-8 py-16 md:py-24 min-h-[60vh] flex items-center justify-center">
+        <PageMeta title="关于我 | 丁鹏翔" description="丁鹏翔的个人简介、教育背景、技术栈、实践经历与成长路线。" />
         <Loader2 className="w-8 h-8 text-accent animate-spin" />
       </div>
     )
@@ -211,6 +213,7 @@ export default function About() {
   if (error || !about) {
     return (
       <div className="pt-16 px-4 md:px-8 py-16 md:py-24 min-h-[60vh] flex items-center justify-center">
+        <PageMeta title="关于我 | 丁鹏翔" />
         <p className="text-text-secondary">加载关于我信息失败，请稍后重试。</p>
       </div>
     )
@@ -221,6 +224,7 @@ export default function About() {
 
   return (
     <div className="pt-16 px-4 md:px-8 py-16 md:py-24">
+      <PageMeta title="关于我 | 丁鹏翔" description="丁鹏翔的个人简介、教育背景、技术栈、实践经历与成长路线。" />
       <div className="max-w-6xl mx-auto">
         <motion.section className="mb-20 md:mb-28" {...fadeInUp}>
           <h1 className="text-3xl md:text-4xl font-bold text-text-primary mb-8">关于我</h1>

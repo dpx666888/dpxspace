@@ -6,6 +6,7 @@ import { useLogs } from '../hooks/useLogs'
 import { useHomeConfig } from '../hooks/useSiteConfig'
 import { useSpaceModules } from '../hooks/useSpaceModules'
 import PersonalSpacePreview from '../components/PersonalSpacePreview'
+import PageMeta from '../components/PageMeta'
 
 export default function Home() {
   const { data: projects, isLoading: projectsLoading } = useProjects()
@@ -17,6 +18,7 @@ export default function Home() {
   if (loading) {
     return (
       <div className="pt-16 min-h-[60vh] flex items-center justify-center">
+        <PageMeta title="丁鹏翔 - 个人开发者电子名片" description="丁鹏翔的个人开发者电子名片，展示项目作品、技术实验和成长历程。" />
         <Loader2 className="w-8 h-8 text-accent animate-spin" />
       </div>
     )
@@ -33,6 +35,7 @@ export default function Home() {
 
   return (
     <div className="pt-16">
+      <PageMeta title="丁鹏翔 - 个人开发者电子名片" description="丁鹏翔的个人开发者电子名片，展示项目作品、技术实验和成长历程。" />
       {/* Hero */}
       <section className="min-h-[calc(100vh-4rem)] flex items-center px-4 md:px-8">
         <div className="max-w-6xl mx-auto w-full">

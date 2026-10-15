@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { FlaskConical, Wrench, Play, Beaker, ExternalLink, Loader2 } from 'lucide-react'
 import { useLabs } from '../hooks/useLabs'
+import PageMeta from '../components/PageMeta'
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -27,6 +28,7 @@ export default function Lab() {
   if (isLoading) {
     return (
       <div className="pt-16 px-4 md:px-8 py-16 md:py-24 min-h-[60vh] flex items-center justify-center">
+        <PageMeta title="实验室 | 丁鹏翔" description="丁鹏翔的技术实验、小工具开发与 Demo 探索记录。" />
         <Loader2 className="w-8 h-8 text-accent animate-spin" />
       </div>
     )
@@ -35,12 +37,14 @@ export default function Lab() {
   if (error || !labItems) {
     return (
       <div className="pt-16 px-4 md:px-8 py-16 md:py-24 min-h-[60vh] flex items-center justify-center">
+        <PageMeta title="实验室 | 丁鹏翔" />
         <p className="text-text-secondary">加载实验室项目失败，请稍后重试。</p>
       </div>
     )
   }
   return (
     <div className="pt-16 px-4 md:px-8 py-16 md:py-24">
+      <PageMeta title="实验室 | 丁鹏翔" description="丁鹏翔的技术实验、小工具开发与 Demo 探索记录。" />
       <div className="max-w-6xl mx-auto">
         {/* 标题区 */}
         <motion.div className="mb-12 md:mb-16" {...fadeInUp}>

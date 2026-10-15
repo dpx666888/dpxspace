@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { ArrowRight, Folder, Loader2 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useProjects } from '../hooks/useProjects'
+import PageMeta from '../components/PageMeta'
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -16,6 +17,7 @@ export default function Projects() {
   if (isLoading) {
     return (
       <div className="pt-16 px-4 md:px-8 py-16 md:py-24 min-h-[60vh] flex items-center justify-center">
+        <PageMeta title="项目 | 丁鹏翔" description="丁鹏翔的项目作品集，每个项目都记录了从构想到实现的完整过程。" />
         <Loader2 className="w-8 h-8 text-accent animate-spin" />
       </div>
     )
@@ -24,12 +26,14 @@ export default function Projects() {
   if (error || !projects) {
     return (
       <div className="pt-16 px-4 md:px-8 py-16 md:py-24 min-h-[60vh] flex items-center justify-center">
+        <PageMeta title="项目 | 丁鹏翔" />
         <p className="text-text-secondary">加载项目失败，请稍后重试。</p>
       </div>
     )
   }
   return (
     <div className="pt-16 px-4 md:px-8 py-16 md:py-24">
+      <PageMeta title="项目 | 丁鹏翔" description="丁鹏翔的项目作品集，每个项目都记录了从构想到实现的完整过程。" />
       <div className="max-w-6xl mx-auto">
         {/* 标题区 */}
         <motion.div className="mb-12 md:mb-16" {...fadeInUp}>

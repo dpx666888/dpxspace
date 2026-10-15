@@ -8,6 +8,7 @@ import {
   ThumbsUp, Coffee, PenTool, Layers, BarChart3, TrendingUp, Rocket, Package, Puzzle,
 } from 'lucide-react'
 import { useContact } from '../hooks/useContact'
+import PageMeta from '../components/PageMeta'
 
 const iconMap: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
   Code2, Terminal, BookOpen, Globe, Award, GraduationCap, Cpu, Wrench,
@@ -31,6 +32,7 @@ export default function Contact() {
   if (isLoading) {
     return (
       <div className="pt-16 px-4 md:px-8 py-16 md:py-24 min-h-[60vh] flex items-center justify-center">
+        <PageMeta title="联系方式 | 丁鹏翔" description="通过邮箱或 GitHub 联系丁鹏翔，欢迎交流技术、项目合作。" />
         <Loader2 className="w-8 h-8 text-accent animate-spin" />
       </div>
     )
@@ -39,12 +41,14 @@ export default function Contact() {
   if (error || !contact) {
     return (
       <div className="pt-16 px-4 md:px-8 py-16 md:py-24 min-h-[60vh] flex items-center justify-center">
+        <PageMeta title="联系方式 | 丁鹏翔" />
         <p className="text-text-secondary">加载联系方式失败，请稍后重试。</p>
       </div>
     )
   }
   return (
     <div className="pt-16 px-4 md:px-8 py-16 md:py-24">
+      <PageMeta title="联系方式 | 丁鹏翔" description="通过邮箱或 GitHub 联系丁鹏翔，欢迎交流技术、项目合作。" />
       <div className="max-w-6xl mx-auto">
         <motion.div className="mb-12 md:mb-16" {...fadeInUp}>
           <h1 className="text-3xl md:text-4xl font-bold text-text-primary mb-4">联系方式</h1>
