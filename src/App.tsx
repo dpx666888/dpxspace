@@ -1,5 +1,7 @@
+import { lazy, Suspense } from 'react'
 import { Routes, Route, useLocation, Outlet } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
+import { Loader2 } from 'lucide-react'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import Home from './pages/Home'
@@ -16,27 +18,36 @@ import NotFound from './pages/NotFound'
 import useScrollToTop from './hooks/useScrollToTop'
 import { AuthProvider } from './admin/hooks/useAuth'
 import ProtectedRoute from './admin/components/ProtectedRoute'
-import AdminLogin from './admin/pages/Login'
-import AdminDashboard from './admin/pages/Dashboard'
-import AboutManage from './admin/pages/AboutManage'
-import ProjectsManage from './admin/pages/ProjectsManage'
-import ProjectEdit from './admin/pages/ProjectEdit'
-import LabsManage from './admin/pages/LabsManage'
-import LabEdit from './admin/pages/LabEdit'
-import LogsManage from './admin/pages/LogsManage'
-import LogEdit from './admin/pages/LogEdit'
-import ContactManage from './admin/pages/ContactManage'
-import SiteConfigManage from './admin/pages/SiteConfigManage'
-import CollabManage from './admin/pages/CollabManage'
-import GalleryManage from './admin/pages/GalleryManage'
-import SpaceModulesManage from './admin/pages/SpaceModulesManage'
-import CoffeeManage from './admin/pages/CoffeeManage'
+
+const AdminLogin = lazy(() => import('./admin/pages/Login'))
+const AdminDashboard = lazy(() => import('./admin/pages/Dashboard'))
+const AboutManage = lazy(() => import('./admin/pages/AboutManage'))
+const ProjectsManage = lazy(() => import('./admin/pages/ProjectsManage'))
+const ProjectEdit = lazy(() => import('./admin/pages/ProjectEdit'))
+const LabsManage = lazy(() => import('./admin/pages/LabsManage'))
+const LabEdit = lazy(() => import('./admin/pages/LabEdit'))
+const LogsManage = lazy(() => import('./admin/pages/LogsManage'))
+const LogEdit = lazy(() => import('./admin/pages/LogEdit'))
+const ContactManage = lazy(() => import('./admin/pages/ContactManage'))
+const SiteConfigManage = lazy(() => import('./admin/pages/SiteConfigManage'))
+const CollabManage = lazy(() => import('./admin/pages/CollabManage'))
+const GalleryManage = lazy(() => import('./admin/pages/GalleryManage'))
+const SpaceModulesManage = lazy(() => import('./admin/pages/SpaceModulesManage'))
+const CoffeeManage = lazy(() => import('./admin/pages/CoffeeManage'))
 
 const pageTransition = {
   initial: { opacity: 0, y: 16 },
   animate: { opacity: 1, y: 0 },
   exit: { opacity: 0, y: -16 },
   transition: { duration: 0.25, ease: 'easeInOut' as const },
+}
+
+function AdminFallback() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-bg-primary">
+      <Loader2 className="w-8 h-8 text-accent animate-spin" />
+    </div>
+  )
 }
 
 function AnimatedOutlet() {
@@ -217,7 +228,14 @@ function App() {
   return (
     <AuthProvider>
       <Routes>
-        <Route path="/admin/*" element={<AdminRoutes />} />
+        <Route
+          path="/admin/*"
+          element={
+            <Suspense fallback={<AdminFallback />}>
+              <AdminRoutes />
+            </Suspense>
+          }
+        />
         <Route path="/*" element={<MainLayout />}>
           <Route index element={<Home />} />
           <Route path="about" element={<About />} />
