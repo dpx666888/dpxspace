@@ -38,7 +38,7 @@ interface StoryProblem {
 export default function ProjectEdit() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const isNew = id === 'new'
+  const isNew = !id
   const { data: projects, isLoading: listLoading } = useProjects()
   const project = isNew ? undefined : projects?.find(p => String(p.id) === id)
 

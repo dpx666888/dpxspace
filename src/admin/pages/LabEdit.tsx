@@ -23,7 +23,7 @@ type LabForm = z.infer<typeof labSchema>
 export default function LabEdit() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const isNew = id === 'new'
+  const isNew = !id
   const { data: labs, isLoading: listLoading } = useLabs()
   const lab = isNew ? undefined : labs?.find(l => String(l.id) === id)
 

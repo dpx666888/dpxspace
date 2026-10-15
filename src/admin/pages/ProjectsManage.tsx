@@ -42,7 +42,7 @@ export default function ProjectsManage() {
     <AdminLayout title="项目管理">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-semibold text-text-primary">项目列表</h2>
-        <Link to="/admin/projects/new/edit" className="inline-flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent-light transition-colors">
+        <Link to="/admin/projects/new" className="inline-flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent-light transition-colors">
           <Plus size={16} /> 新建项目
         </Link>
       </div>

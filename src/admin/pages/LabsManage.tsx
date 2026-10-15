@@ -42,7 +42,7 @@ export default function LabsManage() {
     <AdminLayout title="实验室管理">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-semibold text-text-primary">实验列表</h2>
-        <Link to="/admin/labs/new/edit" className="inline-flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent-light transition-colors">
+        <Link to="/admin/labs/new" className="inline-flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent-light transition-colors">
           <Plus size={16} /> 新建实验
         </Link>
       </div>

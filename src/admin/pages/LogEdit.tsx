@@ -21,7 +21,7 @@ type LogForm = z.infer<typeof logSchema>
 export default function LogEdit() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const isNew = id === 'new'
+  const isNew = !id
   const { data: logs, isLoading: listLoading } = useLogs()
   const log = isNew ? undefined : logs?.find(l => String(l.id) === id)
 
