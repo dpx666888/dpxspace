@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { ArrowLeft, Github, Clock, AlertCircle, Lightbulb, Trophy, BookOpen, Sparkles, Star, Loader2 } from 'lucide-react'
 import { useProject, useProjectTimeline } from '../hooks/useProjects'
 import { useAiCollabs } from '../hooks/useAiCollabs'
+import ProjectCover from '../components/ProjectCover'
 import PageMeta from '../components/PageMeta'
 
 const fadeInUp = {
@@ -58,6 +59,21 @@ export default function ProjectDetail() {
           >
             <ArrowLeft size={16} /> 返回项目列表
           </Link>
+        </motion.div>
+
+        {/* 封面横幅 */}
+        <motion.div
+          className="mb-8 overflow-hidden rounded-xl border border-border"
+          {...fadeInUp}
+        >
+          <ProjectCover
+            slug={project.slug}
+            title={project.title}
+            techStack={project.tech_stack}
+            coverImage={project.cover_image}
+            aspect="aspect-[16/9] md:aspect-[21/9]"
+            showIndex={false}
+          />
         </motion.div>
 
         {/* 项目标题 */}

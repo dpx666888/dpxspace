@@ -10,6 +10,7 @@ interface ProjectCoverProps {
   index?: number
   aspect?: string
   className?: string
+  showIndex?: boolean
 }
 
 export default function ProjectCover({
@@ -20,6 +21,7 @@ export default function ProjectCover({
   index = 0,
   aspect = COVER_ASPECT,
   className = '',
+  showIndex = true,
 }: ProjectCoverProps) {
   return (
     <div className={`relative overflow-hidden ${aspect} ${className}`}>
@@ -37,9 +39,11 @@ export default function ProjectCover({
           aria-hidden="true"
         >
           <div className="absolute inset-0 bg-noise" />
-          <span className="absolute bottom-2 right-4 select-none font-mono text-5xl font-bold tracking-tight text-white/10 md:text-6xl">
-            {String(index + 1).padStart(2, '0')}
-          </span>
+          {showIndex && (
+            <span className="absolute bottom-2 right-4 select-none font-mono text-5xl font-bold tracking-tight text-white/10 md:text-6xl">
+              {String(index + 1).padStart(2, '0')}
+            </span>
+          )}
           {techStack.length > 0 && (
             <div className="absolute bottom-3 left-4 flex max-w-[75%] flex-wrap gap-1.5">
               {techStack.slice(0, 3).map(tech => (
