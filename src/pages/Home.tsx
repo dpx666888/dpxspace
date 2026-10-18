@@ -247,14 +247,18 @@ export default function Home() {
                 {greeting}
               </motion.p>
               <motion.h1
-                className="text-gradient text-5xl md:text-7xl font-bold mb-6 tracking-tight"
+                className="text-5xl md:text-7xl font-bold mb-6 tracking-tight"
                 initial="hidden"
                 animate="visible"
               >
-                {name.split('').map((char, i) => (
+                {Array.from(name).map((char, i, chars) => (
                   <motion.span
                     key={i}
-                    className="inline-block"
+                    className="text-gradient-char inline-block"
+                    style={{
+                      backgroundSize: `${chars.length * 100}% auto`,
+                      backgroundPosition: `${(i / Math.max(chars.length - 1, 1)) * 100}% 50%`,
+                    }}
                     variants={{
                       hidden: { opacity: 0, y: 20 },
                       visible: { opacity: 1, y: 0 },

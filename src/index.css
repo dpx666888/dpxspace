@@ -78,8 +78,8 @@ h2 {
   opacity: 0.035;
 }
 
-/* 渐变标题 */
-.text-gradient {
+/* 渐变标题（逐字，渐变由每个字符自己持有） */
+.text-gradient-char {
   background-image: linear-gradient(
     100deg,
     #e2e2e8 0%,
@@ -88,20 +88,10 @@ h2 {
     #a5b4fc 72%,
     #e2e2e8 100%
   );
-  background-size: 200% auto;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  animation: gradient-pan 8s linear infinite;
-}
-
-@keyframes gradient-pan {
-  from {
-    background-position: 0% 50%;
-  }
-  to {
-    background-position: 200% 50%;
-  }
+  -webkit-text-fill-color: transparent;
 }
 
 /* 跑马灯 */
