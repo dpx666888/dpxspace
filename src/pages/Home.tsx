@@ -9,6 +9,8 @@ import { useSpaceModules } from '../hooks/useSpaceModules'
 import PersonalSpacePreview from '../components/PersonalSpacePreview'
 import ProjectCover, { COVER_ASPECT } from '../components/ProjectCover'
 import SpotlightCard from '../components/SpotlightCard'
+import TerminalCard from '../components/TerminalCard'
+import Marquee from '../components/Marquee'
 import PageMeta from '../components/PageMeta'
 import { getFeaturedProjects } from '../lib/featuredProjects'
 import type { Project } from '../types/database'
@@ -194,63 +196,14 @@ export default function Home() {
               </motion.div>
             </div>
 
-            {/* 右侧装饰元素 */}
+            {/* 右侧终端卡片 */}
             <motion.div
-              className="hidden md:block relative w-[400px] h-[400px]"
-              initial={{ opacity: 0, scale: 0.9 }}
+              className="hidden md:flex relative w-[400px] h-[400px] items-center justify-center"
+              initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, delay: 0.5 }}
             >
-              {/* 大背景圆环 */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 rounded-full border border-accent/10"></div>
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-56 h-56 rounded-full border border-accent/5"></div>
-
-              {/* 代码块 */}
-              <motion.div
-                className="absolute top-8 right-4 w-56 rounded-xl bg-bg-secondary border border-border overflow-hidden shadow-lg"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.8 }}
-              >
-                <div className="flex items-center gap-1.5 px-4 py-3 border-b border-border">
-                  <div className="w-2.5 h-2.5 rounded-full bg-red-400/50" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-yellow-400/50" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-green-400/50" />
-                </div>
-                <div className="p-4 space-y-2 font-mono text-xs">
-                  <div className="h-2 w-3/4 bg-text-secondary/15 rounded" />
-                  <div className="h-2 w-1/2 bg-text-secondary/15 rounded" />
-                  <div className="h-2 w-2/3 bg-text-secondary/15 rounded" />
-                  <div className="h-2 w-1/3 bg-accent/30 rounded" />
-                  <div className="h-2 w-1/2 bg-text-secondary/15 rounded" />
-                </div>
-              </motion.div>
-
-              {/* 小方块 */}
-              <motion.div
-                className="absolute bottom-16 left-8 w-20 h-20 rounded-xl bg-accent/5 border border-accent/10"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 1.0 }}
-              >
-                <div className="p-3 space-y-1.5">
-                  <div className="h-1.5 w-full bg-accent/20 rounded" />
-                  <div className="h-1.5 w-2/3 bg-accent/20 rounded" />
-                  <div className="h-1.5 w-3/4 bg-accent/20 rounded" />
-                </div>
-              </motion.div>
-
-              {/* 浮动圆点 */}
-              <motion.div
-                className="absolute top-4 left-16 w-3 h-3 rounded-full bg-accent/30"
-                animate={{ y: [0, -8, 0] }}
-                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-              ></motion.div>
-              <motion.div
-                className="absolute bottom-8 right-20 w-2 h-2 rounded-full bg-accent/20"
-                animate={{ y: [0, -6, 0] }}
-                transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
-              ></motion.div>
+              <TerminalCard />
             </motion.div>
           </div>
         </div>
@@ -269,20 +222,12 @@ export default function Home() {
             {skillsTitle}
           </motion.h2>
           <motion.div
-            className="flex flex-wrap gap-3"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.1 }}
           >
-            {skills.map(skill => (
-              <span
-                key={skill}
-                className="px-4 py-2 bg-bg-secondary border border-border rounded-full text-sm text-text-primary"
-              >
-                {skill}
-              </span>
-            ))}
+            <Marquee items={skills} />
           </motion.div>
         </div>
       </section>
