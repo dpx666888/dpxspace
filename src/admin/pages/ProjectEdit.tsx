@@ -219,7 +219,7 @@ export default function ProjectEdit() {
 
         <div className="flex items-center gap-3">
           <input type="checkbox" id="featured" {...register('featured')} className="w-4 h-4 accent-accent" />
-          <label htmlFor="featured" className="text-sm text-text-secondary">设为精选项目</label>
+          <label htmlFor="featured" className="text-sm text-text-secondary">设为精选项目（首页最多展示 3 个）</label>
         </div>
 
         {/* 项目故事 */}
