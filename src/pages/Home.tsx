@@ -1,5 +1,6 @@
-import { useMemo } from 'react'
-import { motion } from 'framer-motion'
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { motion, useReducedMotion } from 'framer-motion'
+import useScrollProgress from '../hooks/useScrollProgress'
 import { ArrowRight, ExternalLink, BookOpen, Loader2 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useProjects } from '../hooks/useProjects'
@@ -14,6 +15,71 @@ import Marquee from '../components/Marquee'
 import PageMeta from '../components/PageMeta'
 import { getFeaturedProjects } from '../lib/featuredProjects'
 import type { Project } from '../types/database'
+
+function useMediaQuery(query: string) {
+  const [matches, setMatches] = useState(() => window.matchMedia(query).matches)
+
+  useEffect(() => {
+    const media = window.matchMedia(query)
+    const update = () => setMatches(media.matches)
+    update()
+    media.addEventListener('change', update)
+    return () => media.removeEventListener('change', update)
+  }, [query])
+
+  return matches
+}
+
+interface ParallaxLayerProps {
+  children: ReactNode
+  distance: number
+  fade?: boolean
+  className?: string
+}
+
+function ParallaxLayer({ children, distance, fade = true, className = '' }: ParallaxLayerProps) {
+  const reduceMotion = useReducedMotion()
+  const isWide = useMediaQuery('(min-width: 768px)')
+
+  if (!isWide || reduceMotion) {
+    return <div className={className}>{children}</div>
+  }
+
+  return (
+    <ParallaxInner distance={distance} fade={fade} className={className}>
+      {children}
+    </ParallaxInner>
+  )
+}
+
+function ParallaxInner({
+  children,
+  distance,
+  fade,
+  className,
+}: {
+  children: ReactNode
+  distance: number
+  fade: boolean
+  className: string
+}) {
+  const ref = useRef<HTMLDivElement>(null)
+
+  useScrollProgress(({ scrollY }) => {
+    const element = ref.current
+    if (!element) return
+    const moveProgress = Math.min(Math.max(scrollY / 600, 0), 1)
+    const fadeProgress = Math.min(Math.max(scrollY / 520, 0), 1)
+    element.style.transform = `translate3d(0, ${moveProgress * distance}px, 0)`
+    element.style.opacity = String(fade ? 1 - fadeProgress * 0.65 : 1)
+  })
+
+  return (
+    <div ref={ref} data-parallax="true" className={`${className} will-change-transform`}>
+      {children}
+    </div>
+  )
+}
 
 interface HomeProjectCardProps {
   project: Project
@@ -135,6 +201,7 @@ export default function Home() {
         <div className="relative max-w-6xl mx-auto w-full">
           <div className="flex flex-col md:flex-row items-center justify-between gap-12">
             {/* 左侧文字 */}
+            <ParallaxLayer distance={-40} className="flex-1">
             <div className="flex-1">
               <motion.p
                 className="text-accent text-sm md:text-base font-medium mb-4"
@@ -195,8 +262,10 @@ export default function Home() {
                 </a>
               </motion.div>
             </div>
+            </ParallaxLayer>
 
             {/* 右侧终端卡片 */}
+            <ParallaxLayer distance={40} fade={false}>
             <motion.div
               className="hidden md:flex relative w-[400px] h-[400px] items-center justify-center"
               initial={{ opacity: 0, scale: 0.95 }}
@@ -205,6 +274,7 @@ export default function Home() {
             >
               <TerminalCard />
             </motion.div>
+            </ParallaxLayer>
           </div>
         </div>
       </section>

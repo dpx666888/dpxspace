@@ -4,6 +4,7 @@ import { AnimatePresence, motion, MotionConfig, useReducedMotion } from 'framer-
 import { Loader2 } from 'lucide-react'
 import Header from './components/Header'
 import Footer from './components/Footer'
+import ScrollProgress from './components/ScrollProgress'
 import Home from './pages/Home'
 import About from './pages/About'
 import Projects from './pages/Projects'
@@ -79,6 +80,7 @@ function AnimatedOutlet() {
 function MainLayout() {
   return (
     <div className="min-h-screen flex flex-col">
+      <ScrollProgress />
       <Header />
       <main className="flex-1">
         <AnimatedOutlet />
