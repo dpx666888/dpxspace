@@ -1,10 +1,11 @@
 import { motion } from 'framer-motion'
-import { ArrowRight, Folder, Loader2 } from 'lucide-react'
+import { ArrowRight, Folder } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useProjects } from '../hooks/useProjects'
 import ProjectCover from '../components/ProjectCover'
 import SpotlightCard from '../components/SpotlightCard'
 import PageMeta from '../components/PageMeta'
+import { ProjectCardSkeleton, SkeletonBar } from '../components/Skeleton'
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -18,9 +19,19 @@ export default function Projects() {
 
   if (isLoading) {
     return (
-      <div className="pt-16 px-4 md:px-8 py-16 md:py-24 min-h-[60vh] flex items-center justify-center">
+      <div className="pt-16 px-4 md:px-8 py-16 md:py-24">
         <PageMeta title="项目 | 丁鹏翔" description="丁鹏翔的项目作品集，每个项目都记录了从构想到实现的完整过程。" />
-        <Loader2 className="w-8 h-8 text-accent animate-spin" />
+        <div className="max-w-6xl mx-auto">
+          <div className="mb-12 space-y-4 md:mb-16">
+            <SkeletonBar className="h-9 w-24" />
+            <SkeletonBar className="h-4 w-full max-w-2xl" />
+          </div>
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <ProjectCardSkeleton key={index} />
+            ))}
+          </div>
+        </div>
       </div>
     )
   }

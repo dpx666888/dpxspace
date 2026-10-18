@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import useScrollProgress from '../hooks/useScrollProgress'
-import { ArrowRight, ExternalLink, BookOpen, Loader2 } from 'lucide-react'
+import { ArrowRight, ExternalLink, BookOpen } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useProjects } from '../hooks/useProjects'
 import { useLogs } from '../hooks/useLogs'
@@ -13,6 +13,7 @@ import SpotlightCard from '../components/SpotlightCard'
 import TerminalCard from '../components/TerminalCard'
 import Marquee from '../components/Marquee'
 import PageMeta from '../components/PageMeta'
+import { ProjectCardSkeleton, SkeletonBar } from '../components/Skeleton'
 import { getFeaturedProjects } from '../lib/featuredProjects'
 import type { Project } from '../types/database'
 
@@ -172,9 +173,43 @@ export default function Home() {
 
   if (loading) {
     return (
-      <div className="pt-16 min-h-[60vh] flex items-center justify-center">
+      <div className="pt-16">
         <PageMeta title="丁鹏翔 - 个人开发者电子名片" description="丁鹏翔的个人开发者电子名片，展示项目作品、技术实验和成长历程。" />
-        <Loader2 className="w-8 h-8 text-accent animate-spin" />
+        <section className="min-h-[calc(100vh-4rem)] flex items-center px-4 md:px-8">
+          <div className="max-w-6xl mx-auto w-full">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-12">
+              <div className="w-full flex-1 space-y-4">
+                <SkeletonBar className="h-4 w-20" />
+                <SkeletonBar className="h-14 w-64 md:h-20 md:w-96" />
+                <SkeletonBar className="h-4 w-full max-w-xl" />
+                <SkeletonBar className="h-4 w-2/3 max-w-md" />
+                <div className="flex gap-4 pt-4">
+                  <SkeletonBar className="h-10 w-28 rounded-lg" />
+                  <SkeletonBar className="h-10 w-24 rounded-lg" />
+                </div>
+              </div>
+              <SkeletonBar className="hidden h-[280px] w-[380px] rounded-xl md:block" />
+            </div>
+          </div>
+        </section>
+        <section className="border-t border-border px-4 py-16 md:px-8 md:py-24">
+          <div className="max-w-6xl mx-auto space-y-6">
+            <SkeletonBar className="h-8 w-32" />
+            <SkeletonBar className="h-12 w-full rounded-full" />
+          </div>
+        </section>
+        <section className="border-t border-border px-4 py-16 md:px-8 md:py-24">
+          <div className="max-w-6xl mx-auto">
+            <SkeletonBar className="mb-8 h-8 w-32" />
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 lg:grid-rows-2">
+              <div className="md:col-span-2 lg:col-span-2 lg:row-span-2">
+                <ProjectCardSkeleton className="h-full" />
+              </div>
+              <ProjectCardSkeleton />
+              <ProjectCardSkeleton />
+            </div>
+          </div>
+        </section>
       </div>
     )
   }

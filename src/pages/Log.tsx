@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { BookOpen, GraduationCap, FolderCheck, FileText, Loader2 } from 'lucide-react'
+import { BookOpen, GraduationCap, FolderCheck, FileText } from 'lucide-react'
 import { useLogs } from '../hooks/useLogs'
 import PageMeta from '../components/PageMeta'
+import { LogRowSkeleton, SkeletonBar } from '../components/Skeleton'
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -31,9 +32,27 @@ export default function LogPage() {
 
   if (isLoading) {
     return (
-      <div className="pt-16 px-4 md:px-8 py-16 md:py-24 min-h-[60vh] flex items-center justify-center">
+      <div className="pt-16 px-4 md:px-8 py-16 md:py-24">
         <PageMeta title="成长日志 | 丁鹏翔" description="丁鹏翔的学习过程、项目复盘与技术笔记。" />
-        <Loader2 className="w-8 h-8 text-accent animate-spin" />
+        <div className="max-w-6xl mx-auto">
+          <div className="mb-12 md:mb-16">
+            <div className="mb-4 flex items-center gap-3">
+              <SkeletonBar className="h-9 w-9 rounded-lg" />
+              <SkeletonBar className="h-9 w-36" />
+            </div>
+            <SkeletonBar className="h-4 w-full max-w-2xl" />
+          </div>
+          <div className="mb-10 flex flex-wrap gap-3">
+            {Array.from({ length: 4 }).map((_, index) => (
+              <SkeletonBar key={index} className="h-9 w-16 rounded-lg" />
+            ))}
+          </div>
+          <div className="space-y-4">
+            {Array.from({ length: 4 }).map((_, index) => (
+              <LogRowSkeleton key={index} />
+            ))}
+          </div>
+        </div>
       </div>
     )
   }

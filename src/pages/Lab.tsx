@@ -1,8 +1,9 @@
 import { motion } from 'framer-motion'
-import { FlaskConical, Wrench, Play, Beaker, ExternalLink, Loader2 } from 'lucide-react'
+import { FlaskConical, Wrench, Play, Beaker, ExternalLink } from 'lucide-react'
 import { useLabs } from '../hooks/useLabs'
 import SpotlightCard from '../components/SpotlightCard'
 import PageMeta from '../components/PageMeta'
+import { LabCardSkeleton, SkeletonBar } from '../components/Skeleton'
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -28,9 +29,22 @@ export default function Lab() {
 
   if (isLoading) {
     return (
-      <div className="pt-16 px-4 md:px-8 py-16 md:py-24 min-h-[60vh] flex items-center justify-center">
+      <div className="pt-16 px-4 md:px-8 py-16 md:py-24">
         <PageMeta title="实验室 | 丁鹏翔" description="丁鹏翔的技术实验、小工具开发与 Demo 探索记录。" />
-        <Loader2 className="w-8 h-8 text-accent animate-spin" />
+        <div className="max-w-6xl mx-auto">
+          <div className="mb-12 md:mb-16">
+            <div className="mb-4 flex items-center gap-3">
+              <SkeletonBar className="h-9 w-9 rounded-lg" />
+              <SkeletonBar className="h-9 w-32" />
+            </div>
+            <SkeletonBar className="h-4 w-full max-w-2xl" />
+          </div>
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            {Array.from({ length: 4 }).map((_, index) => (
+              <LabCardSkeleton key={index} />
+            ))}
+          </div>
+        </div>
       </div>
     )
   }
