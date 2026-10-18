@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { FlaskConical, Wrench, Play, Beaker, ExternalLink, Loader2 } from 'lucide-react'
 import { useLabs } from '../hooks/useLabs'
+import SpotlightCard from '../components/SpotlightCard'
 import PageMeta from '../components/PageMeta'
 
 const fadeInUp = {
@@ -67,72 +68,74 @@ export default function Lab() {
             return (
               <motion.div
                 key={item.id}
-                className="p-6 bg-bg-secondary border border-border rounded-xl hover:border-accent/50 transition-all hover:-translate-y-1"
+                className="h-full"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
               >
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className={`p-2 rounded-lg ${colorClass}`}>
-                      <Icon size={16} />
+                <SpotlightCard size="md" className="h-full p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className={`p-2 rounded-lg ${colorClass}`}>
+                        <Icon size={16} />
+                      </div>
+                      <span className={`text-xs px-2 py-0.5 rounded-full ${colorClass}`}>
+                        {item.type}
+                      </span>
                     </div>
-                    <span className={`text-xs px-2 py-0.5 rounded-full ${colorClass}`}>
-                      {item.type}
+                    <span
+                      className={`text-xs px-2 py-0.5 rounded-full ${
+                        item.status === '已完成'
+                          ? 'text-green-400 bg-green-400/10'
+                          : 'text-yellow-400 bg-yellow-400/10'
+                      }`}
+                    >
+                      {item.status}
                     </span>
                   </div>
-                  <span
-                    className={`text-xs px-2 py-0.5 rounded-full ${
-                      item.status === '已完成'
-                        ? 'text-green-400 bg-green-400/10'
-                        : 'text-yellow-400 bg-yellow-400/10'
-                    }`}
-                  >
-                    {item.status}
-                  </span>
-                </div>
 
-                <h3 className="text-lg font-semibold text-text-primary mb-2">
-                  {item.title}
-                </h3>
-                <p className="text-sm text-text-secondary leading-relaxed mb-4">
-                  {item.description}
-                </p>
+                  <h3 className="text-lg font-semibold text-text-primary mb-2">
+                    {item.title}
+                  </h3>
+                  <p className="text-sm text-text-secondary leading-relaxed mb-4">
+                    {item.description}
+                  </p>
 
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {item.tech_stack.map(tech => (
-                    <span
-                      key={tech}
-                      className="text-xs text-text-secondary px-2 py-0.5 bg-bg-primary rounded-full border border-border"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {item.tech_stack.map(tech => (
+                      <span
+                        key={tech}
+                        className="text-xs text-text-secondary px-2 py-0.5 bg-bg-primary rounded-full border border-border"
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
 
-                <div className="flex items-center gap-3">
-                  {item.demo_url && (
-                    <a
-                      href={item.demo_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-sm text-accent hover:text-accent-light transition-colors"
-                    >
-                      访问 <ExternalLink size={12} />
-                    </a>
-                  )}
-                  {item.github_url && (
-                    <a
-                      href={item.github_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-accent transition-colors"
-                    >
-                      源码 <ExternalLink size={12} />
-                    </a>
-                  )}
-                </div>
+                  <div className="flex items-center gap-3">
+                    {item.demo_url && (
+                      <a
+                        href={item.demo_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-sm text-accent hover:text-accent-light transition-colors"
+                      >
+                        访问 <ExternalLink size={12} />
+                      </a>
+                    )}
+                    {item.github_url && (
+                      <a
+                        href={item.github_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-accent transition-colors"
+                      >
+                        源码 <ExternalLink size={12} />
+                      </a>
+                    )}
+                  </div>
+                </SpotlightCard>
               </motion.div>
             )
           })}

@@ -3,6 +3,7 @@ import { ArrowRight, Folder, Loader2 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useProjects } from '../hooks/useProjects'
 import ProjectCover from '../components/ProjectCover'
+import SpotlightCard from '../components/SpotlightCard'
 import PageMeta from '../components/PageMeta'
 
 const fadeInUp = {
@@ -49,64 +50,67 @@ export default function Projects() {
           {projects.map((project, index) => (
             <motion.div
               key={project.slug}
+              className="h-full"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
             >
-              <Link
-                to={`/projects/${project.slug}`}
-                className="group flex h-full flex-col overflow-hidden rounded-xl border border-border bg-bg-secondary transition-all hover:-translate-y-1 hover:border-accent/50"
-              >
-                <ProjectCover
-                  slug={project.slug}
-                  title={project.title}
-                  techStack={project.tech_stack}
-                  coverImage={project.cover_image}
-                  index={index}
-                />
-                <div className="flex flex-1 flex-col p-6">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="p-2 bg-accent/10 rounded-lg">
-                      <Folder size={18} className="text-accent" />
+              <SpotlightCard size="md" className="h-full">
+                <Link
+                  to={`/projects/${project.slug}`}
+                  className="flex h-full flex-col"
+                >
+                  <ProjectCover
+                    slug={project.slug}
+                    title={project.title}
+                    techStack={project.tech_stack}
+                    coverImage={project.cover_image}
+                    index={index}
+                  />
+                  <div className="flex flex-1 flex-col p-6">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="p-2 bg-accent/10 rounded-lg">
+                        <Folder size={18} className="text-accent" />
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {project.tags.map(tag => (
+                          <span
+                            key={tag}
+                            className="text-xs text-text-secondary px-2 py-0.5 bg-bg-primary rounded-full border border-border"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                    <div className="flex flex-wrap gap-2">
-                      {project.tags.map(tag => (
-                        <span
-                          key={tag}
-                          className="text-xs text-text-secondary px-2 py-0.5 bg-bg-primary rounded-full border border-border"
-                        >
-                          {tag}
-                        </span>
-                      ))}
+
+                    <h3 className="text-lg font-semibold text-text-primary mb-2 group-hover:text-accent transition-colors">
+                      {project.title}
+                    </h3>
+
+                    <p className="text-sm text-text-secondary leading-relaxed mb-4">
+                      {project.description}
+                    </p>
+
+                    <div className="flex items-center justify-between mt-auto">
+                      <div className="flex flex-wrap gap-2">
+                        {project.tech_stack.map(tech => (
+                          <span
+                            key={tech}
+                            className="text-xs text-accent px-2 py-0.5 bg-accent/10 rounded-full"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                      <span className="text-accent text-sm inline-flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        详情 <ArrowRight size={14} />
+                      </span>
                     </div>
                   </div>
-
-                  <h3 className="text-lg font-semibold text-text-primary mb-2 group-hover:text-accent transition-colors">
-                    {project.title}
-                  </h3>
-
-                  <p className="text-sm text-text-secondary leading-relaxed mb-4">
-                    {project.description}
-                  </p>
-
-                  <div className="flex items-center justify-between mt-auto">
-                    <div className="flex flex-wrap gap-2">
-                      {project.tech_stack.map(tech => (
-                        <span
-                          key={tech}
-                          className="text-xs text-accent px-2 py-0.5 bg-accent/10 rounded-full"
-                        >
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-                    <span className="text-accent text-sm inline-flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      详情 <ArrowRight size={14} />
-                    </span>
-                  </div>
-                </div>
-              </Link>
+                </Link>
+              </SpotlightCard>
             </motion.div>
           ))}
         </div>

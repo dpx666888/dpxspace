@@ -8,6 +8,7 @@ import { useHomeConfig } from '../hooks/useSiteConfig'
 import { useSpaceModules } from '../hooks/useSpaceModules'
 import PersonalSpacePreview from '../components/PersonalSpacePreview'
 import ProjectCover, { COVER_ASPECT } from '../components/ProjectCover'
+import SpotlightCard from '../components/SpotlightCard'
 import PageMeta from '../components/PageMeta'
 import { getFeaturedProjects } from '../lib/featuredProjects'
 import type { Project } from '../types/database'
@@ -27,67 +28,69 @@ function HomeProjectCard({ project, index, layout }: HomeProjectCardProps) {
         : COVER_ASPECT
 
   return (
-    <Link
-      to={`/projects/${project.slug}`}
-      className={`group flex h-full flex-col overflow-hidden rounded-xl border border-border bg-bg-secondary transition-all hover:-translate-y-1 hover:border-accent/50 ${
-        layout === 'hero' ? 'md:flex-row lg:flex-col' : layout === 'single' ? 'md:flex-row' : ''
-      }`}
-    >
-      <div
-        className={
-          layout === 'default'
-            ? ''
-            : layout === 'hero'
-              ? 'md:w-[45%] md:shrink-0 lg:w-full'
-              : 'md:w-[45%] md:shrink-0'
-        }
+    <SpotlightCard size={layout === 'default' ? 'md' : 'lg'} className="h-full">
+      <Link
+        to={`/projects/${project.slug}`}
+        className={`flex h-full flex-col ${
+          layout === 'hero' ? 'md:flex-row lg:flex-col' : layout === 'single' ? 'md:flex-row' : ''
+        }`}
       >
-        <ProjectCover
-          slug={project.slug}
-          title={project.title}
-          techStack={project.tech_stack}
-          coverImage={project.cover_image}
-          index={index}
-          aspect={aspect}
-        />
-      </div>
-      <div
-        className={`flex flex-col p-5 md:p-6 ${
-          layout === 'hero' ? 'flex-1 lg:justify-center' : 'flex-1'
-        } ${layout === 'single' ? 'md:justify-center' : ''}`}
-      >
-        <div className="mb-3 flex items-center gap-2">
-          <span className="rounded-full border border-border bg-bg-primary px-2 py-0.5 text-xs text-text-secondary">
-            {project.tech_stack[0] || project.tags[0] || '项目'}
-          </span>
-          {project.featured && (
-            <span className="font-mono text-[10px] uppercase tracking-wider text-accent-alt">
-              Featured
-            </span>
-          )}
-        </div>
-        <h3
-          className={`mb-2 font-semibold text-text-primary transition-colors group-hover:text-accent ${
-            layout === 'default' ? 'text-lg' : 'text-xl md:text-2xl'
-          }`}
-        >
-          {project.title}
-        </h3>
-        <p className="line-clamp-2 text-sm leading-relaxed text-text-secondary">
-          {project.description}
-        </p>
         <div
-          className={`flex items-center justify-between pt-4 text-xs text-text-secondary ${
-            layout === 'hero' ? 'mt-4' : 'mt-auto'
-          }`}
+          className={
+            layout === 'default'
+              ? ''
+              : layout === 'hero'
+                ? 'md:w-[45%] md:shrink-0 lg:w-full'
+                : 'md:w-[45%] md:shrink-0'
+          }
         >
-          <span className="font-mono">{project.tech_stack.slice(0, 3).join(' · ')}</span>
-          <span className="inline-flex items-center gap-1 text-accent opacity-0 transition-opacity group-hover:opacity-100">
-            详情 <ArrowRight size={14} />
-          </span>
+          <ProjectCover
+            slug={project.slug}
+            title={project.title}
+            techStack={project.tech_stack}
+            coverImage={project.cover_image}
+            index={index}
+            aspect={aspect}
+          />
         </div>
-      </div>
-    </Link>
+        <div
+          className={`flex flex-col p-5 md:p-6 ${
+            layout === 'hero' ? 'flex-1 lg:justify-center' : 'flex-1'
+          } ${layout === 'single' ? 'md:justify-center' : ''}`}
+        >
+          <div className="mb-3 flex items-center gap-2">
+            <span className="rounded-full border border-border bg-bg-primary px-2 py-0.5 text-xs text-text-secondary">
+              {project.tech_stack[0] || project.tags[0] || '项目'}
+            </span>
+            {project.featured && (
+              <span className="font-mono text-[10px] uppercase tracking-wider text-accent-alt">
+                Featured
+              </span>
+            )}
+          </div>
+          <h3
+            className={`mb-2 font-semibold text-text-primary transition-colors group-hover:text-accent ${
+              layout === 'default' ? 'text-lg' : 'text-xl md:text-2xl'
+            }`}
+          >
+            {project.title}
+          </h3>
+          <p className="line-clamp-2 text-sm leading-relaxed text-text-secondary">
+            {project.description}
+          </p>
+          <div
+            className={`flex items-center justify-between pt-4 text-xs text-text-secondary ${
+              layout === 'hero' ? 'mt-4' : 'mt-auto'
+            }`}
+          >
+            <span className="font-mono">{project.tech_stack.slice(0, 3).join(' · ')}</span>
+            <span className="inline-flex items-center gap-1 text-accent opacity-0 transition-opacity group-hover:opacity-100">
+              详情 <ArrowRight size={14} />
+            </span>
+          </div>
+        </div>
+      </Link>
+    </SpotlightCard>
   )
 }
 

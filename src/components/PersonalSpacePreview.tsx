@@ -3,6 +3,7 @@ import { ArrowRight, Loader2 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useSpaceModules } from '../hooks/useSpaceModules'
 import { getIcon } from '../lib/icons'
+import SpotlightCard from './SpotlightCard'
 
 export default function PersonalSpacePreview() {
   const { data: modules, isLoading } = useSpaceModules()
@@ -56,29 +57,31 @@ export default function PersonalSpacePreview() {
             return (
               <motion.div
                 key={mod.id}
-                className="group p-6 bg-bg-secondary border border-border rounded-xl hover:border-accent/50 transition-all hover:-translate-y-1"
+                className="h-full"
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: index * 0.1 }}
               >
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="p-2 bg-accent/10 rounded-lg">
-                    <Icon size={20} className="text-accent" />
+                <SpotlightCard size="md" className="h-full p-6">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="p-2 bg-accent/10 rounded-lg">
+                      <Icon size={20} className="text-accent" />
+                    </div>
+                    <h3 className="font-semibold text-text-primary">{mod.title}</h3>
                   </div>
-                  <h3 className="font-semibold text-text-primary">{mod.title}</h3>
-                </div>
-                <p className="text-sm text-text-secondary leading-relaxed mb-4">{mod.description}</p>
-                {mod.route ? (
-                  <Link
-                    to={mod.route}
-                    className="inline-flex items-center gap-1 text-sm text-accent hover:text-accent-light transition-colors"
-                  >
-                    探索 <ArrowRight size={12} />
-                  </Link>
-                ) : (
-                  <span className="text-xs text-text-secondary/50">即将上线</span>
-                )}
+                  <p className="text-sm text-text-secondary leading-relaxed mb-4">{mod.description}</p>
+                  {mod.route ? (
+                    <Link
+                      to={mod.route}
+                      className="inline-flex items-center gap-1 text-sm text-accent hover:text-accent-light transition-colors"
+                    >
+                      探索 <ArrowRight size={12} />
+                    </Link>
+                  ) : (
+                    <span className="text-xs text-text-secondary/50">即将上线</span>
+                  )}
+                </SpotlightCard>
               </motion.div>
             )
           })}
