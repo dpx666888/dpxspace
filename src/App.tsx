@@ -1,6 +1,6 @@
 import { lazy, Suspense } from 'react'
 import { Routes, Route, useLocation, Outlet } from 'react-router-dom'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, motion, MotionConfig, useReducedMotion } from 'framer-motion'
 import { Loader2 } from 'lucide-react'
 import Header from './components/Header'
 import Footer from './components/Footer'
@@ -36,10 +36,10 @@ const SpaceModulesManage = lazy(() => import('./admin/pages/SpaceModulesManage')
 const CoffeeManage = lazy(() => import('./admin/pages/CoffeeManage'))
 
 const pageTransition = {
-  initial: { opacity: 0, y: 16 },
-  animate: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: -16 },
-  transition: { duration: 0.25, ease: 'easeInOut' as const },
+  initial: { opacity: 0, filter: 'blur(6px)', scale: 0.995 },
+  animate: { opacity: 1, filter: 'blur(0px)', scale: 1 },
+  exit: { opacity: 0, filter: 'blur(6px)', scale: 0.995 },
+  transition: { duration: 0.3, ease: 'easeInOut' as const },
 }
 
 function AdminFallback() {
@@ -52,7 +52,16 @@ function AdminFallback() {
 
 function AnimatedOutlet() {
   const location = useLocation()
+  const reduceMotion = useReducedMotion()
   useScrollToTop()
+
+  if (reduceMotion) {
+    return (
+      <div className="flex-1">
+        <Outlet />
+      </div>
+    )
+  }
 
   return (
     <AnimatePresence mode="wait">
@@ -227,7 +236,8 @@ function AdminRoutes() {
 function App() {
   return (
     <AuthProvider>
-      <Routes>
+      <MotionConfig reducedMotion="user">
+        <Routes>
         <Route
           path="/admin/*"
           element={
@@ -249,7 +259,8 @@ function App() {
           <Route path="space/coffee" element={<Coffee />} />
           <Route path="*" element={<NotFound />} />
         </Route>
-      </Routes>
+        </Routes>
+      </MotionConfig>
     </AuthProvider>
   )
 }

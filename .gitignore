@@ -26,3 +26,6 @@ yarn-error.log*
 # 临时文件
 *.tmp
 *.temp
+
+# 验收产物
+.artifacts/

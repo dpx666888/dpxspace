@@ -7,7 +7,10 @@
   --color-text-secondary: #6b7280;
   --color-accent: #6366f1;
   --color-accent-light: #818cf8;
+  --color-accent-alt: #22d3ee;
   --color-border: #1f1f2e;
+  --font-display: "Space Grotesk", "Inter", "Noto Sans SC", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
 body {
@@ -20,4 +23,98 @@ body {
 
 html {
   scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: #26263a var(--color-bg-primary);
+}
+
+h1,
+h2 {
+  font-family: var(--font-display);
+}
+
+::selection {
+  background: rgba(99, 102, 241, 0.35);
+  color: #ffffff;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #26263a;
+  border-radius: 9999px;
+  border: 2px solid var(--color-bg-primary);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #35354d;
+}
+
+/* 首屏背景层 */
+.bg-grid {
+  background-image:
+    linear-gradient(to right, rgba(148, 163, 184, 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(148, 163, 184, 0.07) 1px, transparent 1px);
+  background-size: 48px 48px;
+  -webkit-mask-image: radial-gradient(ellipse 65% 55% at 50% 38%, #000 25%, transparent 75%);
+  mask-image: radial-gradient(ellipse 65% 55% at 50% 38%, #000 25%, transparent 75%);
+}
+
+.hero-glow {
+  background:
+    radial-gradient(ellipse 55% 45% at 28% 18%, rgba(99, 102, 241, 0.2), transparent 70%),
+    radial-gradient(ellipse 45% 40% at 78% 26%, rgba(34, 211, 238, 0.1), transparent 70%);
+}
+
+.bg-noise {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  opacity: 0.035;
+}
+
+/* 渐变标题 */
+.text-gradient {
+  background-image: linear-gradient(
+    100deg,
+    #e2e2e8 0%,
+    #a5b4fc 28%,
+    #22d3ee 50%,
+    #a5b4fc 72%,
+    #e2e2e8 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gradient-pan 8s linear infinite;
+}
+
+@keyframes gradient-pan {
+  from {
+    background-position: 0% 50%;
+  }
+  to {
+    background-position: 200% 50%;
+  }
+}
+
+/* 动效降级 */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

@@ -37,8 +37,13 @@ export default function Home() {
     <div className="pt-16">
       <PageMeta title="丁鹏翔 - 个人开发者电子名片" description="丁鹏翔的个人开发者电子名片，展示项目作品、技术实验和成长历程。" />
       {/* Hero */}
-      <section className="min-h-[calc(100vh-4rem)] flex items-center px-4 md:px-8">
-        <div className="max-w-6xl mx-auto w-full">
+      <section className="relative min-h-[calc(100vh-4rem)] flex items-center px-4 md:px-8 overflow-hidden">
+        <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+          <div className="absolute inset-0 bg-grid" />
+          <div className="absolute inset-0 hero-glow" />
+          <div className="absolute inset-0 bg-noise" />
+        </div>
+        <div className="relative max-w-6xl mx-auto w-full">
           <div className="flex flex-col md:flex-row items-center justify-between gap-12">
             {/* 左侧文字 */}
             <div className="flex-1">
@@ -51,7 +56,7 @@ export default function Home() {
                 {greeting}
               </motion.p>
               <motion.h1
-                className="text-5xl md:text-7xl font-bold text-text-primary mb-6"
+                className="text-gradient text-5xl md:text-7xl font-bold mb-6 tracking-tight"
                 initial="hidden"
                 animate="visible"
               >
