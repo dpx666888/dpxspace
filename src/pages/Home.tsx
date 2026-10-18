@@ -1,12 +1,95 @@
+import { useMemo } from 'react'
 import { motion } from 'framer-motion'
-import { ArrowRight, ExternalLink, Code2, BookOpen, Globe, Loader2 } from 'lucide-react'
+import { ArrowRight, ExternalLink, BookOpen, Loader2 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useProjects } from '../hooks/useProjects'
 import { useLogs } from '../hooks/useLogs'
 import { useHomeConfig } from '../hooks/useSiteConfig'
 import { useSpaceModules } from '../hooks/useSpaceModules'
 import PersonalSpacePreview from '../components/PersonalSpacePreview'
+import ProjectCover, { COVER_ASPECT } from '../components/ProjectCover'
 import PageMeta from '../components/PageMeta'
+import { getFeaturedProjects } from '../lib/featuredProjects'
+import type { Project } from '../types/database'
+
+interface HomeProjectCardProps {
+  project: Project
+  index: number
+  layout: 'hero' | 'single' | 'default'
+}
+
+function HomeProjectCard({ project, index, layout }: HomeProjectCardProps) {
+  const aspect =
+    layout === 'hero'
+      ? 'aspect-[16/9] md:aspect-auto md:h-full lg:aspect-[16/9] lg:h-auto'
+      : layout === 'single'
+        ? 'aspect-[16/9] md:aspect-auto md:h-full'
+        : COVER_ASPECT
+
+  return (
+    <Link
+      to={`/projects/${project.slug}`}
+      className={`group flex h-full flex-col overflow-hidden rounded-xl border border-border bg-bg-secondary transition-all hover:-translate-y-1 hover:border-accent/50 ${
+        layout === 'hero' ? 'md:flex-row lg:flex-col' : layout === 'single' ? 'md:flex-row' : ''
+      }`}
+    >
+      <div
+        className={
+          layout === 'default'
+            ? ''
+            : layout === 'hero'
+              ? 'md:w-[45%] md:shrink-0 lg:w-full'
+              : 'md:w-[45%] md:shrink-0'
+        }
+      >
+        <ProjectCover
+          slug={project.slug}
+          title={project.title}
+          techStack={project.tech_stack}
+          coverImage={project.cover_image}
+          index={index}
+          aspect={aspect}
+        />
+      </div>
+      <div
+        className={`flex flex-col p-5 md:p-6 ${
+          layout === 'hero' ? 'flex-1 lg:justify-center' : 'flex-1'
+        } ${layout === 'single' ? 'md:justify-center' : ''}`}
+      >
+        <div className="mb-3 flex items-center gap-2">
+          <span className="rounded-full border border-border bg-bg-primary px-2 py-0.5 text-xs text-text-secondary">
+            {project.tech_stack[0] || project.tags[0] || '项目'}
+          </span>
+          {project.featured && (
+            <span className="font-mono text-[10px] uppercase tracking-wider text-accent-alt">
+              Featured
+            </span>
+          )}
+        </div>
+        <h3
+          className={`mb-2 font-semibold text-text-primary transition-colors group-hover:text-accent ${
+            layout === 'default' ? 'text-lg' : 'text-xl md:text-2xl'
+          }`}
+        >
+          {project.title}
+        </h3>
+        <p className="line-clamp-2 text-sm leading-relaxed text-text-secondary">
+          {project.description}
+        </p>
+        <div
+          className={`flex items-center justify-between pt-4 text-xs text-text-secondary ${
+            layout === 'hero' ? 'mt-4' : 'mt-auto'
+          }`}
+        >
+          <span className="font-mono">{project.tech_stack.slice(0, 3).join(' · ')}</span>
+          <span className="inline-flex items-center gap-1 text-accent opacity-0 transition-opacity group-hover:opacity-100">
+            详情 <ArrowRight size={14} />
+          </span>
+        </div>
+      </div>
+    </Link>
+  )
+}
 
 export default function Home() {
   const { data: projects, isLoading: projectsLoading } = useProjects()
@@ -14,6 +97,7 @@ export default function Home() {
   const { data: config, isLoading: configLoading } = useHomeConfig()
   const { isLoading: spaceLoading } = useSpaceModules()
   const loading = projectsLoading || logsLoading || configLoading || spaceLoading
+  const featuredProjects = useMemo(() => getFeaturedProjects(projects ?? []), [projects])
 
   if (loading) {
     return (
@@ -227,38 +311,34 @@ export default function Home() {
               </Link>
             </motion.div>
           </div>
-          {projects && projects.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {projects.slice(0, 3).map((project, index) => {
-                const Icon = project.tech_stack.includes('C++') ? Code2 : Globe
-                const lang = project.tech_stack[0] || project.tags[0] || '项目'
+          {featuredProjects.length > 0 ? (
+            <div
+              className={
+                featuredProjects.length >= 3
+                  ? 'grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 lg:grid-rows-2'
+                  : featuredProjects.length === 2
+                    ? 'grid grid-cols-1 gap-6 md:grid-cols-2'
+                    : 'max-w-5xl'
+              }
+            >
+              {featuredProjects.map((project, index) => {
+                const layout =
+                  index === 0 && featuredProjects.length >= 3
+                    ? 'hero'
+                    : featuredProjects.length === 1
+                      ? 'single'
+                      : 'default'
                 return (
-                  <motion.a
+                  <motion.div
                     key={project.slug}
-                    href={project.github_url ?? undefined}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group block p-6 bg-bg-secondary border border-border rounded-xl hover:border-accent/50 transition-all hover:-translate-y-1"
+                    className={layout === 'hero' ? 'md:col-span-2 lg:col-span-2 lg:row-span-2' : ''}
                     initial={{ opacity: 0, y: 30 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.5, delay: index * 0.1 }}
                   >
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="p-2 bg-accent/10 rounded-lg">
-                        <Icon size={18} className="text-accent" />
-                      </div>
-                      <span className="text-xs text-text-secondary px-2 py-0.5 bg-bg-primary rounded-full border border-border">
-                        {lang}
-                      </span>
-                    </div>
-                    <h3 className="text-lg font-semibold text-text-primary mb-2 group-hover:text-accent transition-colors">
-                      {project.title}
-                    </h3>
-                    <p className="text-sm text-text-secondary leading-relaxed">
-                      {project.description}
-                    </p>
-                  </motion.a>
+                    <HomeProjectCard project={project} index={index} layout={layout} />
+                  </motion.div>
                 )
               })}
             </div>
